@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="技术,iOS," />
 
 
 
@@ -81,16 +81,18 @@
 
 
 
-<meta name="description" content="昔风不起 唯有努力生存">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Tretar&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/archives/2018/03/index.html">
+<meta name="description" content="引言使用CocoaPods非常高效地将一些第三方类库导入到我们的项目中，给我们的开发带来了极大的便利，作为一个iOS开发者，大家肯定有自己封装的一些小组件，假如能让自己封装的组件支持pod集成，就能提供给其他开发者使用，岂不美哉。接下来将用一个Demo来演示组件化操作流程以及注意事项。 操作流程1.上传项目源码在github上创建仓库的流程我就不累述了，首先把项目源码上传到github仓库再clo">
+<meta name="keywords" content="技术,iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS组件化-提交组件代码到cocoapods作为框架">
+<meta property="og:url" content="http://yoursite.com/2017/06/28/iOS组件化-提交组件代码到cocoapods作为框架使用/index.html">
 <meta property="og:site_name" content="Tretar&#39;s Blog">
-<meta property="og:description" content="昔风不起 唯有努力生存">
+<meta property="og:description" content="引言使用CocoaPods非常高效地将一些第三方类库导入到我们的项目中，给我们的开发带来了极大的便利，作为一个iOS开发者，大家肯定有自己封装的一些小组件，假如能让自己封装的组件支持pod集成，就能提供给其他开发者使用，岂不美哉。接下来将用一个Demo来演示组件化操作流程以及注意事项。 操作流程1.上传项目源码在github上创建仓库的流程我就不累述了，首先把项目源码上传到github仓库再clo">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-06-28T07:41:51.302Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tretar&#39;s Blog">
-<meta name="twitter:description" content="昔风不起 唯有努力生存">
+<meta name="twitter:title" content="iOS组件化-提交组件代码到cocoapods作为框架">
+<meta name="twitter:description" content="引言使用CocoaPods非常高效地将一些第三方类库导入到我们的项目中，给我们的开发带来了极大的便利，作为一个iOS开发者，大家肯定有自己封装的一些小组件，假如能让自己封装的组件支持pod集成，就能提供给其他开发者使用，岂不美哉。接下来将用一个Demo来演示组件化操作流程以及注意事项。 操作流程1.上传项目源码在github上创建仓库的流程我就不累述了，首先把项目源码上传到github仓库再clo">
 
 
 
@@ -120,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/2018/03/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/06/28/iOS组件化-提交组件代码到cocoapods作为框架使用/"/>
 
 
 
 
 
-  <title>归档 | Tretar's Blog</title>
+  <title>iOS组件化-提交组件代码到cocoapods作为框架 | Tretar's Blog</title>
   
 
 
@@ -155,7 +157,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -293,74 +295,189 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
-
-      <span class="archive-page-counter">
-        
-        
-        
-          
-        
-        嗯..! 目前共计 2 篇日志。 继续努力。
-      </span>
-
-      
-
-        
-        
-        
-
-        
-          
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
-
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/28/iOS组件化-提交组件代码到cocoapods作为框架使用/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tretar">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tretar's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/03/26/hello-world/" itemprop="url">
-              
-                <span itemprop="name">Hello World</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">iOS组件化-提交组件代码到cocoapods作为框架</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-26T10:09:28+08:00"
-              content="2018-03-26" >
-          03-26
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-28T10:28:47+08:00">
+                2017-06-28
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS开发/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+      
 
+      
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>使用CocoaPods非常高效地将一些第三方类库导入到我们的项目中，给我们的开发带来了极大的便利，作为一个iOS开发者，大家肯定有自己封装的一些小组件，假如能让自己封装的组件支持pod集成，就能提供给其他开发者使用，岂不美哉。接下来将用一个Demo来演示组件化操作流程以及注意事项。</p>
+<h2 id="操作流程"><a href="#操作流程" class="headerlink" title="操作流程"></a>操作流程</h2><h3 id="1-上传项目源码"><a href="#1-上传项目源码" class="headerlink" title="1.上传项目源码"></a>1.上传项目源码</h3><p>在github上创建仓库的流程我就不累述了，首先把项目源码上传到github仓库再clone到本地，如果项目本来就在github的仓库中，直接clone到本地即可，这里以CXDatePickerView为例，<a href="https://github.com/CXTretar/CXDatePickerView" target="_blank" rel="noopener">Demo项目地址</a>。</p>
+<h3 id="2-创建项目的podspec文件"><a href="#2-创建项目的podspec文件" class="headerlink" title="2.创建项目的podspec文件"></a>2.创建项目的podspec文件</h3><p>用终端命令cd打开本地项目文件夹并执行如下命令:<br><code>$ pod spec create CXDatePickerView</code><br>这时候文件夹中就生成一个CXDatePickerView.podspec文件，可以直接用xcode打开。<br>终端命令:<br><code>open -a Xcode XBCategory.podspec</code><br>刚生成的文件有很多不必要的注释，可以删除，需要保留的配置字段，可以查看<a href="http://guides.cocoapods.org/syntax/podspec.html" target="_blank" rel="noopener">http://guides.cocoapods.org/syntax/podspec.html</a>。<br>Demo中保留了以下字段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new do |s|</span><br><span class="line"></span><br><span class="line">  s.name         = &quot;CXDatePickerView&quot;   //  名称</span><br><span class="line">  s.version      = &quot;0.1.1&quot;              //  版本号</span><br><span class="line">  s.summary      = &quot;CXDatePickerView&quot;   //  简要说明</span><br><span class="line"></span><br><span class="line">  s.description  = &lt;&lt;-DESC</span><br><span class="line">                   This is a custom date picker view that provides a number of modifiable UI interfaces.</span><br><span class="line">                   DESC                 //  功能描述</span><br><span class="line"></span><br><span class="line">  s.homepage     = &quot;https://github.com/CXTretar/CXDatePickerView&quot; //项目主页</span><br><span class="line">  s.license      = &quot;MIT&quot;                //  许可证</span><br><span class="line"></span><br><span class="line">  s.author       = &#123; &quot;CXTretar&quot; =&gt; &quot;misscxuan@163.com&quot; &#125; //  所有者</span><br><span class="line"></span><br><span class="line">  s.platform     = :ios, &quot;8.0&quot;          //  系统版本</span><br><span class="line"></span><br><span class="line">  s.source       = &#123; :git =&gt; &quot;https://github.com/CXTretar/CXDatePickerView.git&quot;, :tag =&gt; s.version.to_s &#125; //  项目源地址</span><br><span class="line"></span><br><span class="line">  s.source_files  = &quot;CXDatePickerView/CXDatePickerView/*.&#123;h,m&#125;&quot; // 关联的源文件</span><br><span class="line"></span><br><span class="line">  s.requires_arc = true                 // 是否支持ARC</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>在这些字段中 <code>s.platform</code> 和 <code>s.source_files</code> 需要特别注意。<br><code>s.platform</code> 系统版本不要写的太低，不然上传到cocoapods时会因为不支持MRC而出现一些不必要的警告，在使用时也会出现多余的警告，建议填写”8.0”。<br><code>s.source_files</code> 是你要上传的组件文件夹地址，一定要是正确的路径，不然在上传到cocoapods时会出现<code>[iOS] file patterns: The &#39;source_files&#39; pattern did not match any file.</code>错误。填写的路径格式为 <code>项目文件夹name/组件文件夹name/*.{h,m}</code>，假如组件文件夹中还有其他文件夹，则为 <code>项目文件夹name/组件文件夹name/**/*.{h,m}</code>。</p>
+<h3 id="3-验证podspec文件"><a href="#3-验证podspec文件" class="headerlink" title="3.验证podspec文件"></a>3.验证podspec文件</h3><p>编辑完podspec文件后需要验证该文件是否可用，podspec文件不允许有任何的Warning或者Error<br>终端命令:<br><code>$ pod lib lint</code><br>如果出现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-&gt; CXDatePickerView (0.0.1)</span><br><span class="line"></span><br><span class="line">CXDatePickerView passed validation.</span><br></pre></td></tr></table></figure></p>
+<p>则说明验证通过，否则，就需要根据提示修改podspec文件再次验证直到验证通过。<br>因为Xcode允许警告存在，所以可以通过命令屏蔽警告<br><code>$ pod lib lint --allow-warnings</code><br>如果出现Error但是提示信息不足，可以添加–verbose 以获取更多错误信息<br><code>$ pod lib lint --verbose</code></p>
+<h3 id="4-上传podspec文件"><a href="#4-上传podspec文件" class="headerlink" title="4.上传podspec文件"></a>4.上传podspec文件</h3><p>podspec文件中需要指定的tag，完成上述操作后给项目打tag<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git tag -m&quot;release CXDatePickerView with podspec&quot; &quot;0.0.1&quot;</span><br><span class="line">$ git push --tags</span><br></pre></td></tr></table></figure></p>
+<p>接下来就需要将podspec文件上传至CocoaPod官方库，这里需要用到 pod trunk 账号，相信很多人都还没有注册过。这里简要说明一下注册流程：</p>
+<h5 id="①-终端注册trunk账号"><a href="#①-终端注册trunk账号" class="headerlink" title="①.终端注册trunk账号"></a>①.终端注册trunk账号</h5><p><code>$ pod trunk register &#39;邮箱&#39; &#39;用户名&#39; --description=&#39;电脑描述&#39;</code><br>例如<br><code>$ pod trunk register &#39;misscxuan@163.com&#39; &#39;CXTretar&#39; --description=&#39;macbook pro&#39;</code><br>注册成功的话会回复<br><code>[!] Please verify the session by clicking the link in the verification email that has been sent to misscxuan@163.com</code></p>
+<h5 id="②-查收邮件"><a href="#②-查收邮件" class="headerlink" title="②.查收邮件"></a>②.查收邮件</h5><p>如果是QQ邮箱，可能会被放到“垃圾箱”中，并不一定是“收件箱”。<br>点击邮件中的链接：<br><code>https://trunk.cocoapods.org/sessions/verify/xxxx</code></p>
+<h5 id="③-接下来查看个人信息"><a href="#③-接下来查看个人信息" class="headerlink" title="③.接下来查看个人信息"></a>③.接下来查看个人信息</h5><p><code>$ pod trunk me</code><br>结果信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- Name:     CXTretar</span><br><span class="line">- Email:    misscxuan@163.com</span><br><span class="line">- Since:    June 27th, 01:08</span><br><span class="line">- Pods:</span><br><span class="line">  - CXDatePickerView</span><br><span class="line">- Sessions:</span><br><span class="line">  - June 27th, 01:08 - November 3rd, 01:09. IP: xxx.xxx.xxx.xxx</span><br><span class="line">  Description: macbook pro</span><br></pre></td></tr></table></figure>
+<p>到这一步就注册成功了，假如遇到 <code>NoMethodError - undefined method &#39;last&#39; for #&lt;Netrc::Entry:0x007fc59c246378&gt;</code> 这样的问题需要尝试更新gem源或者pod：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo gem update --system</span><br><span class="line">$ sudo gem install cocoapods</span><br><span class="line">$ sudo gem install cocospods-trunk</span><br></pre></td></tr></table></figure></p>
+<p>如果遇到 <code>[!] Authentication token is invalid or unverified. Either verify it with the email that was sent or register a new session.</code> 请重新再注册一次。<br>pod trunk 设置完毕后执行终端命令:<br><code>$ pod trunk push CXDatePickerView.podspec</code><br>发布时可以允许警告：<br><code>$ pod trunk push --allow-warnings CXDatePickerView.podspec</code><br>这个过程可能会比较耗时，需要耐心等待，假如有VPN工具的话，建议开启VPN后再进行这一步。<br>成功时会显示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Updating spec repo `master`</span><br><span class="line">Validating podspec</span><br><span class="line"> -&gt; CXDatePickerView (0.0.1)</span><br><span class="line"> </span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line"> 🎉  Congrats</span><br><span class="line"></span><br><span class="line"> 🚀  CXDatePickerView (0.0.1) successfully published</span><br><span class="line"> 📅  June 28th, 01:22</span><br><span class="line"> 🌎  https://cocoapods.org/pods/CXDatePickerView</span><br><span class="line"> 👍  Tell your friends!</span><br><span class="line">--------------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+<h3 id="5-搜索组件框架"><a href="#5-搜索组件框架" class="headerlink" title="5.搜索组件框架"></a>5.搜索组件框架</h3><p>此时你的组件库已经上传至cocoapods官方库中，可以这样子搜索<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ pod setup </span><br><span class="line">$ pod repo update</span><br><span class="line">$ pod search CXDatePickerView</span><br></pre></td></tr></table></figure></p>
+<p>假如搜索结果为 <code>[!] Unable to find a pod with name, author, summary, or description matching &#39;xxxx&#39;</code>，说明你的pod搜索库还没有更新，解决方法是通过Finder前往资源库去删除缓存中的search_index.json，路径为<code>~/Library/Caches/CocoaPods</code>，删除search_index.json，再重新调用 <code>pod search CXDatePickerView</code> 代码就能够搜索到你刚上传的组件库。</p>
+<p>完结散花(<em>^▽^</em>)，希望这篇教程对你有帮助！</p>
+
+      
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/技术/" rel="tag"># 技术</a>
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/21/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -368,6 +485,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -388,8 +509,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -415,7 +545,25 @@
             
 
             
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
             
 
           </nav>
@@ -458,6 +606,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作流程"><span class="nav-number">2.</span> <span class="nav-text">操作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-上传项目源码"><span class="nav-number">2.1.</span> <span class="nav-text">1.上传项目源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-创建项目的podspec文件"><span class="nav-number">2.2.</span> <span class="nav-text">2.创建项目的podspec文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-验证podspec文件"><span class="nav-number">2.3.</span> <span class="nav-text">3.验证podspec文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-上传podspec文件"><span class="nav-number">2.4.</span> <span class="nav-text">4.上传podspec文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#①-终端注册trunk账号"><span class="nav-number">2.4.0.1.</span> <span class="nav-text">①.终端注册trunk账号</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#②-查收邮件"><span class="nav-number">2.4.0.2.</span> <span class="nav-text">②.查收邮件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#③-接下来查看个人信息"><span class="nav-number">2.4.0.3.</span> <span class="nav-text">③.接下来查看个人信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-搜索组件框架"><span class="nav-number">2.5.</span> <span class="nav-text">5.搜索组件框架</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -598,6 +762,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

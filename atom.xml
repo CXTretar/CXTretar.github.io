@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-09-14T15:04:52.831Z</updated>
+  <updated>2019-10-27T15:39:21.475Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用 PaintCode 绘制自定义的省份地图控件</title>
+    <link href="http://yoursite.com/2019/10/27/%E4%BD%BF%E7%94%A8-PaintCode-%E7%BB%98%E5%88%B6%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E7%9C%81%E4%BB%BD%E5%9C%B0%E5%9B%BE%E6%8E%A7%E4%BB%B6/"/>
+    <id>http://yoursite.com/2019/10/27/使用-PaintCode-绘制自定义的省份地图控件/</id>
+    <published>2019-10-27T15:08:20.000Z</published>
+    <updated>2019-10-27T15:39:21.475Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://github.com/CXTretar/CXProvincesMapView" target="_blank" rel="noopener">效果链接</a></p><h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><h5 id="需要用到的软件-解压密码-xclient-info"><a href="#需要用到的软件-解压密码-xclient-info" class="headerlink" title="需要用到的软件 (解压密码 xclient.info)"></a>需要用到的软件 (解压密码 <strong>xclient.info</strong>)</h5><ul><li><p><a href="https://pan.baidu.com/s/1qSAeNTmj3e8Jfu2klvHnTg" target="_blank" rel="noopener">Sketch</a> </p><p>Sketch 是一款Mac上小巧但功能强大的矢量绘图软件，这是专为设计师而打造的矢量绘图软件，拥有简约的设计，调色板，面板，菜单，窗口，控件和功能强大的矢量绘图和文字工具；包含针对UI设计的操作和交互模式，让你设计图标、移动手机UI、网站UI等更加简单高效。</p></li><li><p><a href="https://pan.baidu.com/s/1FAjdUCrYVniNLksW3aY_8A" target="_blank" rel="noopener">PaintCode</a></p><p>PaintCode 是一款Mac上的iOS矢量绘图编程软件，无论是程序员还是设计师，PaintCode 能够让你像在PS中画图一样绘制各种UI图形，PaintCode 会自动帮你生成针对Mac OS X或iOS平台Objective-C或C#代码，能够节约大量的编程时间，支持将代码直接导入到Xcode中或导出为PSD文件，支持最新的 iOS  和 iWatch SDK，非常的实用！</p></li></ul><h5 id="地图-svg-文件的获取"><a href="#地图-svg-文件的获取" class="headerlink" title="地图 svg 文件的获取"></a>地图 svg 文件的获取</h5><p>推荐使用 <a href="https://www.highcharts.com.cn/mapdata" target="_blank" rel="noopener">HighChart 地图数据</a>，在这里你可以自由的选择国内的某个省份地图下载相应的 svg 文件，这里选择福建省作为一个例子。</p><p><img src="/2019/10/27/使用-PaintCode-绘制自定义的省份地图控件/image-20191027233307531.png" alt="image-20191027233307531"></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://github.com/CXTretar/CXProvincesMapView&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;效果链接&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&quot;准备工作&quot;&gt;&lt;a href=&quot;#准备工作&quot; class=
+      
+    
+    </summary>
+    
+      <category term="iOS开发" scheme="http://yoursite.com/categories/iOS%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="技术" scheme="http://yoursite.com/tags/%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
+    
+  </entry>
   
   <entry>
     <title>自定义NSURLProtocol实现WebView缓存以及科学上网</title>

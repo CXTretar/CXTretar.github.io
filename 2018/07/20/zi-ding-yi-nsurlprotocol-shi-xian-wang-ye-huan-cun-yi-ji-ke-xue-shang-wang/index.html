@@ -462,7 +462,7 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h4 id="NSURLProtocol是什么？"><a href="#NSURLProtocol是什么？" class="headerlink" title="NSURLProtocol是什么？"></a>NSURLProtocol是什么？</h4><p>NSURLProtocol是 iOS里面的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html" target="_blank" rel="noopener">URL Loading System</a>的一部分，它是一个抽象类，不能去实例化它，只能子类化NSURLProtocol，然后在使用的时候注册子类。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/NSURLProtocol.png" alt="NSURLProtocol"></p>
+<p><img src="/misscxuan/CXTretar_Blog/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/NSURLProtocol.png" alt="NSURLProtocol"></p>
 <h4 id="NSURLProtocol能做什么？"><a href="#NSURLProtocol能做什么？" class="headerlink" title="NSURLProtocol能做什么？"></a>NSURLProtocol能做什么？</h4><p>在每一个 <code>HTTP</code> 请求开始时，<code>URL Loading System</code> 会创建一个合适的 <code>NSURLProtocol</code> 对象处理对应的 URL 请求，而我们需要做的就是写一个继承自 <code>NSURLProtocol</code> 的类，并通过 <code>- registerClass:</code> 方法注册我们的协议类，然后 <code>URL Loading System</code> 就会在请求发出时使用我们创建的 <code>NSURLProtocol</code> 对象对该请求进行处理。</p>
 <p>这样，我们就可以使用 <code>NSURLProtocol</code> 来处理所有的网络请求，实现以下一些功能：</p>
 <ul>
@@ -474,7 +474,7 @@
 </ul>
 <p>苹果官方文档中的 <a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">CustomHTTPProtocol</a> 对自定义 <code>NSURLProtocol</code> 有了一些具体的介绍，你可以点击<a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">这里</a>下载源代码。</p>
 <p>基于官方的 Demo，我们来对 <code>NSURLProtocol</code> 做进一步的处理，使其能够对我们请求的网页内容缓存，甚至可以通过连接代理服务器来科学上网，需要提醒的是，这里的科学上网只能够在注册该 <code>NSURLProtocol</code> 的条件下实现，也就是说是 App 内部的网页可以通过代理服务器请求打开。</p>
-<p><a href="https://github.com/CXTretar/CXProxyURLProtocol">项目地址</a> </p>
+<p><a href="https://github.com/CXTretar/CXProxyURLProtocol" target="_blank" rel="noopener">项目地址</a> </p>
 <h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><ul>
 <li>在需要开启代理的时候注册 <code>CXProxyURLProtocol</code> 。</li>
 </ul>
@@ -541,7 +541,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://github.com/CXTretar/CXTretar.github.io" rel="external nofollow noreferrer">CXTretar</a>
+                    <a href="https://gitee.com/misscxuan/CXTretar_Blog" rel="external nofollow noreferrer">CXTretar</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -551,7 +551,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://github.com/CXTretar/CXTretar.github.io/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/">https://github.com/CXTretar/CXTretar.github.io/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/</a>
+                    <a href="https://gitee.com/misscxuan/CXTretar_Blog/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/">https://gitee.com/misscxuan/CXTretar_Blog/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -564,7 +564,7 @@
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="https://github.com/CXTretar/CXTretar.github.io" target="_blank">CXTretar</a>
+                    <a href="https://gitee.com/misscxuan/CXTretar_Blog" target="_blank">CXTretar</a>
                     !
                 </span>
             </div>
@@ -882,7 +882,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
         <div class="col s12 m8 l8 copy-right">
             Copyright&nbsp;&copy;
             <span id="year">2016</span>
-            <a href="https://github.com/CXTretar/CXTretar.github.io" target="_blank">CXTretar</a>
+            <a href="https://gitee.com/misscxuan/CXTretar_Blog" target="_blank">CXTretar</a>
             |&nbsp;Powered by&nbsp;<a href="https://github.com/CXTretar" target="_blank">CXTretar</a>
             |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
             <br>

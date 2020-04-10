@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/2018/03/21/hello-world/</url>
+    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>生活感想</category>
+      </categories>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Runtime 知识点（一）OC对象的本质</title>
     <url>/2020/03/02/runtime-zhi-shi-dian-yi/</url>
     <content><![CDATA[<h2 id="Runtime是什么？"><a href="#Runtime是什么？" class="headerlink" title="Runtime是什么？"></a>Runtime是什么？</h2><ul>
@@ -20,15 +50,15 @@
 <li><strong>meta-class对象（元类对象）</strong></li>
 </ul>
 <p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt></p>
+<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
 <h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p>
-<pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {
+<pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <nsobject> {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wobjc-interface-ivars"
     Class isa  OBJC_ISA_AVAILABILITY;
 #pragma clang diagnostic pop
 }
-</code></pre>
+</nsobject></code></pre>
 <p>众所周知，OC底层是C/C++代码来实现的，我们可以通过Clang将OC文件转化为C++文件来探寻OC对象的本质。</p>
 <h4 id="Clang-是什么？"><a href="#Clang-是什么？" class="headerlink" title="Clang 是什么？"></a>Clang 是什么？</h4><p>Clang是一个C语言、C++、Objective-C、Objective-C++语言的轻量级编译器。官方介绍：<a href="http://clang.llvm.org/docs/CommandGuide/clang.html" target="_blank" rel="noopener">官方文档</a></p>
 <h4 id="使用-Xcode-Clang指令将OC代码转换为C-代码"><a href="#使用-Xcode-Clang指令将OC代码转换为C-代码" class="headerlink" title="使用 Xcode Clang指令将OC代码转换为C++代码"></a><strong>使用 Xcode Clang指令将OC代码转换为C++代码</strong></h4><p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  xxxx.m  -o  xxxx.cpp</code></p>
@@ -37,7 +67,7 @@
 <p>如果需要支持ARC、指定运行时系统版本。比如</p>
 <p><code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc -fobjc-arc -fobjc-runtime=ios-8.0.0 main.m</code></p>
 <p>现在我们将这样一个main.m文件转换成main.cpp文件</p>
-<pre class=" language-objective-c"><code class="language-objective-c">#import <Foundation/Foundation.h>
+<pre class=" language-objective-c"><code class="language-objective-c">#import <foundation foundation.h="">
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
@@ -45,7 +75,7 @@ int main(int argc, const char * argv[]) {
     }
     return 0;
 }
-</code></pre>
+</foundation></code></pre>
 <p>在main.cpp文件中可以看到这样一个结构</p>
 <pre class=" language-objective-c"><code class="language-objective-c">struct NSObject_IMPL {
     Class isa;
@@ -67,7 +97,7 @@ int main(int argc, const char * argv[]) {
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         Animal *animal = [[Animal alloc] init];
-        animal->_age = 2;
+        animal-&gt;_age = 2;
     }
     return 0;
 }
@@ -332,36 +362,6 @@ $ pod search CXDatePickerView
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2018/03/21/hello-world/</url>
-    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>]]></content>
-      <categories>
-        <category>生活感想</category>
-      </categories>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Runtime的运用（一）为Category增加关联对象</title>
     <url>/2020/03/04/runtime-de-yun-yong-yi/</url>
     <content><![CDATA[<h2 id="Category-的内部结构"><a href="#Category-的内部结构" class="headerlink" title="Category 的内部结构"></a>Category 的内部结构</h2><p>下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码，在<code>objc-runtime-new.h</code>文件中，我们可以看到Category的内部结构：</p>
@@ -492,14 +492,14 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
 <p><strong>id  _Nullable value</strong>：关联对象的值，也就是 <strong>setter</strong> 方法传入的值给关联对象去存储，这里存储的必须是对象，不能是基本类型。</p>
 <p><strong>objc_AssociationPolicy policy</strong>：关联策略，关联对象以什么形式保存，具体的关联策略有以下几种，需要注意的并没有我们属性中常见的 <strong>weak</strong> 类型。</p>
 <pre class=" language-objective-c"><code class="language-objective-c">typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {
-    OBJC_ASSOCIATION_ASSIGN = 0,           /**< Specifies a weak reference to the associated object. */
-    OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, /**< Specifies a strong reference to the associated object. 
+    OBJC_ASSOCIATION_ASSIGN = 0,           /**&lt; Specifies a weak reference to the associated object. */
+    OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, /**&lt; Specifies a strong reference to the associated object. 
                                             *   The association is not made atomically. */
-    OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   /**< Specifies that the associated object is copied. 
+    OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   /**&lt; Specifies that the associated object is copied. 
                                             *   The association is not made atomically. */
-    OBJC_ASSOCIATION_RETAIN = 01401,       /**< Specifies a strong reference to the associated object.
+    OBJC_ASSOCIATION_RETAIN = 01401,       /**&lt; Specifies a strong reference to the associated object.
                                             *   The association is made atomically. */
-    OBJC_ASSOCIATION_COPY = 01403          /**< Specifies that the associated object is copied.
+    OBJC_ASSOCIATION_COPY = 01403          /**&lt; Specifies that the associated object is copied.
                                             *   The association is made atomically. */
 };
 </code></pre>
@@ -510,7 +510,7 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
 <h4 id="移除所有的关联对象"><a href="#移除所有的关联对象" class="headerlink" title="移除所有的关联对象"></a>移除所有的关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">void objc_removeAssociatedObjects(id object)
 </code></pre>
 <p><strong>id object</strong>：移除某个类里面的所有关联对象。</p>
-<h4 id="添加关联对象的使用示例："><a href="#添加关联对象的使用示例：" class="headerlink" title="添加关联对象的使用示例："></a>添加关联对象的使用示例：</h4><pre class=" language-objective-c"><code class="language-objective-c">#import <objc/runtime.h>
+<h4 id="添加关联对象的使用示例："><a href="#添加关联对象的使用示例：" class="headerlink" title="添加关联对象的使用示例："></a>添加关联对象的使用示例：</h4><pre class=" language-objective-c"><code class="language-objective-c">#import <objc runtime.h="">
 #import "Person.h"
 
 @interface Person (Test)
@@ -539,7 +539,7 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
 }
 
 @end
-</code></pre>
+</objc></code></pre>
 <blockquote>
 <p><strong>小结：使用关联对象来添加成员变量的操作还是比较简单的，下面我们来探究下关联对象的底层实现原理。</strong></p>
 </blockquote>
@@ -705,7 +705,7 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
 </li>
 <li><h5 id="图钉部分"><a href="#图钉部分" class="headerlink" title="图钉部分"></a>图钉部分</h5><p>我们只需要摘取每段 <code>rectanglePath</code> 的起始点即可，</p>
 <pre class=" language-objective-c"><code class="language-objective-c">UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(135, 56, 20, 20)];
-=>  CGPointMake(135, 56)
+=&gt;  CGPointMake(135, 56)
 </code></pre>
 <p>整理后的 <code>point</code> 放在 <code>FujianMapPath</code> 的 <code>pinPointArray</code> 中。</p>
 </li>
@@ -884,7 +884,7 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
 
 - (instancetype)init {
     if (self = [super init]) {
-        self->_extensionString = @"extensionString";
+        self-&gt;_extensionString = @"extensionString";
     }
     return self;
 }

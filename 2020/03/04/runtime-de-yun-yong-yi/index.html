@@ -607,14 +607,14 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
 <p><strong>id  _Nullable value</strong>：关联对象的值，也就是 <strong>setter</strong> 方法传入的值给关联对象去存储，这里存储的必须是对象，不能是基本类型。</p>
 <p><strong>objc_AssociationPolicy policy</strong>：关联策略，关联对象以什么形式保存，具体的关联策略有以下几种，需要注意的并没有我们属性中常见的 <strong>weak</strong> 类型。</p>
 <pre class=" language-objective-c"><code class="language-objective-c">typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {
-    OBJC_ASSOCIATION_ASSIGN = 0,           /**< Specifies a weak reference to the associated object. */
-    OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, /**< Specifies a strong reference to the associated object. 
+    OBJC_ASSOCIATION_ASSIGN = 0,           /**&lt; Specifies a weak reference to the associated object. */
+    OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, /**&lt; Specifies a strong reference to the associated object. 
                                             *   The association is not made atomically. */
-    OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   /**< Specifies that the associated object is copied. 
+    OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   /**&lt; Specifies that the associated object is copied. 
                                             *   The association is not made atomically. */
-    OBJC_ASSOCIATION_RETAIN = 01401,       /**< Specifies a strong reference to the associated object.
+    OBJC_ASSOCIATION_RETAIN = 01401,       /**&lt; Specifies a strong reference to the associated object.
                                             *   The association is made atomically. */
-    OBJC_ASSOCIATION_COPY = 01403          /**< Specifies that the associated object is copied.
+    OBJC_ASSOCIATION_COPY = 01403          /**&lt; Specifies that the associated object is copied.
                                             *   The association is made atomically. */
 };
 </code></pre>
@@ -625,7 +625,7 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
 <h4 id="移除所有的关联对象"><a href="#移除所有的关联对象" class="headerlink" title="移除所有的关联对象"></a>移除所有的关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">void objc_removeAssociatedObjects(id object)
 </code></pre>
 <p><strong>id object</strong>：移除某个类里面的所有关联对象。</p>
-<h4 id="添加关联对象的使用示例："><a href="#添加关联对象的使用示例：" class="headerlink" title="添加关联对象的使用示例："></a>添加关联对象的使用示例：</h4><pre class=" language-objective-c"><code class="language-objective-c">#import <objc/runtime.h>
+<h4 id="添加关联对象的使用示例："><a href="#添加关联对象的使用示例：" class="headerlink" title="添加关联对象的使用示例："></a>添加关联对象的使用示例：</h4><pre class=" language-objective-c"><code class="language-objective-c">#import <objc runtime.h="">
 #import "Person.h"
 
 @interface Person (Test)
@@ -654,7 +654,7 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
 }
 
 @end
-</code></pre>
+</objc></code></pre>
 <blockquote>
 <p><strong>小结：使用关联对象来添加成员变量的操作还是比较简单的，下面我们来探究下关联对象的底层实现原理。</strong></p>
 </blockquote>

@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/2018/03/21/hello-world/</url>
+    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>生活感想</category>
+      </categories>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Runtime 知识点（一）OC对象的本质</title>
     <url>/2020/03/02/runtime-zhi-shi-dian-yi/</url>
     <content><![CDATA[<h2 id="Runtime是什么？"><a href="#Runtime是什么？" class="headerlink" title="Runtime是什么？"></a>Runtime是什么？</h2><ul>
@@ -332,36 +362,6 @@ $ pod search CXDatePickerView
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2018/03/21/hello-world/</url>
-    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>]]></content>
-      <categories>
-        <category>生活感想</category>
-      </categories>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>使用 PaintCode 绘制自定义的省份地图控件</title>
     <url>/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/</url>
     <content><![CDATA[<p><a href="https://github.com/CXTretar/CXProvincesMapView">Demo链接</a></p>
@@ -528,83 +528,6 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上步骤看起来繁琐，实际上操作起来并不是很复杂，主要的代码部分 PaintCode 已经为我们生成好了，可以在有 svg 图片的前提下生成任意的地图区域控件，<code>CXProvincesMapView</code> 中国省份地图区域的控件也是这样子生成的。假如你不需要文字或者图钉部分，你可以不用另外绘制文字或者图钉，相对应的数组传入空值就行了。</p>
 <p>完结散花(<em>^▽^</em>)，希望这篇教程对你有帮助！</p>
 <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>]]></content>
-      <categories>
-        <category>iOS开发</category>
-      </categories>
-      <tags>
-        <tag>技术</tag>
-        <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>自定义NSURLProtocol实现WebView缓存以及科学上网</title>
-    <url>/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/</url>
-    <content><![CDATA[<h4 id="NSURLProtocol是什么？"><a href="#NSURLProtocol是什么？" class="headerlink" title="NSURLProtocol是什么？"></a>NSURLProtocol是什么？</h4><p>NSURLProtocol是 iOS里面的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html" target="_blank" rel="noopener">URL Loading System</a>的一部分，它是一个抽象类，不能去实例化它，只能子类化NSURLProtocol，然后在使用的时候注册子类。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/NSURLProtocol.png" alt="NSURLProtocol"></p>
-<h4 id="NSURLProtocol能做什么？"><a href="#NSURLProtocol能做什么？" class="headerlink" title="NSURLProtocol能做什么？"></a>NSURLProtocol能做什么？</h4><p>在每一个 <code>HTTP</code> 请求开始时，<code>URL Loading System</code> 会创建一个合适的 <code>NSURLProtocol</code> 对象处理对应的 URL 请求，而我们需要做的就是写一个继承自 <code>NSURLProtocol</code> 的类，并通过 <code>- registerClass:</code> 方法注册我们的协议类，然后 <code>URL Loading System</code> 就会在请求发出时使用我们创建的 <code>NSURLProtocol</code> 对象对该请求进行处理。</p>
-<p>这样，我们就可以使用 <code>NSURLProtocol</code> 来处理所有的网络请求，实现以下一些功能：</p>
-<ul>
-<li>可以拦截 UIWebView 的网络请求。</li>
-<li>重定向网络请求（可以解决 DNS 域名劫持问题）</li>
-<li>缓存网页内容</li>
-<li>自定义 Response （过滤敏感信息）</li>
-<li>全局网络请求设置</li>
-</ul>
-<p>苹果官方文档中的 <a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">CustomHTTPProtocol</a> 对自定义 <code>NSURLProtocol</code> 有了一些具体的介绍，你可以点击<a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">这里</a>下载源代码。</p>
-<p>基于官方的 Demo，我们来对 <code>NSURLProtocol</code> 做进一步的处理，使其能够对我们请求的网页内容缓存，甚至可以通过连接代理服务器来科学上网，需要提醒的是，这里的科学上网只能够在注册该 <code>NSURLProtocol</code> 的条件下实现，也就是说是 App 内部的网页可以通过代理服务器请求打开。</p>
-<p><a href="https://github.com/CXTretar/CXProxyURLProtocol">项目地址</a> </p>
-<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><ul>
-<li>在需要开启代理的时候注册 <code>CXProxyURLProtocol</code> 。</li>
-</ul>
-<pre class=" language-objective-c"><code class="language-objective-c">[CXProxyProtocolManager registerProxyURLProtocol];
-</code></pre>
-<ul>
-<li>在需要关闭代理的时候注销 <code>CXProxyURLProtocol</code> 。</li>
-</ul>
-<pre><code>[CXProxyProtocolManager unregisterProxyURLProtocol];
-</code></pre><ul>
-<li>设置拦截的请求服务类型或者代理服务器 ip 地址和端口号。</li>
-</ul>
-<pre><code>/**
- CXProxyURLProtocol 可支持的URLSchemes
-
- @return URLSchemes
- */
-+ (NSSet *)supportedSchemes;
-
-/**
- 设置 CXProxyURLProtocol 可支持的URLSchemes, 默认为 [http,https]
-
- @param supportedSchemes URLSchemes like: http https
- */
-+ (void)setSupportedSchemes:(NSSet *)supportedSchemes;
-
-/**
- 设置代理服务器ip地址以及端口号 http/https 连接方式
-
- @param HTTPProxyHost ip地址
- @param HTTPProxyPort 端口号
- */
-+ (void)setHTTPProxyHost:(NSString *)HTTPProxyHost andHTTPProxyPort:(NSNumber *)HTTPProxyPort;
-</code></pre><script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
             if (!el.dataset.src) { return; }
@@ -848,48 +771,125 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
       </tags>
   </entry>
   <entry>
+    <title>自定义NSURLProtocol实现WebView缓存以及科学上网</title>
+    <url>/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/</url>
+    <content><![CDATA[<h4 id="NSURLProtocol是什么？"><a href="#NSURLProtocol是什么？" class="headerlink" title="NSURLProtocol是什么？"></a>NSURLProtocol是什么？</h4><p>NSURLProtocol是 iOS里面的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html" target="_blank" rel="noopener">URL Loading System</a>的一部分，它是一个抽象类，不能去实例化它，只能子类化NSURLProtocol，然后在使用的时候注册子类。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/NSURLProtocol.png" alt="NSURLProtocol"></p>
+<h4 id="NSURLProtocol能做什么？"><a href="#NSURLProtocol能做什么？" class="headerlink" title="NSURLProtocol能做什么？"></a>NSURLProtocol能做什么？</h4><p>在每一个 <code>HTTP</code> 请求开始时，<code>URL Loading System</code> 会创建一个合适的 <code>NSURLProtocol</code> 对象处理对应的 URL 请求，而我们需要做的就是写一个继承自 <code>NSURLProtocol</code> 的类，并通过 <code>- registerClass:</code> 方法注册我们的协议类，然后 <code>URL Loading System</code> 就会在请求发出时使用我们创建的 <code>NSURLProtocol</code> 对象对该请求进行处理。</p>
+<p>这样，我们就可以使用 <code>NSURLProtocol</code> 来处理所有的网络请求，实现以下一些功能：</p>
+<ul>
+<li>可以拦截 UIWebView 的网络请求。</li>
+<li>重定向网络请求（可以解决 DNS 域名劫持问题）</li>
+<li>缓存网页内容</li>
+<li>自定义 Response （过滤敏感信息）</li>
+<li>全局网络请求设置</li>
+</ul>
+<p>苹果官方文档中的 <a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">CustomHTTPProtocol</a> 对自定义 <code>NSURLProtocol</code> 有了一些具体的介绍，你可以点击<a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">这里</a>下载源代码。</p>
+<p>基于官方的 Demo，我们来对 <code>NSURLProtocol</code> 做进一步的处理，使其能够对我们请求的网页内容缓存，甚至可以通过连接代理服务器来科学上网，需要提醒的是，这里的科学上网只能够在注册该 <code>NSURLProtocol</code> 的条件下实现，也就是说是 App 内部的网页可以通过代理服务器请求打开。</p>
+<p><a href="https://github.com/CXTretar/CXProxyURLProtocol">项目地址</a> </p>
+<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><ul>
+<li>在需要开启代理的时候注册 <code>CXProxyURLProtocol</code> 。</li>
+</ul>
+<pre class=" language-objective-c"><code class="language-objective-c">[CXProxyProtocolManager registerProxyURLProtocol];
+</code></pre>
+<ul>
+<li>在需要关闭代理的时候注销 <code>CXProxyURLProtocol</code> 。</li>
+</ul>
+<pre><code>[CXProxyProtocolManager unregisterProxyURLProtocol];
+</code></pre><ul>
+<li>设置拦截的请求服务类型或者代理服务器 ip 地址和端口号。</li>
+</ul>
+<pre><code>/**
+ CXProxyURLProtocol 可支持的URLSchemes
+
+ @return URLSchemes
+ */
++ (NSSet *)supportedSchemes;
+
+/**
+ 设置 CXProxyURLProtocol 可支持的URLSchemes, 默认为 [http,https]
+
+ @param supportedSchemes URLSchemes like: http https
+ */
++ (void)setSupportedSchemes:(NSSet *)supportedSchemes;
+
+/**
+ 设置代理服务器ip地址以及端口号 http/https 连接方式
+
+ @param HTTPProxyHost ip地址
+ @param HTTPProxyPort 端口号
+ */
++ (void)setHTTPProxyHost:(NSString *)HTTPProxyHost andHTTPProxyPort:(NSNumber *)HTTPProxyPort;
+</code></pre><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>iOS开发</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>成员变量和属性的区别</title>
     <url>/2020/03/04/cheng-yuan-bian-liang-he-shu-xing-de-qu-bie/</url>
     <content><![CDATA[<h3 id="成员变量的使用"><a href="#成员变量的使用" class="headerlink" title="成员变量的使用"></a>成员变量的使用</h3><p>成员变量是声明在类{}中的，在类的.h 头文件和类的的.m 文件类扩展都可以对成员变量进行声明。</p>
-<h5 id="h-文件中声明"><a href="#h-文件中声明" class="headerlink" title=".h 文件中声明"></a>.h 文件中声明</h5><pre class=" language-objective-c"><code class="language-objective-c">@interface Person : NSObject {
-    int _phone;
-    NSString *_nickname;
+<h5 id="h-文件中声明"><a href="#h-文件中声明" class="headerlink" title=".h 文件中声明"></a>.h 文件中声明</h5><pre class=" language-objectivec"><code class="language-objectivec"><span class="token keyword">@interface</span> Person <span class="token punctuation">:</span> NSObject <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> _phone<span class="token punctuation">;</span>
+    NSString <span class="token operator">*</span>_nickname<span class="token punctuation">;</span>
 
-@public
-    NSString *_publicString;
+<span class="token keyword">@public</span>
+    NSString <span class="token operator">*</span>_publicString<span class="token punctuation">;</span>
 
-@protected
-    NSString *_protectedString;
+<span class="token keyword">@protected</span>
+    NSString <span class="token operator">*</span>_protectedString<span class="token punctuation">;</span>
 
-@private
-    NSString *_privateString;
-}
+<span class="token keyword">@private</span>
+    NSString <span class="token operator">*</span>_privateString<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-@end
+<span class="token keyword">@end</span>
 </code></pre>
-<h5 id="m-文件类扩展中声明"><a href="#m-文件类扩展中声明" class="headerlink" title=".m 文件类扩展中声明"></a>.m 文件类扩展中声明</h5><pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"
+<h5 id="m-文件类扩展中声明"><a href="#m-文件类扩展中声明" class="headerlink" title=".m 文件类扩展中声明"></a>.m 文件类扩展中声明</h5><pre class=" language-objectivec"><code class="language-objectivec"><span class="token macro property">#<span class="token directive keyword">import</span> "Person.h"</span>
 
-@interface Person() {
-    int _phoneNum;
-    NSString *_address;
+<span class="token keyword">@interface</span> <span class="token function">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> _phoneNum<span class="token punctuation">;</span>
+    NSString <span class="token operator">*</span>_address<span class="token punctuation">;</span>
 
-@public
-    int _age;
-    NSString *_extensionString;
-}
+<span class="token keyword">@public</span>
+    <span class="token keyword">int</span> _age<span class="token punctuation">;</span>
+    NSString <span class="token operator">*</span>_extensionString<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-@end
+<span class="token keyword">@end</span>
 
-@implementation Person
+<span class="token keyword">@implementation</span> Person
 
-- (instancetype)init {
-    if (self = [super init]) {
-        self->_extensionString = @"extensionString";
-    }
-    return self;
-}
+<span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>init <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">self</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">super</span> init<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">self</span><span class="token operator">-></span>_extensionString <span class="token operator">=</span> <span class="token string">@"extensionString"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token keyword">self</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-@end
+<span class="token keyword">@end</span>
 
 </code></pre>
 <p>在这里对成员变量有<code>@private、@protected、@public</code>三种修饰符：</p>
@@ -901,32 +901,32 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
 <p><strong>需要注意的是，在.h 文件中对成员变量使用修饰符是有效的，而在.m 文件类扩展都成员变量无论用何种修饰都是private，只能在自己的类内部访问。例如一个Student类继承于Person，在其内部能够读取Person类头文件中除了private之外的其他成员变量， 却不能读取到Person类扩展中定义的成员变量。</strong></p>
 <p><img src="/CXTretar/CXTretar.github.io/2020/03/04/cheng-yuan-bian-liang-he-shu-xing-de-qu-bie/20200304195639862.png" alt="20200304195639862"></p>
 <h3 id="属性的使用"><a href="#属性的使用" class="headerlink" title="属性的使用"></a>属性的使用</h3><p>在iOS 5.0之前，属性声明是oc语言的一个新的机制，在声明时要求必须声明与之对应的成员变量。属性的正常写法需要1.声明成员变量， 2.<strong>@property</strong> ，3. <strong>@synthesize</strong> 成员变量三个步骤，例如<strong>name</strong>属性的声明：</p>
-<pre class=" language-objective-c"><code class="language-objective-c">#import "Person1.h"
+<pre class=" language-objectivec"><code class="language-objectivec"><span class="token macro property">#<span class="token directive keyword">import</span> "Person1.h"</span>
 
-@interface Person1() {
-    // 1.声明成员变量
-     NSString *name;
-}
-// 2.声明属性
-@property (nonatomic, copy) NSString *name;
+<span class="token keyword">@interface</span> <span class="token function">Person1</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 1.声明成员变量</span>
+     NSString <span class="token operator">*</span>name<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">// 2.声明属性</span>
+<span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">)</span> NSString <span class="token operator">*</span>name<span class="token punctuation">;</span>
 
-@end
+<span class="token keyword">@end</span>
 
-@implementation Person1
+<span class="token keyword">@implementation</span> Person1
 
-// 3.最后在@implementation中用synthesize生成setter方法
-@synthesize name;
+<span class="token comment" spellcheck="true">// 3.最后在@implementation中用synthesize生成setter方法</span>
+<span class="token keyword">@synthesize</span> name<span class="token punctuation">;</span>
 
-- (instancetype)init {
-    if (self = [super init]) {
+<span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>init <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">self</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">super</span> init<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 
-        self.name = @"Jack";
-    }
+        <span class="token keyword">self</span><span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">@"Jack"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    return self;
-}
+    <span class="token keyword">return</span> <span class="token keyword">self</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-@end
+<span class="token keyword">@end</span>
 
 </code></pre>
 <p>在iOS 5.0之后，苹果推出一个新机制，<strong>@property</strong>声明的属性默认会生成一个  <strong>_</strong>   类型的成员变量，同时也会生成<strong>setter/getter</strong>方法，这就是我们现行的属性声明方式，而且我们可以使用点语法来代替<strong>setter/getter</strong>方法访问属性。</p>
@@ -935,39 +935,39 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
 <li><strong>synthesize</strong> 为编译器指令，它的作用是在编译时自动生成访问属性的<strong>setter/getter</strong>方法。假如我们在iOS 5.0之后依然在<strong>@implementation</strong> 文件中写了 <strong>@synthesize name</strong> ，那么生成对应的成员变量名便是<strong>name</strong>，而不是<strong>_name</strong>。</li>
 <li><strong>dynamic</strong> 为编译器指令，在编译时则会告诉编译器，属性的<strong>setter</strong>与<strong>getter</strong>方法由用户自己实现，不自动生成（当然对于<strong>readonly</strong>的属性只需提供<strong>getter</strong>即可）。</li>
 </ul>
-<pre class=" language-objective-c"><code class="language-objective-c">#import "Person2.h"
+<pre class=" language-objectivec"><code class="language-objectivec"><span class="token macro property">#<span class="token directive keyword">import</span> "Person2.h"</span>
 
-@interface Person2 ()
+<span class="token keyword">@interface</span> <span class="token function">Person2</span> <span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, copy) NSString *address;
-@property (nonatomic, copy, readonly) NSString *nickName;
+<span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">)</span> NSString <span class="token operator">*</span>name<span class="token punctuation">;</span>
+<span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">)</span> NSString <span class="token operator">*</span>address<span class="token punctuation">;</span>
+<span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">,</span> readonly<span class="token punctuation">)</span> NSString <span class="token operator">*</span>nickName<span class="token punctuation">;</span>
 
-@end
+<span class="token keyword">@end</span>
 
 
-@implementation Person2
+<span class="token keyword">@implementation</span> Person2
 
-@synthesize name;
-@dynamic address;
+<span class="token keyword">@synthesize</span> name<span class="token punctuation">;</span>
+<span class="token keyword">@dynamic</span> address<span class="token punctuation">;</span>
 
-- (instancetype)init {
-    if(self = [super init]) {
+<span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>init <span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">self</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">super</span> init<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 
-        self.name = @"Jack";
-        [self setValue:@"nickName" forKey:@"nickName"];
+        <span class="token keyword">self</span><span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">@"Jack"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">[</span><span class="token keyword">self</span> setValue<span class="token punctuation">:</span><span class="token string">@"nickName"</span> forKey<span class="token punctuation">:</span><span class="token string">@"nickName"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 
-        self.address = @"Xiamen";
+        <span class="token keyword">self</span><span class="token punctuation">.</span>address <span class="token operator">=</span> <span class="token string">@"Xiamen"</span><span class="token punctuation">;</span>
 
-        NSLog(@"name: %@", self.name);
-        NSLog(@"nickName: %@", self.nickName);
-        NSLog(@"address: %@", self.address);
+        <span class="token function">NSLog</span><span class="token punctuation">(</span><span class="token string">@"name: %@"</span><span class="token punctuation">,</span> <span class="token keyword">self</span><span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span><span class="token string">@"nickName: %@"</span><span class="token punctuation">,</span> <span class="token keyword">self</span><span class="token punctuation">.</span>nickName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span><span class="token string">@"address: %@"</span><span class="token punctuation">,</span> <span class="token keyword">self</span><span class="token punctuation">.</span>address<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    }
-    return self;
-}
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token keyword">self</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-@end
+<span class="token keyword">@end</span>
 </code></pre>
 <p>例如运行上述代码时，编译器就会提示这样的错误，说明找不到<strong>address</strong>属性的<strong>setter</strong>方法，当然<strong>getter</strong>方法也是找不到的。</p>
 <blockquote>

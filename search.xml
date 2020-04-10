@@ -1,9 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2018/03/21/hello-world/</url>
-    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
+    <title>Runtime 知识点（一）OC对象的本质</title>
+    <url>/2020/03/02/runtime-zhi-shi-dian-yi/</url>
+    <content><![CDATA[<h2 id="Runtime是什么？"><a href="#Runtime是什么？" class="headerlink" title="Runtime是什么？"></a>Runtime是什么？</h2><ul>
+<li>OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行，OC的动态性就是由Runtime来支撑和实现的。</li>
+<li>Runtime是一套比较底层的纯C语言API，属于1个C语言库，包含了很多底层的C语言API。</li>
+<li>平时编写的OC代码，在程序运行过程中，其实最终会转换成Runtime的C语言代码，Runtime是OC的幕后工作者。</li>
+<li>OC需要Runtime来创建类和对象，进行消息发送和转发。</li>
+</ul>
+<blockquote>
+<p><strong>小结：</strong> <strong>OC代码具有运行时、动态特性，开发时只管写你的OC代码就行，runtime机制自动在幕后辛勤劳作着。</strong></p>
+</blockquote>
+<p><strong><em>要了解Runtime机制的原理和运用，首先我们必须先来探寻OC对象的本质，了解OC对象的相关知识</em></strong></p>
+<h2 id="OC对象的分类"><a href="#OC对象的分类" class="headerlink" title="OC对象的分类"></a>OC对象的分类</h2><p>OC对象主要可以分为三种</p>
+<ul>
+<li><strong>instance对象（实例对象）</strong></li>
+<li><strong>class对象（类对象）</strong></li>
+<li><strong>meta-class对象（元类对象）</strong></li>
+</ul>
+<p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt></p>
+<h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p>
+<pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-interface-ivars"
+    Class isa  OBJC_ISA_AVAILABILITY;
+#pragma clang diagnostic pop
+}
+</code></pre>
+<p>众所周知，OC底层是C/C++代码来实现的，我们可以通过Clang将OC文件转化为C++文件来探寻OC对象的本质。</p>
+<h4 id="Clang-是什么？"><a href="#Clang-是什么？" class="headerlink" title="Clang 是什么？"></a>Clang 是什么？</h4><p>Clang是一个C语言、C++、Objective-C、Objective-C++语言的轻量级编译器。官方介绍：<a href="http://clang.llvm.org/docs/CommandGuide/clang.html" target="_blank" rel="noopener">官方文档</a></p>
+<h4 id="使用-Xcode-Clang指令将OC代码转换为C-代码"><a href="#使用-Xcode-Clang指令将OC代码转换为C-代码" class="headerlink" title="使用 Xcode Clang指令将OC代码转换为C++代码"></a><strong>使用 Xcode Clang指令将OC代码转换为C++代码</strong></h4><p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  xxxx.m  -o  xxxx.cpp</code></p>
+<p>如果需要链接其他框架，使用-framework参数。比如-framework UIKit</p>
+<p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  -framework UIKit  xxxx.m  -o  xxxx.cpp</code></p>
+<p>如果需要支持ARC、指定运行时系统版本。比如</p>
+<p><code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc -fobjc-arc -fobjc-runtime=ios-8.0.0 main.m</code></p>
+<p>现在我们将这样一个main.m文件转换成main.cpp文件</p>
+<pre class=" language-objective-c"><code class="language-objective-c">#import <Foundation/Foundation.h>
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        NSObject *objc = [[NSObject alloc] init];
+    }
+    return 0;
+}
+</code></pre>
+<p>在main.cpp文件中可以看到这样一个结构</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct NSObject_IMPL {
+    Class isa;
+};
+</code></pre>
+<p>这就是 NSObject 对象在底层中的实现，他被转换成一个只含有一个成员变量 isa 的结构体 NSObject_IMPL。</p>
+<p>接下来对继承于NSObject的对象进行OC代码转换</p>
+<pre class=" language-objective-c"><code class="language-objective-c">@interface Animal : NSObject {
+    @public
+    int _age;
+}
+
+@end
+
+@implementation Animal
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Animal *animal = [[Animal alloc] init];
+        animal->_age = 2;
+    }
+    return 0;
+}
+
+</code></pre>
+<p>在生成的main.cpp文件中可以看到这样一个结构</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct Animal_IMPL {
+    Class isa;
+    int _age;
+};
+</code></pre>
+<blockquote>
+<p><strong>小结：</strong> <strong>可以看出instance对象在底层中实际上被转化成了存储着isa指针和其他成员变量的一个结构体</strong></p>
+</blockquote>
+<h2 id="class-的结构"><a href="#class-的结构" class="headerlink" title="class 的结构"></a>class 的结构</h2><p>在 instance 对象的结构中，我们可以看到<code>Class isa</code>这个指针，所谓的<code>Class</code>类型指代的是<code>typedef struct objc_class *Class</code>，也就是我们的class 对象，在<code>runtime.h</code>文件中我们可以查找到<code>objc_class</code>的具体结构</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct objc_class {
+    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
+
+#if !__OBJC2__
+    Class _Nullable super_class                              OBJC2_UNAVAILABLE;
+    const char * _Nonnull name                               OBJC2_UNAVAILABLE;
+    long version                                             OBJC2_UNAVAILABLE;
+    long info                                                OBJC2_UNAVAILABLE;
+    long instance_size                                       OBJC2_UNAVAILABLE;
+    struct objc_ivar_list * _Nullable ivars                  OBJC2_UNAVAILABLE;
+    struct objc_method_list * _Nullable * _Nullable methodLists                    OBJC2_UNAVAILABLE;
+    struct objc_cache * _Nonnull cache                       OBJC2_UNAVAILABLE;
+    struct objc_protocol_list * _Nullable protocols          OBJC2_UNAVAILABLE;
+#endif
+
+} OBJC2_UNAVAILABLE;
+</code></pre>
+<p>我们还可以下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码来查看<code>objc_class</code>，更为准确，在<code>objc-runtime-new.h</code>文件中，我们可以看到</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct objc_object {
+private:
+    isa_t isa;
+  ...
+}
+
+struct objc_class : objc_object {
+    // Class ISA;
+    Class superclass;
+    cache_t cache;             // formerly cache pointer and vtable
+    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags
+
+    class_rw_t *data() const {
+        return bits.data();
+    }
+    ...
+}
+
+struct class_rw_t {
+    // Be warned that Symbolication knows the layout of this structure.
+    uint32_t flags;
+    uint16_t version;
+    uint16_t witness;
+
+    const class_ro_t *ro;
+
+    method_array_t methods;
+    property_array_t properties;
+    protocol_array_t protocols;
+    ...
+}
+
+struct class_ro_t {
+    uint32_t flags;
+    uint32_t instanceStart;
+    uint32_t instanceSize;
+#ifdef __LP64__
+    uint32_t reserved;
+#endif
+
+    const uint8_t * ivarLayout;
+
+    const char * name;
+    method_list_t * baseMethodList;
+    protocol_list_t * baseProtocols;
+    const ivar_list_t * ivars;
+
+    const uint8_t * weakIvarLayout;
+    property_list_t *baseProperties;
+        ...
+}
+</code></pre>
+<p>由这些结构我们可以看出class对象底层实际上是objc_class这个结构体，继承于objc_object（根类），class对象内部主要包含了以下信息：</p>
+<ul>
+<li><strong>isa </strong> 在arm64架构之前，isa就是一个普通的指针，存储着Class、Meta-Class对象的内存地址。从arm64架构开始，对isa进行了优化，变成了一个共用体（union）结构，还使用位域来存储更多的信息。</li>
+<li><strong>superclass</strong> 指向该类的父类。</li>
+<li><strong>name</strong> 该类类名。</li>
+<li><strong>version</strong> 该类的版本信息。</li>
+<li><strong>instance_size</strong>  该类的实例对象的内存占用大小。</li>
+<li><strong>properties</strong> 该类的属性信息列表。</li>
+<li><strong>ivars </strong>该类中所有成员变量的列表，使用场景：我们在字典转换成模型的时候需要用到这个列表找到属性的名称，去取字典中的值，KVC赋值，或者直接Runtime赋值。</li>
+<li><strong>methodLists / methods</strong> 存储该类中的对象方法信息列表，类中所有对象方法的列表，使用场景：如在程序中写好方法，通过外部获取到方法名称字符串，然后通过这个字符串得到方法，从而达到外部控制App已知方法。</li>
+<li><strong>cache</strong> 主要用于缓存常用方法列表，每个类中有很多方法，即使是平时不用的方法也会在里面，假如每次运行一个方法，都要去<code>methodLists</code>遍历得到方法，这样势必会影响程序的运行效率，所以<code>cache</code>在这时候就会被用上，当我们使用这个类的方法时先判断<code>cache</code>是否为空，为空时从<code>methodLists</code>找到方法调用，并保存到<code>cache</code>中，不为空时先从<code>cache</code>中找方法，如果找不到再去<code>methodLists</code>中查找，这样提高了程序方法的运行效率。</li>
+<li><strong>protocols</strong> 该类遵从的所有协议的列表，使用场景：判断类是否遵守了某个协议。</li>
+<li><strong>class_rw_t</strong> 里面的methods、properties、protocols是二维数组，是可读可写的，包含了<strong>类</strong>的初始内容、<strong>分类</strong>的内容。</li>
+<li><strong>class_ro_t</strong> 里面的baseMethodList、baseProtocols、ivars、baseProperties是一维数组，是只读的，包含了<strong>类</strong>的初始内容。</li>
+</ul>
+<h2 id="meta-class-的结构"><a href="#meta-class-的结构" class="headerlink" title="meta-class 的结构"></a>meta-class 的结构</h2><p>meta-class是class对象的类，每个class对象都有自己的meta-class，每个类在内存中有且只有一个meta-class对象。我们可以通过将某个类传入<code>object_getClass()</code>来获取该类的meta-class，获取到的返回类型依然是Class类型，说明meta-class也是一个objc_class结构类型，meta-class对象和class对象的内存结构是一样的，meta-class是一种特殊的class，在内存中存储的信息主要包括：</p>
+<ul>
+<li><strong>isa</strong> 指向基类的meta-class。</li>
+<li><strong>superclass</strong> 指向meta-class父类。</li>
+<li><strong>methodLists / methods</strong> 存储该类中的类方法信息列表，类中所有类方法的列表。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h5 id="instance对象在内存中存储的信息包括"><a href="#instance对象在内存中存储的信息包括" class="headerlink" title="instance对象在内存中存储的信息包括"></a>instance对象在内存中存储的信息包括</h5><ol>
+<li>isa指针</li>
+<li>其他成员变量的具体值</li>
+</ol>
+<h5 id="class对象在内存中存储的信息包括"><a href="#class对象在内存中存储的信息包括" class="headerlink" title="class对象在内存中存储的信息包括"></a>class对象在内存中存储的信息包括</h5><ol>
+<li>isa指针</li>
+<li>superclass指针</li>
+<li>类的属性信息（@property），类的成员变量信息（ivar）</li>
+<li>类的对象方法信息（instance method），类的协议信息（protocol）</li>
+</ol>
+<h5 id="meta-class对象在内存中存储的信息包括"><a href="#meta-class对象在内存中存储的信息包括" class="headerlink" title="meta-class对象在内存中存储的信息包括"></a>meta-class对象在内存中存储的信息包括</h5><ol>
+<li>isa指针</li>
+<li>superclass指针</li>
+<li>类的类方法的信息（class method）</li>
+</ol>
+<h5 id="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"><a href="#这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示" class="headerlink" title="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"></a>这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示</h5><p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583162471214.jpg" alt="1583162471214"></p>
+<h5 id="isa指针的轨迹"><a href="#isa指针的轨迹" class="headerlink" title="isa指针的轨迹"></a>isa指针的轨迹</h5><ul>
+<li>instance对象的isa指向class</li>
+<li>class对象的isa指向meta-class</li>
+<li>meta-class的isa直接指向基类的meta-class (划重点)</li>
+</ul>
+<h5 id="superClass指针的轨迹"><a href="#superClass指针的轨迹" class="headerlink" title="superClass指针的轨迹"></a>superClass指针的轨迹</h5><ul>
+<li>class对象的superclass指向其父类的class对象，如果是基类的class对象，则其superclass指向nil</li>
+<li>meta-class对象的superclass指向父类的meta-class对象，如果是基类的meta-class对象，则其superclass指向基类的class对象 (划重点)</li>
+</ul>
+<h5 id="对象方法和类方法的调用"><a href="#对象方法和类方法的调用" class="headerlink" title="对象方法和类方法的调用"></a>对象方法和类方法的调用</h5><ul>
+<li>instance调用对象方法时，先通过isa找到该instance的class中查找对象方法信息，当前class中对象方法不存在时，通过superClass找到父类class再进行对象方法查找，直到superClass指向nil。</li>
+<li>class调用类方法时，先通过isa找到该class的meta-class中查找类方法信息，当前meta-class中类方法不存在时，通过superClass找到父类meta-class再进行对象方法查找，直到superClass指向nil。</li>
+</ul>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -24,10 +223,11 @@
           });
       </script>]]></content>
       <categories>
-        <category>生活感想</category>
+        <category>iOS开发</category>
       </categories>
       <tags>
-        <tag>杂谈</tag>
+        <tag>技术</tag>
+        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -247,208 +447,9 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
       </tags>
   </entry>
   <entry>
-    <title>Runtime 知识点（一）OC对象的本质</title>
-    <url>/2020/03/02/runtime-zhi-shi-dian-yi/</url>
-    <content><![CDATA[<h2 id="Runtime是什么？"><a href="#Runtime是什么？" class="headerlink" title="Runtime是什么？"></a>Runtime是什么？</h2><ul>
-<li>OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行，OC的动态性就是由Runtime来支撑和实现的。</li>
-<li>Runtime是一套比较底层的纯C语言API，属于1个C语言库，包含了很多底层的C语言API。</li>
-<li>平时编写的OC代码，在程序运行过程中，其实最终会转换成Runtime的C语言代码，Runtime是OC的幕后工作者。</li>
-<li>OC需要Runtime来创建类和对象，进行消息发送和转发。</li>
-</ul>
-<blockquote>
-<p><strong>小结：</strong> <strong>OC代码具有运行时、动态特性，开发时只管写你的OC代码就行，runtime机制自动在幕后辛勤劳作着。</strong></p>
-</blockquote>
-<p><strong><em>要了解Runtime机制的原理和运用，首先我们必须先来探寻OC对象的本质，了解OC对象的相关知识</em></strong></p>
-<h2 id="OC对象的分类"><a href="#OC对象的分类" class="headerlink" title="OC对象的分类"></a>OC对象的分类</h2><p>OC对象主要可以分为三种</p>
-<ul>
-<li><strong>instance对象（实例对象）</strong></li>
-<li><strong>class对象（类对象）</strong></li>
-<li><strong>meta-class对象（元类对象）</strong></li>
-</ul>
-<p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
-<h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p>
-<pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wobjc-interface-ivars"
-    Class isa  OBJC_ISA_AVAILABILITY;
-#pragma clang diagnostic pop
-}
-</code></pre>
-<p>众所周知，OC底层是C/C++代码来实现的，我们可以通过Clang将OC文件转化为C++文件来探寻OC对象的本质。</p>
-<h4 id="Clang-是什么？"><a href="#Clang-是什么？" class="headerlink" title="Clang 是什么？"></a>Clang 是什么？</h4><p>Clang是一个C语言、C++、Objective-C、Objective-C++语言的轻量级编译器。官方介绍：<a href="http://clang.llvm.org/docs/CommandGuide/clang.html" target="_blank" rel="noopener">官方文档</a></p>
-<h4 id="使用-Xcode-Clang指令将OC代码转换为C-代码"><a href="#使用-Xcode-Clang指令将OC代码转换为C-代码" class="headerlink" title="使用 Xcode Clang指令将OC代码转换为C++代码"></a><strong>使用 Xcode Clang指令将OC代码转换为C++代码</strong></h4><p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  xxxx.m  -o  xxxx.cpp</code></p>
-<p>如果需要链接其他框架，使用-framework参数。比如-framework UIKit</p>
-<p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  -framework UIKit  xxxx.m  -o  xxxx.cpp</code></p>
-<p>如果需要支持ARC、指定运行时系统版本。比如</p>
-<p><code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc -fobjc-arc -fobjc-runtime=ios-8.0.0 main.m</code></p>
-<p>现在我们将这样一个main.m文件转换成main.cpp文件</p>
-<pre class=" language-objective-c"><code class="language-objective-c">#import <Foundation/Foundation.h>
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        NSObject *objc = [[NSObject alloc] init];
-    }
-    return 0;
-}
-</code></pre>
-<p>在main.cpp文件中可以看到这样一个结构</p>
-<pre class=" language-objective-c"><code class="language-objective-c">struct NSObject_IMPL {
-    Class isa;
-};
-</code></pre>
-<p>这就是 NSObject 对象在底层中的实现，他被转换成一个只含有一个成员变量 isa 的结构体 NSObject_IMPL。</p>
-<p>接下来对继承于NSObject的对象进行OC代码转换</p>
-<pre class=" language-objective-c"><code class="language-objective-c">@interface Animal : NSObject {
-    @public
-    int _age;
-}
-
-@end
-
-@implementation Animal
-
-@end
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        Animal *animal = [[Animal alloc] init];
-        animal->_age = 2;
-    }
-    return 0;
-}
-
-</code></pre>
-<p>在生成的main.cpp文件中可以看到这样一个结构</p>
-<pre class=" language-objective-c"><code class="language-objective-c">struct Animal_IMPL {
-    Class isa;
-    int _age;
-};
-</code></pre>
-<blockquote>
-<p><strong>小结：</strong> <strong>可以看出instance对象在底层中实际上被转化成了存储着isa指针和其他成员变量的一个结构体</strong></p>
-</blockquote>
-<h2 id="class-的结构"><a href="#class-的结构" class="headerlink" title="class 的结构"></a>class 的结构</h2><p>在 instance 对象的结构中，我们可以看到<code>Class isa</code>这个指针，所谓的<code>Class</code>类型指代的是<code>typedef struct objc_class *Class</code>，也就是我们的class 对象，在<code>runtime.h</code>文件中我们可以查找到<code>objc_class</code>的具体结构</p>
-<pre class=" language-objective-c"><code class="language-objective-c">struct objc_class {
-    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
-
-#if !__OBJC2__
-    Class _Nullable super_class                              OBJC2_UNAVAILABLE;
-    const char * _Nonnull name                               OBJC2_UNAVAILABLE;
-    long version                                             OBJC2_UNAVAILABLE;
-    long info                                                OBJC2_UNAVAILABLE;
-    long instance_size                                       OBJC2_UNAVAILABLE;
-    struct objc_ivar_list * _Nullable ivars                  OBJC2_UNAVAILABLE;
-    struct objc_method_list * _Nullable * _Nullable methodLists                    OBJC2_UNAVAILABLE;
-    struct objc_cache * _Nonnull cache                       OBJC2_UNAVAILABLE;
-    struct objc_protocol_list * _Nullable protocols          OBJC2_UNAVAILABLE;
-#endif
-
-} OBJC2_UNAVAILABLE;
-</code></pre>
-<p>我们还可以下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码来查看<code>objc_class</code>，更为准确，在<code>objc-runtime-new.h</code>文件中，我们可以看到</p>
-<pre class=" language-objective-c"><code class="language-objective-c">struct objc_object {
-private:
-    isa_t isa;
-  ...
-}
-
-struct objc_class : objc_object {
-    // Class ISA;
-    Class superclass;
-    cache_t cache;             // formerly cache pointer and vtable
-    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags
-
-    class_rw_t *data() const {
-        return bits.data();
-    }
-    ...
-}
-
-struct class_rw_t {
-    // Be warned that Symbolication knows the layout of this structure.
-    uint32_t flags;
-    uint16_t version;
-    uint16_t witness;
-
-    const class_ro_t *ro;
-
-    method_array_t methods;
-    property_array_t properties;
-    protocol_array_t protocols;
-    ...
-}
-
-struct class_ro_t {
-    uint32_t flags;
-    uint32_t instanceStart;
-    uint32_t instanceSize;
-#ifdef __LP64__
-    uint32_t reserved;
-#endif
-
-    const uint8_t * ivarLayout;
-
-    const char * name;
-    method_list_t * baseMethodList;
-    protocol_list_t * baseProtocols;
-    const ivar_list_t * ivars;
-
-    const uint8_t * weakIvarLayout;
-    property_list_t *baseProperties;
-        ...
-}
-</code></pre>
-<p>由这些结构我们可以看出class对象底层实际上是objc_class这个结构体，继承于objc_object（根类），class对象内部主要包含了以下信息：</p>
-<ul>
-<li><strong>isa </strong> 在arm64架构之前，isa就是一个普通的指针，存储着Class、Meta-Class对象的内存地址。从arm64架构开始，对isa进行了优化，变成了一个共用体（union）结构，还使用位域来存储更多的信息。</li>
-<li><strong>superclass</strong> 指向该类的父类。</li>
-<li><strong>name</strong> 该类类名。</li>
-<li><strong>version</strong> 该类的版本信息。</li>
-<li><strong>instance_size</strong>  该类的实例对象的内存占用大小。</li>
-<li><strong>properties</strong> 该类的属性信息列表。</li>
-<li><strong>ivars </strong>该类中所有成员变量的列表，使用场景：我们在字典转换成模型的时候需要用到这个列表找到属性的名称，去取字典中的值，KVC赋值，或者直接Runtime赋值。</li>
-<li><strong>methodLists / methods</strong> 存储该类中的对象方法信息列表，类中所有对象方法的列表，使用场景：如在程序中写好方法，通过外部获取到方法名称字符串，然后通过这个字符串得到方法，从而达到外部控制App已知方法。</li>
-<li><strong>cache</strong> 主要用于缓存常用方法列表，每个类中有很多方法，即使是平时不用的方法也会在里面，假如每次运行一个方法，都要去<code>methodLists</code>遍历得到方法，这样势必会影响程序的运行效率，所以<code>cache</code>在这时候就会被用上，当我们使用这个类的方法时先判断<code>cache</code>是否为空，为空时从<code>methodLists</code>找到方法调用，并保存到<code>cache</code>中，不为空时先从<code>cache</code>中找方法，如果找不到再去<code>methodLists</code>中查找，这样提高了程序方法的运行效率。</li>
-<li><strong>protocols</strong> 该类遵从的所有协议的列表，使用场景：判断类是否遵守了某个协议。</li>
-<li><strong>class_rw_t</strong> 里面的methods、properties、protocols是二维数组，是可读可写的，包含了<strong>类</strong>的初始内容、<strong>分类</strong>的内容。</li>
-<li><strong>class_ro_t</strong> 里面的baseMethodList、baseProtocols、ivars、baseProperties是一维数组，是只读的，包含了<strong>类</strong>的初始内容。</li>
-</ul>
-<h2 id="meta-class-的结构"><a href="#meta-class-的结构" class="headerlink" title="meta-class 的结构"></a>meta-class 的结构</h2><p>meta-class是class对象的类，每个class对象都有自己的meta-class，每个类在内存中有且只有一个meta-class对象。我们可以通过将某个类传入<code>object_getClass()</code>来获取该类的meta-class，获取到的返回类型依然是Class类型，说明meta-class也是一个objc_class结构类型，meta-class对象和class对象的内存结构是一样的，meta-class是一种特殊的class，在内存中存储的信息主要包括：</p>
-<ul>
-<li><strong>isa</strong> 指向基类的meta-class。</li>
-<li><strong>superclass</strong> 指向meta-class父类。</li>
-<li><strong>methodLists / methods</strong> 存储该类中的类方法信息列表，类中所有类方法的列表。</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h5 id="instance对象在内存中存储的信息包括"><a href="#instance对象在内存中存储的信息包括" class="headerlink" title="instance对象在内存中存储的信息包括"></a>instance对象在内存中存储的信息包括</h5><ol>
-<li>isa指针</li>
-<li>其他成员变量的具体值</li>
-</ol>
-<h5 id="class对象在内存中存储的信息包括"><a href="#class对象在内存中存储的信息包括" class="headerlink" title="class对象在内存中存储的信息包括"></a>class对象在内存中存储的信息包括</h5><ol>
-<li>isa指针</li>
-<li>superclass指针</li>
-<li>类的属性信息（@property），类的成员变量信息（ivar）</li>
-<li>类的对象方法信息（instance method），类的协议信息（protocol）</li>
-</ol>
-<h5 id="meta-class对象在内存中存储的信息包括"><a href="#meta-class对象在内存中存储的信息包括" class="headerlink" title="meta-class对象在内存中存储的信息包括"></a>meta-class对象在内存中存储的信息包括</h5><ol>
-<li>isa指针</li>
-<li>superclass指针</li>
-<li>类的类方法的信息（class method）</li>
-</ol>
-<h5 id="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"><a href="#这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示" class="headerlink" title="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"></a>这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示</h5><p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583162471214.jpg" alt="1583162471214"></p>
-<h5 id="isa指针的轨迹"><a href="#isa指针的轨迹" class="headerlink" title="isa指针的轨迹"></a>isa指针的轨迹</h5><ul>
-<li>instance对象的isa指向class</li>
-<li>class对象的isa指向meta-class</li>
-<li>meta-class的isa直接指向基类的meta-class (划重点)</li>
-</ul>
-<h5 id="superClass指针的轨迹"><a href="#superClass指针的轨迹" class="headerlink" title="superClass指针的轨迹"></a>superClass指针的轨迹</h5><ul>
-<li>class对象的superclass指向其父类的class对象，如果是基类的class对象，则其superclass指向nil</li>
-<li>meta-class对象的superclass指向父类的meta-class对象，如果是基类的meta-class对象，则其superclass指向基类的class对象 (划重点)</li>
-</ul>
-<h5 id="对象方法和类方法的调用"><a href="#对象方法和类方法的调用" class="headerlink" title="对象方法和类方法的调用"></a>对象方法和类方法的调用</h5><ul>
-<li>instance调用对象方法时，先通过isa找到该instance的class中查找对象方法信息，当前class中对象方法不存在时，通过superClass找到父类class再进行对象方法查找，直到superClass指向nil。</li>
-<li>class调用类方法时，先通过isa找到该class的meta-class中查找类方法信息，当前meta-class中类方法不存在时，通过superClass找到父类meta-class再进行对象方法查找，直到superClass指向nil。</li>
-</ul>
+    <title>Hello World</title>
+    <url>/2018/03/21/hello-world/</url>
+    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -469,11 +470,10 @@ struct class_ro_t {
           });
       </script>]]></content>
       <categories>
-        <category>iOS开发</category>
+        <category>生活感想</category>
       </categories>
       <tags>
-        <tag>技术</tag>
-        <tag>iOS</tag>
+        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
@@ -737,6 +737,83 @@ $ pod search CXDatePickerView
       </tags>
   </entry>
   <entry>
+    <title>自定义NSURLProtocol实现WebView缓存以及科学上网</title>
+    <url>/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/</url>
+    <content><![CDATA[<h4 id="NSURLProtocol是什么？"><a href="#NSURLProtocol是什么？" class="headerlink" title="NSURLProtocol是什么？"></a>NSURLProtocol是什么？</h4><p>NSURLProtocol是 iOS里面的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html" target="_blank" rel="noopener">URL Loading System</a>的一部分，它是一个抽象类，不能去实例化它，只能子类化NSURLProtocol，然后在使用的时候注册子类。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/NSURLProtocol.png" alt="NSURLProtocol"></p>
+<h4 id="NSURLProtocol能做什么？"><a href="#NSURLProtocol能做什么？" class="headerlink" title="NSURLProtocol能做什么？"></a>NSURLProtocol能做什么？</h4><p>在每一个 <code>HTTP</code> 请求开始时，<code>URL Loading System</code> 会创建一个合适的 <code>NSURLProtocol</code> 对象处理对应的 URL 请求，而我们需要做的就是写一个继承自 <code>NSURLProtocol</code> 的类，并通过 <code>- registerClass:</code> 方法注册我们的协议类，然后 <code>URL Loading System</code> 就会在请求发出时使用我们创建的 <code>NSURLProtocol</code> 对象对该请求进行处理。</p>
+<p>这样，我们就可以使用 <code>NSURLProtocol</code> 来处理所有的网络请求，实现以下一些功能：</p>
+<ul>
+<li>可以拦截 UIWebView 的网络请求。</li>
+<li>重定向网络请求（可以解决 DNS 域名劫持问题）</li>
+<li>缓存网页内容</li>
+<li>自定义 Response （过滤敏感信息）</li>
+<li>全局网络请求设置</li>
+</ul>
+<p>苹果官方文档中的 <a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">CustomHTTPProtocol</a> 对自定义 <code>NSURLProtocol</code> 有了一些具体的介绍，你可以点击<a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">这里</a>下载源代码。</p>
+<p>基于官方的 Demo，我们来对 <code>NSURLProtocol</code> 做进一步的处理，使其能够对我们请求的网页内容缓存，甚至可以通过连接代理服务器来科学上网，需要提醒的是，这里的科学上网只能够在注册该 <code>NSURLProtocol</code> 的条件下实现，也就是说是 App 内部的网页可以通过代理服务器请求打开。</p>
+<p><a href="https://github.com/CXTretar/CXProxyURLProtocol">项目地址</a> </p>
+<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><ul>
+<li>在需要开启代理的时候注册 <code>CXProxyURLProtocol</code> 。</li>
+</ul>
+<pre class=" language-objective-c"><code class="language-objective-c">[CXProxyProtocolManager registerProxyURLProtocol];
+</code></pre>
+<ul>
+<li>在需要关闭代理的时候注销 <code>CXProxyURLProtocol</code> 。</li>
+</ul>
+<pre><code>[CXProxyProtocolManager unregisterProxyURLProtocol];
+</code></pre><ul>
+<li>设置拦截的请求服务类型或者代理服务器 ip 地址和端口号。</li>
+</ul>
+<pre><code>/**
+ CXProxyURLProtocol 可支持的URLSchemes
+
+ @return URLSchemes
+ */
++ (NSSet *)supportedSchemes;
+
+/**
+ 设置 CXProxyURLProtocol 可支持的URLSchemes, 默认为 [http,https]
+
+ @param supportedSchemes URLSchemes like: http https
+ */
++ (void)setSupportedSchemes:(NSSet *)supportedSchemes;
+
+/**
+ 设置代理服务器ip地址以及端口号 http/https 连接方式
+
+ @param HTTPProxyHost ip地址
+ @param HTTPProxyPort 端口号
+ */
++ (void)setHTTPProxyHost:(NSString *)HTTPProxyHost andHTTPProxyPort:(NSNumber *)HTTPProxyPort;
+</code></pre><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>iOS开发</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用 PaintCode 绘制自定义的省份地图控件</title>
     <url>/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/</url>
     <content><![CDATA[<p><a href="https://github.com/CXTretar/CXProvincesMapView">Demo链接</a></p>
@@ -903,83 +980,6 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上步骤看起来繁琐，实际上操作起来并不是很复杂，主要的代码部分 PaintCode 已经为我们生成好了，可以在有 svg 图片的前提下生成任意的地图区域控件，<code>CXProvincesMapView</code> 中国省份地图区域的控件也是这样子生成的。假如你不需要文字或者图钉部分，你可以不用另外绘制文字或者图钉，相对应的数组传入空值就行了。</p>
 <p>完结散花(<em>^▽^</em>)，希望这篇教程对你有帮助！</p>
 <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>]]></content>
-      <categories>
-        <category>iOS开发</category>
-      </categories>
-      <tags>
-        <tag>技术</tag>
-        <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>自定义NSURLProtocol实现WebView缓存以及科学上网</title>
-    <url>/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/</url>
-    <content><![CDATA[<h4 id="NSURLProtocol是什么？"><a href="#NSURLProtocol是什么？" class="headerlink" title="NSURLProtocol是什么？"></a>NSURLProtocol是什么？</h4><p>NSURLProtocol是 iOS里面的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html" target="_blank" rel="noopener">URL Loading System</a>的一部分，它是一个抽象类，不能去实例化它，只能子类化NSURLProtocol，然后在使用的时候注册子类。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/NSURLProtocol.png" alt="NSURLProtocol"></p>
-<h4 id="NSURLProtocol能做什么？"><a href="#NSURLProtocol能做什么？" class="headerlink" title="NSURLProtocol能做什么？"></a>NSURLProtocol能做什么？</h4><p>在每一个 <code>HTTP</code> 请求开始时，<code>URL Loading System</code> 会创建一个合适的 <code>NSURLProtocol</code> 对象处理对应的 URL 请求，而我们需要做的就是写一个继承自 <code>NSURLProtocol</code> 的类，并通过 <code>- registerClass:</code> 方法注册我们的协议类，然后 <code>URL Loading System</code> 就会在请求发出时使用我们创建的 <code>NSURLProtocol</code> 对象对该请求进行处理。</p>
-<p>这样，我们就可以使用 <code>NSURLProtocol</code> 来处理所有的网络请求，实现以下一些功能：</p>
-<ul>
-<li>可以拦截 UIWebView 的网络请求。</li>
-<li>重定向网络请求（可以解决 DNS 域名劫持问题）</li>
-<li>缓存网页内容</li>
-<li>自定义 Response （过滤敏感信息）</li>
-<li>全局网络请求设置</li>
-</ul>
-<p>苹果官方文档中的 <a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">CustomHTTPProtocol</a> 对自定义 <code>NSURLProtocol</code> 有了一些具体的介绍，你可以点击<a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">这里</a>下载源代码。</p>
-<p>基于官方的 Demo，我们来对 <code>NSURLProtocol</code> 做进一步的处理，使其能够对我们请求的网页内容缓存，甚至可以通过连接代理服务器来科学上网，需要提醒的是，这里的科学上网只能够在注册该 <code>NSURLProtocol</code> 的条件下实现，也就是说是 App 内部的网页可以通过代理服务器请求打开。</p>
-<p><a href="https://github.com/CXTretar/CXProxyURLProtocol">项目地址</a> </p>
-<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><ul>
-<li>在需要开启代理的时候注册 <code>CXProxyURLProtocol</code> 。</li>
-</ul>
-<pre class=" language-objective-c"><code class="language-objective-c">[CXProxyProtocolManager registerProxyURLProtocol];
-</code></pre>
-<ul>
-<li>在需要关闭代理的时候注销 <code>CXProxyURLProtocol</code> 。</li>
-</ul>
-<pre><code>[CXProxyProtocolManager unregisterProxyURLProtocol];
-</code></pre><ul>
-<li>设置拦截的请求服务类型或者代理服务器 ip 地址和端口号。</li>
-</ul>
-<pre><code>/**
- CXProxyURLProtocol 可支持的URLSchemes
-
- @return URLSchemes
- */
-+ (NSSet *)supportedSchemes;
-
-/**
- 设置 CXProxyURLProtocol 可支持的URLSchemes, 默认为 [http,https]
-
- @param supportedSchemes URLSchemes like: http https
- */
-+ (void)setSupportedSchemes:(NSSet *)supportedSchemes;
-
-/**
- 设置代理服务器ip地址以及端口号 http/https 连接方式
-
- @param HTTPProxyHost ip地址
- @param HTTPProxyPort 端口号
- */
-+ (void)setHTTPProxyHost:(NSString *)HTTPProxyHost andHTTPProxyPort:(NSNumber *)HTTPProxyPort;
-</code></pre><script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
             if (!el.dataset.src) { return; }

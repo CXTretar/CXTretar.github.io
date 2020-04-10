@@ -478,7 +478,7 @@
 <li><strong>meta-class对象（元类对象）</strong></li>
 </ul>
 <p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
-<p><img src="/misscxuan/CXTretar_Blog/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
+<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
 <h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p>
 <pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {
 #pragma clang diagnostic push
@@ -647,7 +647,7 @@ struct class_ro_t {
 <li>superclass指针</li>
 <li>类的类方法的信息（class method）</li>
 </ol>
-<h5 id="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"><a href="#这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示" class="headerlink" title="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"></a>这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示</h5><p><img src="/misscxuan/CXTretar_Blog/2020/03/02/runtime-zhi-shi-dian-yi/1583162471214.jpg" alt="1583162471214"></p>
+<h5 id="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"><a href="#这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示" class="headerlink" title="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"></a>这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示</h5><p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583162471214.jpg" alt="1583162471214"></p>
 <h5 id="isa指针的轨迹"><a href="#isa指针的轨迹" class="headerlink" title="isa指针的轨迹"></a>isa指针的轨迹</h5><ul>
 <li>instance对象的isa指向class</li>
 <li>class对象的isa指向meta-class</li>
@@ -694,7 +694,7 @@ struct class_ro_t {
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://gitee.com/misscxuan/CXTretar_Blog" rel="external nofollow noreferrer">CXTretar</a>
+                    <a href="https://github.com/CXTretar/CXTretar.github.io" rel="external nofollow noreferrer">CXTretar</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -704,7 +704,7 @@ struct class_ro_t {
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://gitee.com/misscxuan/CXTretar_Blog/2020/03/02/runtime-zhi-shi-dian-yi/">https://gitee.com/misscxuan/CXTretar_Blog/2020/03/02/runtime-zhi-shi-dian-yi/</a>
+                    <a href="https://github.com/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/">https://github.com/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -717,7 +717,7 @@ struct class_ro_t {
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="https://gitee.com/misscxuan/CXTretar_Blog" target="_blank">CXTretar</a>
+                    <a href="https://github.com/CXTretar/CXTretar.github.io" target="_blank">CXTretar</a>
                     !
                 </span>
             </div>
@@ -1034,7 +1034,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
         <div class="col s12 m8 l8 copy-right">
             Copyright&nbsp;&copy;
             <span id="year">2016</span>
-            <a href="https://gitee.com/misscxuan/CXTretar_Blog" target="_blank">CXTretar</a>
+            <a href="https://github.com/CXTretar/CXTretar.github.io" target="_blank">CXTretar</a>
             |&nbsp;Powered by&nbsp;<a href="https://github.com/CXTretar" target="_blank">CXTretar</a>
             |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
             <br>

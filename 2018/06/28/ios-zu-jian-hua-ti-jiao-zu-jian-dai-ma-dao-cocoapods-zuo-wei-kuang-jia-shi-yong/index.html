@@ -462,7 +462,7 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>使用CocoaPods非常高效地将一些第三方类库导入到我们的项目中，给我们的开发带来了极大的便利，作为一个iOS开发者，大家肯定有自己封装的一些小组件，假如能让自己封装的组件支持pod集成，就能提供给其他开发者使用，岂不美哉。接下来将用一个Demo来演示组件化操作流程以及注意事项。</p>
-<h2 id="操作流程"><a href="#操作流程" class="headerlink" title="操作流程"></a>操作流程</h2><h3 id="1-上传项目源码"><a href="#1-上传项目源码" class="headerlink" title="1.上传项目源码"></a>1.上传项目源码</h3><p>在github上创建仓库的流程我就不累述了，首先把项目源码上传到github仓库再clone到本地，如果项目本来就在github的仓库中，直接clone到本地即可，这里以CXDatePickerView为例，<a href="https://github.com/CXTretar/CXDatePickerView" target="_blank" rel="noopener">Demo项目地址</a>。</p>
+<h2 id="操作流程"><a href="#操作流程" class="headerlink" title="操作流程"></a>操作流程</h2><h3 id="1-上传项目源码"><a href="#1-上传项目源码" class="headerlink" title="1.上传项目源码"></a>1.上传项目源码</h3><p>在github上创建仓库的流程我就不累述了，首先把项目源码上传到github仓库再clone到本地，如果项目本来就在github的仓库中，直接clone到本地即可，这里以CXDatePickerView为例，<a href="https://github.com/CXTretar/CXDatePickerView">Demo项目地址</a>。</p>
 <h3 id="2-创建项目的podspec文件"><a href="#2-创建项目的podspec文件" class="headerlink" title="2.创建项目的podspec文件"></a>2.创建项目的podspec文件</h3><p>用终端命令cd打开本地项目文件夹并执行如下命令:<br><code>$ pod spec create CXDatePickerView</code><br>这时候文件夹中就生成一个CXDatePickerView.podspec文件，可以直接用xcode打开。<br>终端命令:<br><code>open -a Xcode CXDatePickerView.podspec</code><br>刚生成的文件有很多不必要的注释，可以删除，需要保留的配置字段，可以查看<a href="http://guides.cocoapods.org/syntax/podspec.html" target="_blank" rel="noopener">http://guides.cocoapods.org/syntax/podspec.html</a>。<br>Demo中保留了以下字段：</p>
 <pre><code>Pod::Spec.new do |s|
 
@@ -565,7 +565,7 @@ $ pod search CXDatePickerView
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://gitee.com/misscxuan/CXTretar_Blog" rel="external nofollow noreferrer">CXTretar</a>
+                    <a href="https://github.com/CXTretar/CXTretar.github.io" rel="external nofollow noreferrer">CXTretar</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -575,7 +575,7 @@ $ pod search CXDatePickerView
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://gitee.com/misscxuan/CXTretar_Blog/2018/06/28/ios-zu-jian-hua-ti-jiao-zu-jian-dai-ma-dao-cocoapods-zuo-wei-kuang-jia-shi-yong/">https://gitee.com/misscxuan/CXTretar_Blog/2018/06/28/ios-zu-jian-hua-ti-jiao-zu-jian-dai-ma-dao-cocoapods-zuo-wei-kuang-jia-shi-yong/</a>
+                    <a href="https://github.com/CXTretar/CXTretar.github.io/2018/06/28/ios-zu-jian-hua-ti-jiao-zu-jian-dai-ma-dao-cocoapods-zuo-wei-kuang-jia-shi-yong/">https://github.com/CXTretar/CXTretar.github.io/2018/06/28/ios-zu-jian-hua-ti-jiao-zu-jian-dai-ma-dao-cocoapods-zuo-wei-kuang-jia-shi-yong/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -588,7 +588,7 @@ $ pod search CXDatePickerView
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="https://gitee.com/misscxuan/CXTretar_Blog" target="_blank">CXTretar</a>
+                    <a href="https://github.com/CXTretar/CXTretar.github.io" target="_blank">CXTretar</a>
                     !
                 </span>
             </div>
@@ -904,7 +904,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
         <div class="col s12 m8 l8 copy-right">
             Copyright&nbsp;&copy;
             <span id="year">2016</span>
-            <a href="https://gitee.com/misscxuan/CXTretar_Blog" target="_blank">CXTretar</a>
+            <a href="https://github.com/CXTretar/CXTretar.github.io" target="_blank">CXTretar</a>
             |&nbsp;Powered by&nbsp;<a href="https://github.com/CXTretar" target="_blank">CXTretar</a>
             |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
             <br>

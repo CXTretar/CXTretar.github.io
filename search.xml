@@ -1,208 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Runtime 知识点（一）OC对象的本质</title>
-    <url>/2020/03/02/runtime-zhi-shi-dian-yi/</url>
-    <content><![CDATA[<h2 id="Runtime是什么？"><a href="#Runtime是什么？" class="headerlink" title="Runtime是什么？"></a>Runtime是什么？</h2><ul>
-<li>OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行，OC的动态性就是由Runtime来支撑和实现的。</li>
-<li>Runtime是一套比较底层的纯C语言API，属于1个C语言库，包含了很多底层的C语言API。</li>
-<li>平时编写的OC代码，在程序运行过程中，其实最终会转换成Runtime的C语言代码，Runtime是OC的幕后工作者。</li>
-<li>OC需要Runtime来创建类和对象，进行消息发送和转发。</li>
-</ul>
-<blockquote>
-<p><strong>小结：</strong> <strong>OC代码具有运行时、动态特性，开发时只管写你的OC代码就行，runtime机制自动在幕后辛勤劳作着。</strong></p>
-</blockquote>
-<p><strong><em>要了解Runtime机制的原理和运用，首先我们必须先来探寻OC对象的本质，了解OC对象的相关知识</em></strong></p>
-<h2 id="OC对象的分类"><a href="#OC对象的分类" class="headerlink" title="OC对象的分类"></a>OC对象的分类</h2><p>OC对象主要可以分为三种</p>
-<ul>
-<li><strong>instance对象（实例对象）</strong></li>
-<li><strong>class对象（类对象）</strong></li>
-<li><strong>meta-class对象（元类对象）</strong></li>
-</ul>
-<p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
-<h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p>
-<pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wobjc-interface-ivars"
-    Class isa  OBJC_ISA_AVAILABILITY;
-#pragma clang diagnostic pop
-}
-</code></pre>
-<p>众所周知，OC底层是C/C++代码来实现的，我们可以通过Clang将OC文件转化为C++文件来探寻OC对象的本质。</p>
-<h4 id="Clang-是什么？"><a href="#Clang-是什么？" class="headerlink" title="Clang 是什么？"></a>Clang 是什么？</h4><p>Clang是一个C语言、C++、Objective-C、Objective-C++语言的轻量级编译器。官方介绍：<a href="http://clang.llvm.org/docs/CommandGuide/clang.html" target="_blank" rel="noopener">官方文档</a></p>
-<h4 id="使用-Xcode-Clang指令将OC代码转换为C-代码"><a href="#使用-Xcode-Clang指令将OC代码转换为C-代码" class="headerlink" title="使用 Xcode Clang指令将OC代码转换为C++代码"></a><strong>使用 Xcode Clang指令将OC代码转换为C++代码</strong></h4><p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  xxxx.m  -o  xxxx.cpp</code></p>
-<p>如果需要链接其他框架，使用-framework参数。比如-framework UIKit</p>
-<p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  -framework UIKit  xxxx.m  -o  xxxx.cpp</code></p>
-<p>如果需要支持ARC、指定运行时系统版本。比如</p>
-<p><code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc -fobjc-arc -fobjc-runtime=ios-8.0.0 main.m</code></p>
-<p>现在我们将这样一个main.m文件转换成main.cpp文件</p>
-<pre class=" language-objective-c"><code class="language-objective-c">#import <Foundation/Foundation.h>
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        NSObject *objc = [[NSObject alloc] init];
-    }
-    return 0;
-}
-</code></pre>
-<p>在main.cpp文件中可以看到这样一个结构</p>
-<pre class=" language-objective-c"><code class="language-objective-c">struct NSObject_IMPL {
-    Class isa;
-};
-</code></pre>
-<p>这就是 NSObject 对象在底层中的实现，他被转换成一个只含有一个成员变量 isa 的结构体 NSObject_IMPL。</p>
-<p>接下来对继承于NSObject的对象进行OC代码转换</p>
-<pre class=" language-objective-c"><code class="language-objective-c">@interface Animal : NSObject {
-    @public
-    int _age;
-}
-
-@end
-
-@implementation Animal
-
-@end
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        Animal *animal = [[Animal alloc] init];
-        animal->_age = 2;
-    }
-    return 0;
-}
-
-</code></pre>
-<p>在生成的main.cpp文件中可以看到这样一个结构</p>
-<pre class=" language-objective-c"><code class="language-objective-c">struct Animal_IMPL {
-    Class isa;
-    int _age;
-};
-</code></pre>
-<blockquote>
-<p><strong>小结：</strong> <strong>可以看出instance对象在底层中实际上被转化成了存储着isa指针和其他成员变量的一个结构体</strong></p>
-</blockquote>
-<h2 id="class-的结构"><a href="#class-的结构" class="headerlink" title="class 的结构"></a>class 的结构</h2><p>在 instance 对象的结构中，我们可以看到<code>Class isa</code>这个指针，所谓的<code>Class</code>类型指代的是<code>typedef struct objc_class *Class</code>，也就是我们的class 对象，在<code>runtime.h</code>文件中我们可以查找到<code>objc_class</code>的具体结构</p>
-<pre class=" language-objective-c"><code class="language-objective-c">struct objc_class {
-    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
-
-#if !__OBJC2__
-    Class _Nullable super_class                              OBJC2_UNAVAILABLE;
-    const char * _Nonnull name                               OBJC2_UNAVAILABLE;
-    long version                                             OBJC2_UNAVAILABLE;
-    long info                                                OBJC2_UNAVAILABLE;
-    long instance_size                                       OBJC2_UNAVAILABLE;
-    struct objc_ivar_list * _Nullable ivars                  OBJC2_UNAVAILABLE;
-    struct objc_method_list * _Nullable * _Nullable methodLists                    OBJC2_UNAVAILABLE;
-    struct objc_cache * _Nonnull cache                       OBJC2_UNAVAILABLE;
-    struct objc_protocol_list * _Nullable protocols          OBJC2_UNAVAILABLE;
-#endif
-
-} OBJC2_UNAVAILABLE;
-</code></pre>
-<p>我们还可以下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码来查看<code>objc_class</code>，更为准确，在<code>objc-runtime-new.h</code>文件中，我们可以看到</p>
-<pre class=" language-objective-c"><code class="language-objective-c">struct objc_object {
-private:
-    isa_t isa;
-  ...
-}
-
-struct objc_class : objc_object {
-    // Class ISA;
-    Class superclass;
-    cache_t cache;             // formerly cache pointer and vtable
-    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags
-
-    class_rw_t *data() const {
-        return bits.data();
-    }
-    ...
-}
-
-struct class_rw_t {
-    // Be warned that Symbolication knows the layout of this structure.
-    uint32_t flags;
-    uint16_t version;
-    uint16_t witness;
-
-    const class_ro_t *ro;
-
-    method_array_t methods;
-    property_array_t properties;
-    protocol_array_t protocols;
-    ...
-}
-
-struct class_ro_t {
-    uint32_t flags;
-    uint32_t instanceStart;
-    uint32_t instanceSize;
-#ifdef __LP64__
-    uint32_t reserved;
-#endif
-
-    const uint8_t * ivarLayout;
-
-    const char * name;
-    method_list_t * baseMethodList;
-    protocol_list_t * baseProtocols;
-    const ivar_list_t * ivars;
-
-    const uint8_t * weakIvarLayout;
-    property_list_t *baseProperties;
-        ...
-}
-</code></pre>
-<p>由这些结构我们可以看出class对象底层实际上是objc_class这个结构体，继承于objc_object（根类），class对象内部主要包含了以下信息：</p>
-<ul>
-<li><strong>isa </strong> 在arm64架构之前，isa就是一个普通的指针，存储着Class、Meta-Class对象的内存地址。从arm64架构开始，对isa进行了优化，变成了一个共用体（union）结构，还使用位域来存储更多的信息。</li>
-<li><strong>superclass</strong> 指向该类的父类。</li>
-<li><strong>name</strong> 该类类名。</li>
-<li><strong>version</strong> 该类的版本信息。</li>
-<li><strong>instance_size</strong>  该类的实例对象的内存占用大小。</li>
-<li><strong>properties</strong> 该类的属性信息列表。</li>
-<li><strong>ivars </strong>该类中所有成员变量的列表，使用场景：我们在字典转换成模型的时候需要用到这个列表找到属性的名称，去取字典中的值，KVC赋值，或者直接Runtime赋值。</li>
-<li><strong>methodLists / methods</strong> 存储该类中的对象方法信息列表，类中所有对象方法的列表，使用场景：如在程序中写好方法，通过外部获取到方法名称字符串，然后通过这个字符串得到方法，从而达到外部控制App已知方法。</li>
-<li><strong>cache</strong> 主要用于缓存常用方法列表，每个类中有很多方法，即使是平时不用的方法也会在里面，假如每次运行一个方法，都要去<code>methodLists</code>遍历得到方法，这样势必会影响程序的运行效率，所以<code>cache</code>在这时候就会被用上，当我们使用这个类的方法时先判断<code>cache</code>是否为空，为空时从<code>methodLists</code>找到方法调用，并保存到<code>cache</code>中，不为空时先从<code>cache</code>中找方法，如果找不到再去<code>methodLists</code>中查找，这样提高了程序方法的运行效率。</li>
-<li><strong>protocols</strong> 该类遵从的所有协议的列表，使用场景：判断类是否遵守了某个协议。</li>
-<li><strong>class_rw_t</strong> 里面的methods、properties、protocols是二维数组，是可读可写的，包含了<strong>类</strong>的初始内容、<strong>分类</strong>的内容。</li>
-<li><strong>class_ro_t</strong> 里面的baseMethodList、baseProtocols、ivars、baseProperties是一维数组，是只读的，包含了<strong>类</strong>的初始内容。</li>
-</ul>
-<h2 id="meta-class-的结构"><a href="#meta-class-的结构" class="headerlink" title="meta-class 的结构"></a>meta-class 的结构</h2><p>meta-class是class对象的类，每个class对象都有自己的meta-class，每个类在内存中有且只有一个meta-class对象。我们可以通过将某个类传入<code>object_getClass()</code>来获取该类的meta-class，获取到的返回类型依然是Class类型，说明meta-class也是一个objc_class结构类型，meta-class对象和class对象的内存结构是一样的，meta-class是一种特殊的class，在内存中存储的信息主要包括：</p>
-<ul>
-<li><strong>isa</strong> 指向基类的meta-class。</li>
-<li><strong>superclass</strong> 指向meta-class父类。</li>
-<li><strong>methodLists / methods</strong> 存储该类中的类方法信息列表，类中所有类方法的列表。</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h5 id="instance对象在内存中存储的信息包括"><a href="#instance对象在内存中存储的信息包括" class="headerlink" title="instance对象在内存中存储的信息包括"></a>instance对象在内存中存储的信息包括</h5><ol>
-<li>isa指针</li>
-<li>其他成员变量的具体值</li>
-</ol>
-<h5 id="class对象在内存中存储的信息包括"><a href="#class对象在内存中存储的信息包括" class="headerlink" title="class对象在内存中存储的信息包括"></a>class对象在内存中存储的信息包括</h5><ol>
-<li>isa指针</li>
-<li>superclass指针</li>
-<li>类的属性信息（@property），类的成员变量信息（ivar）</li>
-<li>类的对象方法信息（instance method），类的协议信息（protocol）</li>
-</ol>
-<h5 id="meta-class对象在内存中存储的信息包括"><a href="#meta-class对象在内存中存储的信息包括" class="headerlink" title="meta-class对象在内存中存储的信息包括"></a>meta-class对象在内存中存储的信息包括</h5><ol>
-<li>isa指针</li>
-<li>superclass指针</li>
-<li>类的类方法的信息（class method）</li>
-</ol>
-<h5 id="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"><a href="#这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示" class="headerlink" title="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"></a>这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示</h5><p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583162471214.jpg" alt="1583162471214"></p>
-<h5 id="isa指针的轨迹"><a href="#isa指针的轨迹" class="headerlink" title="isa指针的轨迹"></a>isa指针的轨迹</h5><ul>
-<li>instance对象的isa指向class</li>
-<li>class对象的isa指向meta-class</li>
-<li>meta-class的isa直接指向基类的meta-class (划重点)</li>
-</ul>
-<h5 id="superClass指针的轨迹"><a href="#superClass指针的轨迹" class="headerlink" title="superClass指针的轨迹"></a>superClass指针的轨迹</h5><ul>
-<li>class对象的superclass指向其父类的class对象，如果是基类的class对象，则其superclass指向nil</li>
-<li>meta-class对象的superclass指向父类的meta-class对象，如果是基类的meta-class对象，则其superclass指向基类的class对象 (划重点)</li>
-</ul>
-<h5 id="对象方法和类方法的调用"><a href="#对象方法和类方法的调用" class="headerlink" title="对象方法和类方法的调用"></a>对象方法和类方法的调用</h5><ul>
-<li>instance调用对象方法时，先通过isa找到该instance的class中查找对象方法信息，当前class中对象方法不存在时，通过superClass找到父类class再进行对象方法查找，直到superClass指向nil。</li>
-<li>class调用类方法时，先通过isa找到该class的meta-class中查找类方法信息，当前meta-class中类方法不存在时，通过superClass找到父类meta-class再进行对象方法查找，直到superClass指向nil。</li>
-</ul>
+    <title>Hello World</title>
+    <url>/2018/03/21/hello-world/</url>
+    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -223,11 +24,10 @@ struct class_ro_t {
           });
       </script>]]></content>
       <categories>
-        <category>iOS开发</category>
+        <category>生活感想</category>
       </categories>
       <tags>
-        <tag>技术</tag>
-        <tag>iOS</tag>
+        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
@@ -447,201 +247,208 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2018/03/21/hello-world/</url>
-    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>]]></content>
-      <categories>
-        <category>生活感想</category>
-      </categories>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用 PaintCode 绘制自定义的省份地图控件</title>
-    <url>/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/</url>
-    <content><![CDATA[<p><a href="https://github.com/CXTretar/CXProvincesMapView">Demo链接</a></p>
-<h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><h5 id="需要用到的软件-解压密码-xclient-info"><a href="#需要用到的软件-解压密码-xclient-info" class="headerlink" title="需要用到的软件 (解压密码 xclient.info)"></a>需要用到的软件 (解压密码 <strong>xclient.info</strong>)</h5><ul>
-<li><p><a href="https://pan.baidu.com/s/1qSAeNTmj3e8Jfu2klvHnTg" target="_blank" rel="noopener">Sketch</a> </p>
-<p>Sketch 是一款Mac上小巧但功能强大的矢量绘图软件，这是专为设计师而打造的矢量绘图软件，拥有简约的设计，调色板，面板，菜单，窗口，控件和功能强大的矢量绘图和文字工具；包含针对UI设计的操作和交互模式，让你设计图标、移动手机UI、网站UI等更加简单高效。</p>
-</li>
-<li><p><a href="https://pan.baidu.com/s/1FAjdUCrYVniNLksW3aY_8A" target="_blank" rel="noopener">PaintCode</a></p>
-<p>PaintCode 是一款 Mac 上的 iOS 矢量绘图编程软件，无论是程序员还是设计师，PaintCode 能够让你像在PS中画图一样绘制各种UI图形，PaintCode 会自动帮你生成针对 Mac OS X 或 iOS 平台 Objective-C 或 C# 代码，能够节约大量的编程时间，支持将代码直接导入到 Xcode 中或导出为 PSD 文件，支持最新的 iOS  和 iWatch SDK，非常的实用！</p>
-</li>
+    <title>Runtime 知识点（一）OC对象的本质</title>
+    <url>/2020/03/02/runtime-zhi-shi-dian-yi/</url>
+    <content><![CDATA[<h2 id="Runtime是什么？"><a href="#Runtime是什么？" class="headerlink" title="Runtime是什么？"></a>Runtime是什么？</h2><ul>
+<li>OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行，OC的动态性就是由Runtime来支撑和实现的。</li>
+<li>Runtime是一套比较底层的纯C语言API，属于1个C语言库，包含了很多底层的C语言API。</li>
+<li>平时编写的OC代码，在程序运行过程中，其实最终会转换成Runtime的C语言代码，Runtime是OC的幕后工作者。</li>
+<li>OC需要Runtime来创建类和对象，进行消息发送和转发。</li>
 </ul>
-<h5 id="地图-svg-文件的获取"><a href="#地图-svg-文件的获取" class="headerlink" title="地图 svg 文件的获取"></a>地图 svg 文件的获取</h5><p>推荐使用 <a href="https://www.highcharts.com.cn/mapdata" target="_blank" rel="noopener">HighChart 地图数据</a>，在这里你可以自由的选择国内的某个省份地图下载相应的 svg 文件，这里选择福建省作为一个例子。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027233307531.png" alt="image-20191027233307531"></p>
-<h4 id="使用-Sketch-对下载的-svg-文件进行再加工"><a href="#使用-Sketch-对下载的-svg-文件进行再加工" class="headerlink" title="使用 Sketch 对下载的 svg 文件进行再加工"></a>使用 Sketch 对下载的 svg 文件进行再加工</h4><p>由于通过 HighChart 地图数据下载的 svg 文件有一些 logo 文字信息的部分图层是我们开发时不需要的，而且会干扰地图的显示，所以使用 Sketch 去除这些部分。</p>
-<p>使用 Sketch 打开下载的 svg 文件，屏蔽这些无用的信息图层</p>
-<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027234921580.png" alt="image-20191027234921580"></p>
-<p>重新导出得新 svg 文件才是我们接下来要用到地图文件</p>
-<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027235144789.png" alt="image-20191027235144789"></p>
-<h4 id="使用-PaintCode-根据-svg-文件生成-Objective-C-代码"><a href="#使用-PaintCode-根据-svg-文件生成-Objective-C-代码" class="headerlink" title="使用 PaintCode 根据 svg 文件生成 Objective-C 代码"></a>使用 PaintCode 根据 svg 文件生成 Objective-C 代码</h4><p>通过 PaintCode 打开 svg 文件</p>
-<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028000249045.png" alt="image-20191028000419208"></p>
-<p>我们可以看到 PaintCode 已经自动为我们生成了 Objective-C 代码，但是这只是图块的 UIBezierPath 路径代码，我们还需要添加文字和图钉的相应位置，接下来我们通过 PaintCode 添加这些内容。</p>
+<blockquote>
+<p><strong>小结：</strong> <strong>OC代码具有运行时、动态特性，开发时只管写你的OC代码就行，runtime机制自动在幕后辛勤劳作着。</strong></p>
+</blockquote>
+<p><strong><em>要了解Runtime机制的原理和运用，首先我们必须先来探寻OC对象的本质，了解OC对象的相关知识</em></strong></p>
+<h2 id="OC对象的分类"><a href="#OC对象的分类" class="headerlink" title="OC对象的分类"></a>OC对象的分类</h2><p>OC对象主要可以分为三种</p>
 <ul>
-<li><h5 id="添加市名"><a href="#添加市名" class="headerlink" title="添加市名"></a>添加市名</h5><p>添加 Text，设置文字，调节文字位置以及字体大小为11，PaintCode 也自动生成了相应的代码。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001128976.png" alt="image-20191028001128976"></p>
-</li>
-<li><h5 id="添加图钉位置"><a href="#添加图钉位置" class="headerlink" title="添加图钉位置"></a>添加图钉位置</h5><p>添加图钉 Rect，调节 Rect 的位置，宽高都设置为20。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001948626.png" alt="image-20191028001948626"></p>
-</li>
-<li><h5 id="导出代码"><a href="#导出代码" class="headerlink" title="导出代码"></a>导出代码</h5><p>按照上面的步骤添加其他的市名和图钉位置，并且导出代码文件。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028002543468.png" alt="image-20191028002543468"></p>
-</li>
+<li><strong>instance对象（实例对象）</strong></li>
+<li><strong>class对象（类对象）</strong></li>
+<li><strong>meta-class对象（元类对象）</strong></li>
 </ul>
-<h4 id="整理代码文件"><a href="#整理代码文件" class="headerlink" title="整理代码文件"></a>整理代码文件</h4><p>PaintCode 生成的文件包含了图块，文字，图钉三项内容的绘制代码，我们需要对这三项内容进行抽取和整理，这里以福建省为例。</p>
-<pre class=" language-objective-c"><code class="language-objective-c">+ (void)drawCanvas2WithFrame: (CGRect)targetFrame resizing: (FujianResizingBehavior)resizing
-{
-    //// General Declarations
-    CGContextRef context = UIGraphicsGetCurrentContext();
+<p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
+<h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p>
+<pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-interface-ivars"
+    Class isa  OBJC_ISA_AVAILABILITY;
+#pragma clang diagnostic pop
+}
+</code></pre>
+<p>众所周知，OC底层是C/C++代码来实现的，我们可以通过Clang将OC文件转化为C++文件来探寻OC对象的本质。</p>
+<h4 id="Clang-是什么？"><a href="#Clang-是什么？" class="headerlink" title="Clang 是什么？"></a>Clang 是什么？</h4><p>Clang是一个C语言、C++、Objective-C、Objective-C++语言的轻量级编译器。官方介绍：<a href="http://clang.llvm.org/docs/CommandGuide/clang.html" target="_blank" rel="noopener">官方文档</a></p>
+<h4 id="使用-Xcode-Clang指令将OC代码转换为C-代码"><a href="#使用-Xcode-Clang指令将OC代码转换为C-代码" class="headerlink" title="使用 Xcode Clang指令将OC代码转换为C++代码"></a><strong>使用 Xcode Clang指令将OC代码转换为C++代码</strong></h4><p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  xxxx.m  -o  xxxx.cpp</code></p>
+<p>如果需要链接其他框架，使用-framework参数。比如-framework UIKit</p>
+<p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  -framework UIKit  xxxx.m  -o  xxxx.cpp</code></p>
+<p>如果需要支持ARC、指定运行时系统版本。比如</p>
+<p><code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc -fobjc-arc -fobjc-runtime=ios-8.0.0 main.m</code></p>
+<p>现在我们将这样一个main.m文件转换成main.cpp文件</p>
+<pre class=" language-objective-c"><code class="language-objective-c">#import <Foundation/Foundation.h>
 
-    //// Resize to Target Frame
-    CGContextSaveGState(context);
-    CGRect resizedFrame = FujianResizingBehaviorApply(resizing, CGRectMake(0, 0, 308, 340), targetFrame);
-    CGContextTranslateCTM(context, resizedFrame.origin.x, resizedFrame.origin.y);
-    CGContextScaleCTM(context, resizedFrame.size.width / 308, resizedFrame.size.height / 340);
-
-UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1];
-    UIColor* fillColor = [UIColor colorWithRed: 0.486 green: 0.71 blue: 0.925 alpha: 1];
-
-    //// 页面1
-    {
-        //// chart-(1)
-        {
-            //// Clipped
-            {
-                //// Group 编组 5
-                {
-                    //// Group 6
-                    {
-                        //// Bezier 形状 2 Drawing
-                        UIBezierPath* bezier2Path = [UIBezierPath bezierPath];
-                        [bezier2Path moveToPoint: CGPointMake(215.48, 200.9)];
-                        [bezier2Path addLineToPoint: CGPointMake(214.85, 200.27)];
-                        [bezier2Path addLineToPoint: CGPointMake(215.17, 199.01)];
-                        [bezier2Path addLineToPoint: CGPointMake(215.8, 199.32)];
-                        [bezier2Path addLineToPoint: CGPointMake(216.43, 198.06)];
-
-                      ......
-                        [bezier2Path closePath];
-                        [bezier2Path moveToPoint: 
-                        [bezier2Path closePath];
-                        [fillColor setFill];
-                        [bezier2Path fill];
-                        [strokeColor setStroke];
-                        bezier2Path.lineWidth = 1;
-                        bezier2Path.miterLimit = 4;
-                        [bezier2Path stroke];
-                                             }
-                         ......
-                }
-            }
-        }
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        NSObject *objc = [[NSObject alloc] init];
     }
+    return 0;
+}
+</code></pre>
+<p>在main.cpp文件中可以看到这样一个结构</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct NSObject_IMPL {
+    Class isa;
+};
+</code></pre>
+<p>这就是 NSObject 对象在底层中的实现，他被转换成一个只含有一个成员变量 isa 的结构体 NSObject_IMPL。</p>
+<p>接下来对继承于NSObject的对象进行OC代码转换</p>
+<pre class=" language-objective-c"><code class="language-objective-c">@interface Animal : NSObject {
+    @public
+    int _age;
+}
 
-                          //// Text Drawing
-    CGRect textRect = CGRectMake(128, 71, 39, 26);
-    {
-        NSString* textContent = @"南平市";
-        NSMutableParagraphStyle* textStyle = [[NSMutableParagraphStyle alloc] init];
-        textStyle.alignment = NSTextAlignmentLeft;
-        NSDictionary* textFontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 11], NSForegroundColorAttributeName: UIColor.blackColor, NSParagraphStyleAttributeName: textStyle};
+@end
 
-        CGFloat textTextHeight = [textContent boundingRectWithSize: CGSizeMake(textRect.size.width, INFINITY) options: NSStringDrawingUsesLineFragmentOrigin attributes: textFontAttributes context: nil].size.height;
-        CGContextSaveGState(context);
-        CGContextClipToRect(context, textRect);
-        [textContent drawInRect: CGRectMake(CGRectGetMinX(textRect), CGRectGetMinY(textRect) + (textRect.size.height - textTextHeight) / 2, textRect.size.width, textTextHeight) withAttributes: textFontAttributes];
-        CGContextRestoreGState(context);
+@implementation Animal
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Animal *animal = [[Animal alloc] init];
+        animal->_age = 2;
     }
-
-                         ......
-                         //// Rectangle Drawing
-    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(135, 56, 20, 20)];
-    [UIColor.grayColor setFill];
-    [rectanglePath fill];
-                                               ......
-        CGContextRestoreGState(context);
-
+    return 0;
 }
 
 </code></pre>
-<ol>
-<li><h5 id="新建一个-FujianMapPath-文件继承于-ChinaMapPath-类，这个文件用来存放整理分类后的代码"><a href="#新建一个-FujianMapPath-文件继承于-ChinaMapPath-类，这个文件用来存放整理分类后的代码" class="headerlink" title="新建一个 FujianMapPath 文件继承于 ChinaMapPath 类，这个文件用来存放整理分类后的代码"></a>新建一个 FujianMapPath 文件继承于 ChinaMapPath 类，这个文件用来存放整理分类后的代码</h5></li>
-<li><h5 id="图块部分"><a href="#图块部分" class="headerlink" title="图块部分"></a>图块部分</h5><p>我们只需要摘取 <code>UIBezierPath</code> 的路径部分代码即可，也就是每一个 <code>bezierPath</code> 在以下代码之前的路径代码(换个说法就是删除每个<code>bezierPath</code> 的以下代码)</p>
-<pre class=" language-objective-c"><code class="language-objective-c">                        [fillColor setFill];
-                        [bezier2Path fill];
-                        [strokeColor setStroke];
-                        bezier2Path.lineWidth = 1;
-                        bezier2Path.miterLimit = 4;
-                        [bezier2Path stroke];
+<p>在生成的main.cpp文件中可以看到这样一个结构</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct Animal_IMPL {
+    Class isa;
+    int _age;
+};
 </code></pre>
-<p>整理后的 <code>bezierPath</code> 放在 <code>FujianMapPath</code> 的 <code>pathArray</code> 中。</p>
-</li>
-<li><h5 id="文字部分"><a href="#文字部分" class="headerlink" title="文字部分"></a>文字部分</h5><p>我们只需要摘取每段 <code>textRect</code> 的 frame 即可，</p>
-<pre class=" language-objective-c"><code class="language-objective-c">CGRect textRect = CGRectMake(128, 71, 39, 26);
+<blockquote>
+<p><strong>小结：</strong> <strong>可以看出instance对象在底层中实际上被转化成了存储着isa指针和其他成员变量的一个结构体</strong></p>
+</blockquote>
+<h2 id="class-的结构"><a href="#class-的结构" class="headerlink" title="class 的结构"></a>class 的结构</h2><p>在 instance 对象的结构中，我们可以看到<code>Class isa</code>这个指针，所谓的<code>Class</code>类型指代的是<code>typedef struct objc_class *Class</code>，也就是我们的class 对象，在<code>runtime.h</code>文件中我们可以查找到<code>objc_class</code>的具体结构</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct objc_class {
+    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
+
+#if !__OBJC2__
+    Class _Nullable super_class                              OBJC2_UNAVAILABLE;
+    const char * _Nonnull name                               OBJC2_UNAVAILABLE;
+    long version                                             OBJC2_UNAVAILABLE;
+    long info                                                OBJC2_UNAVAILABLE;
+    long instance_size                                       OBJC2_UNAVAILABLE;
+    struct objc_ivar_list * _Nullable ivars                  OBJC2_UNAVAILABLE;
+    struct objc_method_list * _Nullable * _Nullable methodLists                    OBJC2_UNAVAILABLE;
+    struct objc_cache * _Nonnull cache                       OBJC2_UNAVAILABLE;
+    struct objc_protocol_list * _Nullable protocols          OBJC2_UNAVAILABLE;
+#endif
+
+} OBJC2_UNAVAILABLE;
 </code></pre>
-<p>整理后的 <code>textRect</code> 放在 <code>FujianMapPath</code> 的 <code>textRectArray</code> 中，使用 <code>NSValue</code>存储。文字内容需要另外存储在在 <code>FujianMapPath</code> 的 <code>textArray</code> 中。</p>
-</li>
-<li><h5 id="图钉部分"><a href="#图钉部分" class="headerlink" title="图钉部分"></a>图钉部分</h5><p>我们只需要摘取每段 <code>rectanglePath</code> 的起始点即可，</p>
-<pre class=" language-objective-c"><code class="language-objective-c">UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(135, 56, 20, 20)];
-=>  CGPointMake(135, 56)
+<p>我们还可以下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码来查看<code>objc_class</code>，更为准确，在<code>objc-runtime-new.h</code>文件中，我们可以看到</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct objc_object {
+private:
+    isa_t isa;
+  ...
+}
+
+struct objc_class : objc_object {
+    // Class ISA;
+    Class superclass;
+    cache_t cache;             // formerly cache pointer and vtable
+    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags
+
+    class_rw_t *data() const {
+        return bits.data();
+    }
+    ...
+}
+
+struct class_rw_t {
+    // Be warned that Symbolication knows the layout of this structure.
+    uint32_t flags;
+    uint16_t version;
+    uint16_t witness;
+
+    const class_ro_t *ro;
+
+    method_array_t methods;
+    property_array_t properties;
+    protocol_array_t protocols;
+    ...
+}
+
+struct class_ro_t {
+    uint32_t flags;
+    uint32_t instanceStart;
+    uint32_t instanceSize;
+#ifdef __LP64__
+    uint32_t reserved;
+#endif
+
+    const uint8_t * ivarLayout;
+
+    const char * name;
+    method_list_t * baseMethodList;
+    protocol_list_t * baseProtocols;
+    const ivar_list_t * ivars;
+
+    const uint8_t * weakIvarLayout;
+    property_list_t *baseProperties;
+        ...
+}
 </code></pre>
-<p>整理后的 <code>point</code> 放在 <code>FujianMapPath</code> 的 <code>pinPointArray</code> 中。</p>
-</li>
+<p>由这些结构我们可以看出class对象底层实际上是objc_class这个结构体，继承于objc_object（根类），class对象内部主要包含了以下信息：</p>
+<ul>
+<li><strong>isa </strong> 在arm64架构之前，isa就是一个普通的指针，存储着Class、Meta-Class对象的内存地址。从arm64架构开始，对isa进行了优化，变成了一个共用体（union）结构，还使用位域来存储更多的信息。</li>
+<li><strong>superclass</strong> 指向该类的父类。</li>
+<li><strong>name</strong> 该类类名。</li>
+<li><strong>version</strong> 该类的版本信息。</li>
+<li><strong>instance_size</strong>  该类的实例对象的内存占用大小。</li>
+<li><strong>properties</strong> 该类的属性信息列表。</li>
+<li><strong>ivars </strong>该类中所有成员变量的列表，使用场景：我们在字典转换成模型的时候需要用到这个列表找到属性的名称，去取字典中的值，KVC赋值，或者直接Runtime赋值。</li>
+<li><strong>methodLists / methods</strong> 存储该类中的对象方法信息列表，类中所有对象方法的列表，使用场景：如在程序中写好方法，通过外部获取到方法名称字符串，然后通过这个字符串得到方法，从而达到外部控制App已知方法。</li>
+<li><strong>cache</strong> 主要用于缓存常用方法列表，每个类中有很多方法，即使是平时不用的方法也会在里面，假如每次运行一个方法，都要去<code>methodLists</code>遍历得到方法，这样势必会影响程序的运行效率，所以<code>cache</code>在这时候就会被用上，当我们使用这个类的方法时先判断<code>cache</code>是否为空，为空时从<code>methodLists</code>找到方法调用，并保存到<code>cache</code>中，不为空时先从<code>cache</code>中找方法，如果找不到再去<code>methodLists</code>中查找，这样提高了程序方法的运行效率。</li>
+<li><strong>protocols</strong> 该类遵从的所有协议的列表，使用场景：判断类是否遵守了某个协议。</li>
+<li><strong>class_rw_t</strong> 里面的methods、properties、protocols是二维数组，是可读可写的，包含了<strong>类</strong>的初始内容、<strong>分类</strong>的内容。</li>
+<li><strong>class_ro_t</strong> 里面的baseMethodList、baseProtocols、ivars、baseProperties是一维数组，是只读的，包含了<strong>类</strong>的初始内容。</li>
+</ul>
+<h2 id="meta-class-的结构"><a href="#meta-class-的结构" class="headerlink" title="meta-class 的结构"></a>meta-class 的结构</h2><p>meta-class是class对象的类，每个class对象都有自己的meta-class，每个类在内存中有且只有一个meta-class对象。我们可以通过将某个类传入<code>object_getClass()</code>来获取该类的meta-class，获取到的返回类型依然是Class类型，说明meta-class也是一个objc_class结构类型，meta-class对象和class对象的内存结构是一样的，meta-class是一种特殊的class，在内存中存储的信息主要包括：</p>
+<ul>
+<li><strong>isa</strong> 指向基类的meta-class。</li>
+<li><strong>superclass</strong> 指向meta-class父类。</li>
+<li><strong>methodLists / methods</strong> 存储该类中的类方法信息列表，类中所有类方法的列表。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h5 id="instance对象在内存中存储的信息包括"><a href="#instance对象在内存中存储的信息包括" class="headerlink" title="instance对象在内存中存储的信息包括"></a>instance对象在内存中存储的信息包括</h5><ol>
+<li>isa指针</li>
+<li>其他成员变量的具体值</li>
 </ol>
-<p><strong><em>需要注意的是，我们自行绘制的文字部分和图块部分的市区顺序一般是不一致的，所以我们要根据图块顺序调换 textArray、textRectArray 和  pinPointArray 中市区的顺序</em></strong></p>
-<h4 id="使用-CXProvincesMapView-展示我们获取的代码数据"><a href="#使用-CXProvincesMapView-展示我们获取的代码数据" class="headerlink" title="使用 CXProvincesMapView 展示我们获取的代码数据"></a>使用 CXProvincesMapView 展示我们获取的代码数据</h4><pre class=" language-objective-c"><code class="language-objective-c">/// 自定义的地图快捷创建方法
-/// @param mapPath svg 绘图数据
-/// @param mapSize svg 绘图尺寸，即 svg 文件中图层的宽高
-/// @param frame   视图控件的frame
-- (instancetype)initWithMapPath:(ChinaMapPath *)mapPath andMapSize:(CGSize)mapSize andFrame:(CGRect)frame;
-</code></pre>
-<p>示例：</p>
-<pre class=" language-objective-c"><code class="language-objective-c">- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
-    // 福建省市数据
-    FujianMapPath *mapPath = [[FujianMapPath alloc] init];
-    self.chinaMapView = [[CXProvincesMapView alloc]initWithMapPath:mapPath andMapSize:CGSizeMake(308, 340) andFrame:CGRectMake(0, 0, self.view.bounds.size.width, 400)];
-    _chinaMapView.backgroundColor = [UIColor colorWithRed:230/255.0 green:1.0 blue:1.0 alpha:1.0];
-    _chinaMapView.maximumZoomScale = 5.0;
-    _chinaMapView.center = self.view.center;
-    _chinaMapView.delegate = self;
-    //    _chinaMapView.pinAnimation = NO;
-    // 直接设置图片
-    //    _chinaMapView.pinImage = [UIImage imageNamed:@"pin"];
-    // 添加按钮点击
-    UIButton *pinButton = [[UIButton alloc]initWithFrame:_chinaMapView.pinView.bounds];
-    [pinButton setImage:[UIImage imageNamed:@"pin"] forState:UIControlStateNormal];
-    [pinButton addTarget:self action:@selector(pinTest) forControlEvents:UIControlEventTouchUpInside];
-    [_chinaMapView.pinView addSubview:pinButton];
-    [self.view addSubview:_chinaMapView];
-}
-</code></pre>
-<p>效果：</p>
-<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028011542388.png" alt="image-20191028011542388"></p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上步骤看起来繁琐，实际上操作起来并不是很复杂，主要的代码部分 PaintCode 已经为我们生成好了，可以在有 svg 图片的前提下生成任意的地图区域控件，<code>CXProvincesMapView</code> 中国省份地图区域的控件也是这样子生成的。假如你不需要文字或者图钉部分，你可以不用另外绘制文字或者图钉，相对应的数组传入空值就行了。</p>
-<p>完结散花(<em>^▽^</em>)，希望这篇教程对你有帮助！</p>
+<h5 id="class对象在内存中存储的信息包括"><a href="#class对象在内存中存储的信息包括" class="headerlink" title="class对象在内存中存储的信息包括"></a>class对象在内存中存储的信息包括</h5><ol>
+<li>isa指针</li>
+<li>superclass指针</li>
+<li>类的属性信息（@property），类的成员变量信息（ivar）</li>
+<li>类的对象方法信息（instance method），类的协议信息（protocol）</li>
+</ol>
+<h5 id="meta-class对象在内存中存储的信息包括"><a href="#meta-class对象在内存中存储的信息包括" class="headerlink" title="meta-class对象在内存中存储的信息包括"></a>meta-class对象在内存中存储的信息包括</h5><ol>
+<li>isa指针</li>
+<li>superclass指针</li>
+<li>类的类方法的信息（class method）</li>
+</ol>
+<h5 id="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"><a href="#这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示" class="headerlink" title="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"></a>这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示</h5><p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583162471214.jpg" alt="1583162471214"></p>
+<h5 id="isa指针的轨迹"><a href="#isa指针的轨迹" class="headerlink" title="isa指针的轨迹"></a>isa指针的轨迹</h5><ul>
+<li>instance对象的isa指向class</li>
+<li>class对象的isa指向meta-class</li>
+<li>meta-class的isa直接指向基类的meta-class (划重点)</li>
+</ul>
+<h5 id="superClass指针的轨迹"><a href="#superClass指针的轨迹" class="headerlink" title="superClass指针的轨迹"></a>superClass指针的轨迹</h5><ul>
+<li>class对象的superclass指向其父类的class对象，如果是基类的class对象，则其superclass指向nil</li>
+<li>meta-class对象的superclass指向父类的meta-class对象，如果是基类的meta-class对象，则其superclass指向基类的class对象 (划重点)</li>
+</ul>
+<h5 id="对象方法和类方法的调用"><a href="#对象方法和类方法的调用" class="headerlink" title="对象方法和类方法的调用"></a>对象方法和类方法的调用</h5><ul>
+<li>instance调用对象方法时，先通过isa找到该instance的class中查找对象方法信息，当前class中对象方法不存在时，通过superClass找到父类class再进行对象方法查找，直到superClass指向nil。</li>
+<li>class调用类方法时，先通过isa找到该class的meta-class中查找类方法信息，当前meta-class中类方法不存在时，通过superClass找到父类meta-class再进行对象方法查找，直到superClass指向nil。</li>
+</ul>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -927,6 +734,199 @@ $ pod search CXDatePickerView
       </categories>
       <tags>
         <tag>技术 - iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 PaintCode 绘制自定义的省份地图控件</title>
+    <url>/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/</url>
+    <content><![CDATA[<p><a href="https://github.com/CXTretar/CXProvincesMapView">Demo链接</a></p>
+<h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><h5 id="需要用到的软件-解压密码-xclient-info"><a href="#需要用到的软件-解压密码-xclient-info" class="headerlink" title="需要用到的软件 (解压密码 xclient.info)"></a>需要用到的软件 (解压密码 <strong>xclient.info</strong>)</h5><ul>
+<li><p><a href="https://pan.baidu.com/s/1qSAeNTmj3e8Jfu2klvHnTg" target="_blank" rel="noopener">Sketch</a> </p>
+<p>Sketch 是一款Mac上小巧但功能强大的矢量绘图软件，这是专为设计师而打造的矢量绘图软件，拥有简约的设计，调色板，面板，菜单，窗口，控件和功能强大的矢量绘图和文字工具；包含针对UI设计的操作和交互模式，让你设计图标、移动手机UI、网站UI等更加简单高效。</p>
+</li>
+<li><p><a href="https://pan.baidu.com/s/1FAjdUCrYVniNLksW3aY_8A" target="_blank" rel="noopener">PaintCode</a></p>
+<p>PaintCode 是一款 Mac 上的 iOS 矢量绘图编程软件，无论是程序员还是设计师，PaintCode 能够让你像在PS中画图一样绘制各种UI图形，PaintCode 会自动帮你生成针对 Mac OS X 或 iOS 平台 Objective-C 或 C# 代码，能够节约大量的编程时间，支持将代码直接导入到 Xcode 中或导出为 PSD 文件，支持最新的 iOS  和 iWatch SDK，非常的实用！</p>
+</li>
+</ul>
+<h5 id="地图-svg-文件的获取"><a href="#地图-svg-文件的获取" class="headerlink" title="地图 svg 文件的获取"></a>地图 svg 文件的获取</h5><p>推荐使用 <a href="https://www.highcharts.com.cn/mapdata" target="_blank" rel="noopener">HighChart 地图数据</a>，在这里你可以自由的选择国内的某个省份地图下载相应的 svg 文件，这里选择福建省作为一个例子。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027233307531.png" alt="image-20191027233307531"></p>
+<h4 id="使用-Sketch-对下载的-svg-文件进行再加工"><a href="#使用-Sketch-对下载的-svg-文件进行再加工" class="headerlink" title="使用 Sketch 对下载的 svg 文件进行再加工"></a>使用 Sketch 对下载的 svg 文件进行再加工</h4><p>由于通过 HighChart 地图数据下载的 svg 文件有一些 logo 文字信息的部分图层是我们开发时不需要的，而且会干扰地图的显示，所以使用 Sketch 去除这些部分。</p>
+<p>使用 Sketch 打开下载的 svg 文件，屏蔽这些无用的信息图层</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027234921580.png" alt="image-20191027234921580"></p>
+<p>重新导出得新 svg 文件才是我们接下来要用到地图文件</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027235144789.png" alt="image-20191027235144789"></p>
+<h4 id="使用-PaintCode-根据-svg-文件生成-Objective-C-代码"><a href="#使用-PaintCode-根据-svg-文件生成-Objective-C-代码" class="headerlink" title="使用 PaintCode 根据 svg 文件生成 Objective-C 代码"></a>使用 PaintCode 根据 svg 文件生成 Objective-C 代码</h4><p>通过 PaintCode 打开 svg 文件</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028000249045.png" alt="image-20191028000419208"></p>
+<p>我们可以看到 PaintCode 已经自动为我们生成了 Objective-C 代码，但是这只是图块的 UIBezierPath 路径代码，我们还需要添加文字和图钉的相应位置，接下来我们通过 PaintCode 添加这些内容。</p>
+<ul>
+<li><h5 id="添加市名"><a href="#添加市名" class="headerlink" title="添加市名"></a>添加市名</h5><p>添加 Text，设置文字，调节文字位置以及字体大小为11，PaintCode 也自动生成了相应的代码。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001128976.png" alt="image-20191028001128976"></p>
+</li>
+<li><h5 id="添加图钉位置"><a href="#添加图钉位置" class="headerlink" title="添加图钉位置"></a>添加图钉位置</h5><p>添加图钉 Rect，调节 Rect 的位置，宽高都设置为20。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001948626.png" alt="image-20191028001948626"></p>
+</li>
+<li><h5 id="导出代码"><a href="#导出代码" class="headerlink" title="导出代码"></a>导出代码</h5><p>按照上面的步骤添加其他的市名和图钉位置，并且导出代码文件。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028002543468.png" alt="image-20191028002543468"></p>
+</li>
+</ul>
+<h4 id="整理代码文件"><a href="#整理代码文件" class="headerlink" title="整理代码文件"></a>整理代码文件</h4><p>PaintCode 生成的文件包含了图块，文字，图钉三项内容的绘制代码，我们需要对这三项内容进行抽取和整理，这里以福建省为例。</p>
+<pre class=" language-objective-c"><code class="language-objective-c">+ (void)drawCanvas2WithFrame: (CGRect)targetFrame resizing: (FujianResizingBehavior)resizing
+{
+    //// General Declarations
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+    //// Resize to Target Frame
+    CGContextSaveGState(context);
+    CGRect resizedFrame = FujianResizingBehaviorApply(resizing, CGRectMake(0, 0, 308, 340), targetFrame);
+    CGContextTranslateCTM(context, resizedFrame.origin.x, resizedFrame.origin.y);
+    CGContextScaleCTM(context, resizedFrame.size.width / 308, resizedFrame.size.height / 340);
+
+UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1];
+    UIColor* fillColor = [UIColor colorWithRed: 0.486 green: 0.71 blue: 0.925 alpha: 1];
+
+    //// 页面1
+    {
+        //// chart-(1)
+        {
+            //// Clipped
+            {
+                //// Group 编组 5
+                {
+                    //// Group 6
+                    {
+                        //// Bezier 形状 2 Drawing
+                        UIBezierPath* bezier2Path = [UIBezierPath bezierPath];
+                        [bezier2Path moveToPoint: CGPointMake(215.48, 200.9)];
+                        [bezier2Path addLineToPoint: CGPointMake(214.85, 200.27)];
+                        [bezier2Path addLineToPoint: CGPointMake(215.17, 199.01)];
+                        [bezier2Path addLineToPoint: CGPointMake(215.8, 199.32)];
+                        [bezier2Path addLineToPoint: CGPointMake(216.43, 198.06)];
+
+                      ......
+                        [bezier2Path closePath];
+                        [bezier2Path moveToPoint: 
+                        [bezier2Path closePath];
+                        [fillColor setFill];
+                        [bezier2Path fill];
+                        [strokeColor setStroke];
+                        bezier2Path.lineWidth = 1;
+                        bezier2Path.miterLimit = 4;
+                        [bezier2Path stroke];
+                                             }
+                         ......
+                }
+            }
+        }
+    }
+
+                          //// Text Drawing
+    CGRect textRect = CGRectMake(128, 71, 39, 26);
+    {
+        NSString* textContent = @"南平市";
+        NSMutableParagraphStyle* textStyle = [[NSMutableParagraphStyle alloc] init];
+        textStyle.alignment = NSTextAlignmentLeft;
+        NSDictionary* textFontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 11], NSForegroundColorAttributeName: UIColor.blackColor, NSParagraphStyleAttributeName: textStyle};
+
+        CGFloat textTextHeight = [textContent boundingRectWithSize: CGSizeMake(textRect.size.width, INFINITY) options: NSStringDrawingUsesLineFragmentOrigin attributes: textFontAttributes context: nil].size.height;
+        CGContextSaveGState(context);
+        CGContextClipToRect(context, textRect);
+        [textContent drawInRect: CGRectMake(CGRectGetMinX(textRect), CGRectGetMinY(textRect) + (textRect.size.height - textTextHeight) / 2, textRect.size.width, textTextHeight) withAttributes: textFontAttributes];
+        CGContextRestoreGState(context);
+    }
+
+                         ......
+                         //// Rectangle Drawing
+    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(135, 56, 20, 20)];
+    [UIColor.grayColor setFill];
+    [rectanglePath fill];
+                                               ......
+        CGContextRestoreGState(context);
+
+}
+
+</code></pre>
+<ol>
+<li><h5 id="新建一个-FujianMapPath-文件继承于-ChinaMapPath-类，这个文件用来存放整理分类后的代码"><a href="#新建一个-FujianMapPath-文件继承于-ChinaMapPath-类，这个文件用来存放整理分类后的代码" class="headerlink" title="新建一个 FujianMapPath 文件继承于 ChinaMapPath 类，这个文件用来存放整理分类后的代码"></a>新建一个 FujianMapPath 文件继承于 ChinaMapPath 类，这个文件用来存放整理分类后的代码</h5></li>
+<li><h5 id="图块部分"><a href="#图块部分" class="headerlink" title="图块部分"></a>图块部分</h5><p>我们只需要摘取 <code>UIBezierPath</code> 的路径部分代码即可，也就是每一个 <code>bezierPath</code> 在以下代码之前的路径代码(换个说法就是删除每个<code>bezierPath</code> 的以下代码)</p>
+<pre class=" language-objective-c"><code class="language-objective-c">                        [fillColor setFill];
+                        [bezier2Path fill];
+                        [strokeColor setStroke];
+                        bezier2Path.lineWidth = 1;
+                        bezier2Path.miterLimit = 4;
+                        [bezier2Path stroke];
+</code></pre>
+<p>整理后的 <code>bezierPath</code> 放在 <code>FujianMapPath</code> 的 <code>pathArray</code> 中。</p>
+</li>
+<li><h5 id="文字部分"><a href="#文字部分" class="headerlink" title="文字部分"></a>文字部分</h5><p>我们只需要摘取每段 <code>textRect</code> 的 frame 即可，</p>
+<pre class=" language-objective-c"><code class="language-objective-c">CGRect textRect = CGRectMake(128, 71, 39, 26);
+</code></pre>
+<p>整理后的 <code>textRect</code> 放在 <code>FujianMapPath</code> 的 <code>textRectArray</code> 中，使用 <code>NSValue</code>存储。文字内容需要另外存储在在 <code>FujianMapPath</code> 的 <code>textArray</code> 中。</p>
+</li>
+<li><h5 id="图钉部分"><a href="#图钉部分" class="headerlink" title="图钉部分"></a>图钉部分</h5><p>我们只需要摘取每段 <code>rectanglePath</code> 的起始点即可，</p>
+<pre class=" language-objective-c"><code class="language-objective-c">UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(135, 56, 20, 20)];
+=>  CGPointMake(135, 56)
+</code></pre>
+<p>整理后的 <code>point</code> 放在 <code>FujianMapPath</code> 的 <code>pinPointArray</code> 中。</p>
+</li>
+</ol>
+<p><strong><em>需要注意的是，我们自行绘制的文字部分和图块部分的市区顺序一般是不一致的，所以我们要根据图块顺序调换 textArray、textRectArray 和  pinPointArray 中市区的顺序</em></strong></p>
+<h4 id="使用-CXProvincesMapView-展示我们获取的代码数据"><a href="#使用-CXProvincesMapView-展示我们获取的代码数据" class="headerlink" title="使用 CXProvincesMapView 展示我们获取的代码数据"></a>使用 CXProvincesMapView 展示我们获取的代码数据</h4><pre class=" language-objective-c"><code class="language-objective-c">/// 自定义的地图快捷创建方法
+/// @param mapPath svg 绘图数据
+/// @param mapSize svg 绘图尺寸，即 svg 文件中图层的宽高
+/// @param frame   视图控件的frame
+- (instancetype)initWithMapPath:(ChinaMapPath *)mapPath andMapSize:(CGSize)mapSize andFrame:(CGRect)frame;
+</code></pre>
+<p>示例：</p>
+<pre class=" language-objective-c"><code class="language-objective-c">- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
+    // 福建省市数据
+    FujianMapPath *mapPath = [[FujianMapPath alloc] init];
+    self.chinaMapView = [[CXProvincesMapView alloc]initWithMapPath:mapPath andMapSize:CGSizeMake(308, 340) andFrame:CGRectMake(0, 0, self.view.bounds.size.width, 400)];
+    _chinaMapView.backgroundColor = [UIColor colorWithRed:230/255.0 green:1.0 blue:1.0 alpha:1.0];
+    _chinaMapView.maximumZoomScale = 5.0;
+    _chinaMapView.center = self.view.center;
+    _chinaMapView.delegate = self;
+    //    _chinaMapView.pinAnimation = NO;
+    // 直接设置图片
+    //    _chinaMapView.pinImage = [UIImage imageNamed:@"pin"];
+    // 添加按钮点击
+    UIButton *pinButton = [[UIButton alloc]initWithFrame:_chinaMapView.pinView.bounds];
+    [pinButton setImage:[UIImage imageNamed:@"pin"] forState:UIControlStateNormal];
+    [pinButton addTarget:self action:@selector(pinTest) forControlEvents:UIControlEventTouchUpInside];
+    [_chinaMapView.pinView addSubview:pinButton];
+    [self.view addSubview:_chinaMapView];
+}
+</code></pre>
+<p>效果：</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028011542388.png" alt="image-20191028011542388"></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上步骤看起来繁琐，实际上操作起来并不是很复杂，主要的代码部分 PaintCode 已经为我们生成好了，可以在有 svg 图片的前提下生成任意的地图区域控件，<code>CXProvincesMapView</code> 中国省份地图区域的控件也是这样子生成的。假如你不需要文字或者图钉部分，你可以不用另外绘制文字或者图钉，相对应的数组传入空值就行了。</p>
+<p>完结散花(<em>^▽^</em>)，希望这篇教程对你有帮助！</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>iOS开发</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>

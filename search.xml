@@ -1,36 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2018/03/21/hello-world/</url>
-    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>]]></content>
-      <categories>
-        <category>生活感想</category>
-      </categories>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Runtime 知识点（一）OC对象的本质</title>
     <url>/2020/03/02/runtime-zhi-shi-dian-yi/</url>
     <content><![CDATA[<h2 id="Runtime是什么？"><a href="#Runtime是什么？" class="headerlink" title="Runtime是什么？"></a>Runtime是什么？</h2><ul>
@@ -52,13 +22,13 @@
 <p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
 <p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
 <h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p>
-<pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <nsobject> {
+<pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wobjc-interface-ivars"
     Class isa  OBJC_ISA_AVAILABILITY;
 #pragma clang diagnostic pop
 }
-</nsobject></code></pre>
+</code></pre>
 <p>众所周知，OC底层是C/C++代码来实现的，我们可以通过Clang将OC文件转化为C++文件来探寻OC对象的本质。</p>
 <h4 id="Clang-是什么？"><a href="#Clang-是什么？" class="headerlink" title="Clang 是什么？"></a>Clang 是什么？</h4><p>Clang是一个C语言、C++、Objective-C、Objective-C++语言的轻量级编译器。官方介绍：<a href="http://clang.llvm.org/docs/CommandGuide/clang.html" target="_blank" rel="noopener">官方文档</a></p>
 <h4 id="使用-Xcode-Clang指令将OC代码转换为C-代码"><a href="#使用-Xcode-Clang指令将OC代码转换为C-代码" class="headerlink" title="使用 Xcode Clang指令将OC代码转换为C++代码"></a><strong>使用 Xcode Clang指令将OC代码转换为C++代码</strong></h4><p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  xxxx.m  -o  xxxx.cpp</code></p>
@@ -67,7 +37,7 @@
 <p>如果需要支持ARC、指定运行时系统版本。比如</p>
 <p><code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc -fobjc-arc -fobjc-runtime=ios-8.0.0 main.m</code></p>
 <p>现在我们将这样一个main.m文件转换成main.cpp文件</p>
-<pre class=" language-objective-c"><code class="language-objective-c">#import <foundation foundation.h="">
+<pre class=" language-objective-c"><code class="language-objective-c">#import <Foundation/Foundation.h>
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
@@ -75,7 +45,7 @@ int main(int argc, const char * argv[]) {
     }
     return 0;
 }
-</foundation></code></pre>
+</code></pre>
 <p>在main.cpp文件中可以看到这样一个结构</p>
 <pre class=" language-objective-c"><code class="language-objective-c">struct NSObject_IMPL {
     Class isa;
@@ -97,7 +67,7 @@ int main(int argc, const char * argv[]) {
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         Animal *animal = [[Animal alloc] init];
-        animal-&gt;_age = 2;
+        animal->_age = 2;
     }
     return 0;
 }
@@ -362,195 +332,9 @@ $ pod search CXDatePickerView
       </tags>
   </entry>
   <entry>
-    <title>Runtime的运用（一）为Category增加关联对象</title>
-    <url>/2020/03/04/runtime-de-yun-yong-yi/</url>
-    <content><![CDATA[<h2 id="Category-的内部结构"><a href="#Category-的内部结构" class="headerlink" title="Category 的内部结构"></a>Category 的内部结构</h2><p>下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码，在<code>objc-runtime-new.h</code>文件中，我们可以看到Category的内部结构：</p>
-<pre class=" language-objective-c"><code class="language-objective-c">struct category_t {
-    const char *name;
-    classref_t cls;
-    struct method_list_t *instanceMethods;
-    struct method_list_t *classMethods;
-    struct protocol_list_t *protocols;
-    struct property_list_t *instanceProperties;
-    // Fields below this point are not always present on disk.
-    struct property_list_t *_classProperties;
-
-    method_list_t *methodsForMeta(bool isMeta) {
-        if (isMeta) return classMethods;
-        else return instanceMethods;
-    }
-
-    property_list_t *propertiesForMeta(bool isMeta, struct header_info *hi);
-
-    protocol_list_t *protocolsForMeta(bool isMeta) {
-        if (isMeta) return nullptr;
-        else return protocols;
-    }
-};
-</code></pre>
-<p>可以看到，Category内部含有<strong>method_list_t</strong>，<strong>protocol_list_t</strong>，<strong>property_list_t</strong> 这样的结构体，与原类相比唯独缺少了<strong>ivars</strong>，所以通过Category可以给类添加方法，协议，属性，但是由于分类底层结构的限制，不能添加成员变量到分类中。</p>
-<p>说到这里，有些同学可能就会问了，在我们日常使用中，添加属性不就可以直接使用变量了吗？</p>
-<p>在这里需要特别注意的是，而给Category添加属性，只是对该属性的setter/getter方法做了声明，既没有添加成员变量，也没有对setter/getter方法做实现。例如在 <strong>Person+Jump.h</strong> 中声明了一个属性 <strong>name</strong></p>
-<pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"
-
-@interface Person (Jump)
-
-@property (nonatomic, copy) NSString *name;
-
-@end
-
-@implementation Person (Jump)
-
-@end
-
-</code></pre>
-<p>实际上等价于给类添加了两个方法声明：</p>
-<pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"
-
-@interface Person (Jump)
-
-@property (nonatomic, copy) NSString *name;
-
-- (void)setName:(NSString *)name;
-- (NSString *)name;
-
-@end
-
-@implementation Person (Jump)
-
-@end
-</code></pre>
-<p>由于并没有对 <strong>name </strong>的 <strong>setter/getter </strong>方法进行实现，正常使用 <strong>person.name</strong>，会产生错误。</p>
-<blockquote>
-<p>Terminating app due to uncaught exception ‘NSInvalidArgumentException’, reason: ‘-[Person setName:]: unrecognized selector sent to instance 0x10063f5b0’</p>
-</blockquote>
-<h4 id="那么假如我们在-implementation中实现了-setter-getter-方法是不是就能实现类似于给分类添加成员变量呢？"><a href="#那么假如我们在-implementation中实现了-setter-getter-方法是不是就能实现类似于给分类添加成员变量呢？" class="headerlink" title="那么假如我们在@implementation中实现了 setter/getter 方法是不是就能实现类似于给分类添加成员变量呢？"></a>那么假如我们在@implementation中实现了 setter/getter 方法是不是就能实现类似于给分类添加成员变量呢？</h4><p><strong>答案是肯定的，但是需要注意的是在这里要明确的是我们是无法通过Category给类添加成员变量的，我们只是模拟了成员变量的调用，实际上类中的ivars并没有改变，以下介绍两种实现方式。</strong></p>
-<h2 id="通过全局变量实现"><a href="#通过全局变量实现" class="headerlink" title="通过全局变量实现"></a>通过全局变量实现</h2><p>主要实现原理是通过设置一个全局的可变字典，将该分类的地址值当做key值，来存储我们添加的变量的具体值，而分类中属性的<strong>setter/getter</strong>方法则通过该字典来赋值和取值。假如添加了多个变量，就需要设置多个可变字典，下面举个例子。</p>
-<pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"
-
-@interface Person (Test2)
-
-@property(nonatomic, copy) NSString *nickName;
-
-@property(nonatomic, assign) float weight;
-
-@end
-
-@implementation Person (Test2)
-
-NSMutableDictionary *weights;
-NSMutableDictionary *nickNames;
-
-+ (void)load {
-    weights = [NSMutableDictionary dictionary];
-    nickNames = [NSMutableDictionary dictionary];
-}
-
-- (void)setWeight:(float)weight {
-
-    NSString *key = [NSString stringWithFormat:@"%p", self];
-    weights[key] = @(weight);
-}
-
-- (float)weight {
-    NSString *key = [NSString stringWithFormat:@"%p", self];
-    return [weights[key] floatValue];
-}
-
-- (void)setNickName:(NSString *)nickName {
-    NSString *key = [NSString stringWithFormat:@"%p", self];
-    nickNames[key] = nickName;
-}
-
-- (NSString *)nickName {
-    NSString *key = [NSString stringWithFormat:@"%p", self];
-    return nickNames[key];
-}
-
-@end
-</code></pre>
-<p>在调用时，也能实现正常的赋值和取值，如下：</p>
-<pre class=" language-objective-c"><code class="language-objective-c">Person *person = [[Person alloc] init];
-person.nickName = @"NickJack";
-person.weight = 70.5;
-NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
-</code></pre>
-<p><strong>但是这样的方式存在一些弊端：</strong></p>
-<ul>
-<li><strong>线程安全风险</strong>  由于是全局字典对象，存在在多线程中对同一个字典对象进行同时读写的风险。</li>
-<li><strong>内存泄露风险</strong>  全局字典对象需要一直存放在内存中，无论是否使用该分类都会占用内存。</li>
-<li><strong>书写麻烦</strong>          每添加一个变量，就必须设置一个新的可变字典来存放，增加代码量。</li>
-</ul>
-<blockquote>
-<p><strong>小结：使用全局变量方式添加，不仅代码书写麻烦，而且存在一些使用风险，下面来看下通过关联对象如何实现。</strong></p>
-</blockquote>
-<h2 id="通过关联对象实现"><a href="#通过关联对象实现" class="headerlink" title="通过关联对象实现"></a>通过关联对象实现</h2><p>我们在开发中最常用的还是这种方式，<strong>Runtime </strong>为我们提供了动态添加属性和获得属性的方法。</p>
-<h4 id="添加关联对象"><a href="#添加关联对象" class="headerlink" title="添加关联对象"></a>添加关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">objc_setAssociatedObject(id  _Nonnull object, const void * _Nonnull key, id  _Nullable value, objc_AssociationPolicy policy)
-</code></pre>
-<p><strong>id object</strong> :  给哪个类添加关联对象，在分类一般传入 <strong>self</strong>。</p>
-<p><strong>const void * _Nonnull key</strong> :  关联对象的 <strong>key</strong> ，根据 <strong>key</strong> 设置对应关联对象的值进行存储，可以传入该关联对象对应的 <strong>getter </strong>方法地址简化代码，例如<code>@selector(name)</code>。</p>
-<p><strong>id  _Nullable value</strong>：关联对象的值，也就是 <strong>setter</strong> 方法传入的值给关联对象去存储，这里存储的必须是对象，不能是基本类型。</p>
-<p><strong>objc_AssociationPolicy policy</strong>：关联策略，关联对象以什么形式保存，具体的关联策略有以下几种，需要注意的并没有我们属性中常见的 <strong>weak</strong> 类型。</p>
-<pre class=" language-objective-c"><code class="language-objective-c">typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {
-    OBJC_ASSOCIATION_ASSIGN = 0,           /**&lt; Specifies a weak reference to the associated object. */
-    OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, /**&lt; Specifies a strong reference to the associated object. 
-                                            *   The association is not made atomically. */
-    OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   /**&lt; Specifies that the associated object is copied. 
-                                            *   The association is not made atomically. */
-    OBJC_ASSOCIATION_RETAIN = 01401,       /**&lt; Specifies a strong reference to the associated object.
-                                            *   The association is made atomically. */
-    OBJC_ASSOCIATION_COPY = 01403          /**&lt; Specifies that the associated object is copied.
-                                            *   The association is made atomically. */
-};
-</code></pre>
-<h4 id="获取关联对象"><a href="#获取关联对象" class="headerlink" title="获取关联对象"></a>获取关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">id objc_getAssociatedObject(id object, const void * key)
-</code></pre>
-<p><strong>id object</strong> : 获取某个类里面的关联对象。</p>
-<p><strong>const void * _Nonnull key</strong> : 关联对象的 <strong>key</strong> ，与 <strong>objc_setAssociatedObject</strong> 中的 <strong>key</strong> 相对应，即通过 <strong>key</strong> 值取出 <strong>value</strong>。</p>
-<h4 id="移除所有的关联对象"><a href="#移除所有的关联对象" class="headerlink" title="移除所有的关联对象"></a>移除所有的关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">void objc_removeAssociatedObjects(id object)
-</code></pre>
-<p><strong>id object</strong>：移除某个类里面的所有关联对象。</p>
-<h4 id="添加关联对象的使用示例："><a href="#添加关联对象的使用示例：" class="headerlink" title="添加关联对象的使用示例："></a>添加关联对象的使用示例：</h4><pre class=" language-objective-c"><code class="language-objective-c">#import <objc runtime.h="">
-#import "Person.h"
-
-@interface Person (Test)
-
-@property(nonatomic, copy) NSString *name;
-@property(nonatomic, assign) float height;
-
-@end
-
-@implementation Person (Test)
-
-- (void)setName:(NSString *)name {
-    objc_setAssociatedObject(self, @selector(name), name, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-- (NSString *)name {
-   return objc_getAssociatedObject(self, @selector(name));
-}
-
-- (void)setHeight:(float)height {
-    objc_setAssociatedObject(self, @selector(height), @(height), OBJC_ASSOCIATION_ASSIGN);
-}
-
-- (float)height {
-    return [objc_getAssociatedObject(self, @selector(height)) floatValue];
-}
-
-@end
-</objc></code></pre>
-<blockquote>
-<p><strong>小结：使用关联对象来添加成员变量的操作还是比较简单的，下面我们来探究下关联对象的底层实现原理。</strong></p>
-</blockquote>
-<h2 id="关联对象实现原理"><a href="#关联对象实现原理" class="headerlink" title="关联对象实现原理"></a>关联对象实现原理</h2><p>我们还可以下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a> 源码查看<code>objc-references.mm</code>来探究关联对象的底层结构，考虑到源码解读比较晦涩，我们直接来看结论。</p>
-<p><strong>实现关联对象技术的核心对象有</strong></p>
-<ul>
-<li>AssociationsManager</li>
-<li>AssociationsHashMap</li>
-<li>ObjectAssociationMap</li>
-<li>ObjcAssociation</li>
-</ul>
+    <title>Hello World</title>
+    <url>/2018/03/21/hello-world/</url>
+    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -571,10 +355,10 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
           });
       </script>]]></content>
       <categories>
-        <category>iOS开发</category>
+        <category>生活感想</category>
       </categories>
       <tags>
-        <tag>技术 - iOS - runtime</tag>
+        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
@@ -705,7 +489,7 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
 </li>
 <li><h5 id="图钉部分"><a href="#图钉部分" class="headerlink" title="图钉部分"></a>图钉部分</h5><p>我们只需要摘取每段 <code>rectanglePath</code> 的起始点即可，</p>
 <pre class=" language-objective-c"><code class="language-objective-c">UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(135, 56, 20, 20)];
-=&gt;  CGPointMake(135, 56)
+=>  CGPointMake(135, 56)
 </code></pre>
 <p>整理后的 <code>point</code> 放在 <code>FujianMapPath</code> 的 <code>pinPointArray</code> 中。</p>
 </li>
@@ -848,6 +632,222 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
       </tags>
   </entry>
   <entry>
+    <title>Runtime的运用（一）为Category增加关联对象</title>
+    <url>/2020/03/04/runtime-de-yun-yong-yi/</url>
+    <content><![CDATA[<h2 id="Category-的内部结构"><a href="#Category-的内部结构" class="headerlink" title="Category 的内部结构"></a>Category 的内部结构</h2><p>下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码，在<code>objc-runtime-new.h</code>文件中，我们可以看到Category的内部结构：</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct category_t {
+    const char *name;
+    classref_t cls;
+    struct method_list_t *instanceMethods;
+    struct method_list_t *classMethods;
+    struct protocol_list_t *protocols;
+    struct property_list_t *instanceProperties;
+    // Fields below this point are not always present on disk.
+    struct property_list_t *_classProperties;
+
+    method_list_t *methodsForMeta(bool isMeta) {
+        if (isMeta) return classMethods;
+        else return instanceMethods;
+    }
+
+    property_list_t *propertiesForMeta(bool isMeta, struct header_info *hi);
+
+    protocol_list_t *protocolsForMeta(bool isMeta) {
+        if (isMeta) return nullptr;
+        else return protocols;
+    }
+};
+</code></pre>
+<p>可以看到，Category内部含有<strong>method_list_t</strong>，<strong>protocol_list_t</strong>，<strong>property_list_t</strong> 这样的结构体，与原类相比唯独缺少了<strong>ivars</strong>，所以通过Category可以给类添加方法，协议，属性，但是由于分类底层结构的限制，不能添加成员变量到分类中。</p>
+<p>说到这里，有些同学可能就会问了，在我们日常使用中，添加属性不就可以直接使用变量了吗？</p>
+<p>在这里需要特别注意的是，而给Category添加属性，只是对该属性的setter/getter方法做了声明，既没有添加成员变量，也没有对setter/getter方法做实现。例如在 <strong>Person+Jump.h</strong> 中声明了一个属性 <strong>name</strong></p>
+<pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"
+
+@interface Person (Jump)
+
+@property (nonatomic, copy) NSString *name;
+
+@end
+
+@implementation Person (Jump)
+
+@end
+
+</code></pre>
+<p>实际上等价于给类添加了两个方法声明：</p>
+<pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"
+
+@interface Person (Jump)
+
+@property (nonatomic, copy) NSString *name;
+
+- (void)setName:(NSString *)name;
+- (NSString *)name;
+
+@end
+
+@implementation Person (Jump)
+
+@end
+</code></pre>
+<p>由于并没有对 <strong>name </strong>的 <strong>setter/getter </strong>方法进行实现，正常使用 <strong>person.name</strong>，会产生错误。</p>
+<blockquote>
+<p>Terminating app due to uncaught exception ‘NSInvalidArgumentException’, reason: ‘-[Person setName:]: unrecognized selector sent to instance 0x10063f5b0’</p>
+</blockquote>
+<h4 id="那么假如我们在-implementation中实现了-setter-getter-方法是不是就能实现类似于给分类添加成员变量呢？"><a href="#那么假如我们在-implementation中实现了-setter-getter-方法是不是就能实现类似于给分类添加成员变量呢？" class="headerlink" title="那么假如我们在@implementation中实现了 setter/getter 方法是不是就能实现类似于给分类添加成员变量呢？"></a>那么假如我们在@implementation中实现了 setter/getter 方法是不是就能实现类似于给分类添加成员变量呢？</h4><p><strong>答案是肯定的，但是需要注意的是在这里要明确的是我们是无法通过Category给类添加成员变量的，我们只是模拟了成员变量的调用，实际上类中的ivars并没有改变，以下介绍两种实现方式。</strong></p>
+<h2 id="通过全局变量实现"><a href="#通过全局变量实现" class="headerlink" title="通过全局变量实现"></a>通过全局变量实现</h2><p>主要实现原理是通过设置一个全局的可变字典，将该分类的地址值当做key值，来存储我们添加的变量的具体值，而分类中属性的<strong>setter/getter</strong>方法则通过该字典来赋值和取值。假如添加了多个变量，就需要设置多个可变字典，下面举个例子。</p>
+<pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"
+
+@interface Person (Test2)
+
+@property(nonatomic, copy) NSString *nickName;
+
+@property(nonatomic, assign) float weight;
+
+@end
+
+@implementation Person (Test2)
+
+NSMutableDictionary *weights;
+NSMutableDictionary *nickNames;
+
++ (void)load {
+    weights = [NSMutableDictionary dictionary];
+    nickNames = [NSMutableDictionary dictionary];
+}
+
+- (void)setWeight:(float)weight {
+
+    NSString *key = [NSString stringWithFormat:@"%p", self];
+    weights[key] = @(weight);
+}
+
+- (float)weight {
+    NSString *key = [NSString stringWithFormat:@"%p", self];
+    return [weights[key] floatValue];
+}
+
+- (void)setNickName:(NSString *)nickName {
+    NSString *key = [NSString stringWithFormat:@"%p", self];
+    nickNames[key] = nickName;
+}
+
+- (NSString *)nickName {
+    NSString *key = [NSString stringWithFormat:@"%p", self];
+    return nickNames[key];
+}
+
+@end
+</code></pre>
+<p>在调用时，也能实现正常的赋值和取值，如下：</p>
+<pre class=" language-objective-c"><code class="language-objective-c">Person *person = [[Person alloc] init];
+person.nickName = @"NickJack";
+person.weight = 70.5;
+NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
+</code></pre>
+<p><strong>但是这样的方式存在一些弊端：</strong></p>
+<ul>
+<li><strong>线程安全风险</strong>  由于是全局字典对象，存在在多线程中对同一个字典对象进行同时读写的风险。</li>
+<li><strong>内存泄露风险</strong>  全局字典对象需要一直存放在内存中，无论是否使用该分类都会占用内存。</li>
+<li><strong>书写麻烦</strong>          每添加一个变量，就必须设置一个新的可变字典来存放，增加代码量。</li>
+</ul>
+<blockquote>
+<p><strong>小结：使用全局变量方式添加，不仅代码书写麻烦，而且存在一些使用风险，下面来看下通过关联对象如何实现。</strong></p>
+</blockquote>
+<h2 id="通过关联对象实现"><a href="#通过关联对象实现" class="headerlink" title="通过关联对象实现"></a>通过关联对象实现</h2><p>我们在开发中最常用的还是这种方式，<strong>Runtime </strong>为我们提供了动态添加属性和获得属性的方法。</p>
+<h4 id="添加关联对象"><a href="#添加关联对象" class="headerlink" title="添加关联对象"></a>添加关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">objc_setAssociatedObject(id  _Nonnull object, const void * _Nonnull key, id  _Nullable value, objc_AssociationPolicy policy)
+</code></pre>
+<p><strong>id object</strong> :  给哪个类添加关联对象，在分类一般传入 <strong>self</strong>。</p>
+<p><strong>const void * _Nonnull key</strong> :  关联对象的 <strong>key</strong> ，根据 <strong>key</strong> 设置对应关联对象的值进行存储，可以传入该关联对象对应的 <strong>getter </strong>方法地址简化代码，例如<code>@selector(name)</code>。</p>
+<p><strong>id  _Nullable value</strong>：关联对象的值，也就是 <strong>setter</strong> 方法传入的值给关联对象去存储，这里存储的必须是对象，不能是基本类型。</p>
+<p><strong>objc_AssociationPolicy policy</strong>：关联策略，关联对象以什么形式保存，具体的关联策略有以下几种，需要注意的并没有我们属性中常见的 <strong>weak</strong> 类型。</p>
+<pre class=" language-objective-c"><code class="language-objective-c">typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {
+    OBJC_ASSOCIATION_ASSIGN = 0,           /**< Specifies a weak reference to the associated object. */
+    OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, /**< Specifies a strong reference to the associated object. 
+                                            *   The association is not made atomically. */
+    OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   /**< Specifies that the associated object is copied. 
+                                            *   The association is not made atomically. */
+    OBJC_ASSOCIATION_RETAIN = 01401,       /**< Specifies a strong reference to the associated object.
+                                            *   The association is made atomically. */
+    OBJC_ASSOCIATION_COPY = 01403          /**< Specifies that the associated object is copied.
+                                            *   The association is made atomically. */
+};
+</code></pre>
+<h4 id="获取关联对象"><a href="#获取关联对象" class="headerlink" title="获取关联对象"></a>获取关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">id objc_getAssociatedObject(id object, const void * key)
+</code></pre>
+<p><strong>id object</strong> : 获取某个类里面的关联对象。</p>
+<p><strong>const void * _Nonnull key</strong> : 关联对象的 <strong>key</strong> ，与 <strong>objc_setAssociatedObject</strong> 中的 <strong>key</strong> 相对应，即通过 <strong>key</strong> 值取出 <strong>value</strong>。</p>
+<h4 id="移除所有的关联对象"><a href="#移除所有的关联对象" class="headerlink" title="移除所有的关联对象"></a>移除所有的关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">void objc_removeAssociatedObjects(id object)
+</code></pre>
+<p><strong>id object</strong>：移除某个类里面的所有关联对象。</p>
+<h4 id="添加关联对象的使用示例："><a href="#添加关联对象的使用示例：" class="headerlink" title="添加关联对象的使用示例："></a>添加关联对象的使用示例：</h4><pre class=" language-objective-c"><code class="language-objective-c">#import <objc/runtime.h>
+#import "Person.h"
+
+@interface Person (Test)
+
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, assign) float height;
+
+@end
+
+@implementation Person (Test)
+
+- (void)setName:(NSString *)name {
+    objc_setAssociatedObject(self, @selector(name), name, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString *)name {
+   return objc_getAssociatedObject(self, @selector(name));
+}
+
+- (void)setHeight:(float)height {
+    objc_setAssociatedObject(self, @selector(height), @(height), OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (float)height {
+    return [objc_getAssociatedObject(self, @selector(height)) floatValue];
+}
+
+@end
+</code></pre>
+<blockquote>
+<p><strong>小结：使用关联对象来添加成员变量的操作还是比较简单的，下面我们来探究下关联对象的底层实现原理。</strong></p>
+</blockquote>
+<h2 id="关联对象实现原理"><a href="#关联对象实现原理" class="headerlink" title="关联对象实现原理"></a>关联对象实现原理</h2><p>我们还可以下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a> 源码查看<code>objc-references.mm</code>来探究关联对象的底层结构，考虑到源码解读比较晦涩，我们直接来看结论。</p>
+<p><strong>实现关联对象技术的核心对象有</strong></p>
+<ul>
+<li>AssociationsManager</li>
+<li>AssociationsHashMap</li>
+<li>ObjectAssociationMap</li>
+<li>ObjcAssociation</li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>iOS开发</category>
+      </categories>
+      <tags>
+        <tag>技术 - iOS - runtime</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>成员变量和属性的区别</title>
     <url>/2020/03/04/cheng-yuan-bian-liang-he-shu-xing-de-qu-bie/</url>
     <content><![CDATA[<h3 id="成员变量的使用"><a href="#成员变量的使用" class="headerlink" title="成员变量的使用"></a>成员变量的使用</h3><p>成员变量是声明在类{}中的，在类的.h 头文件和类的的.m 文件类扩展都可以对成员变量进行声明。</p>
@@ -884,7 +884,7 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
 
 - (instancetype)init {
     if (self = [super init]) {
-        self-&gt;_extensionString = @"extensionString";
+        self->_extensionString = @"extensionString";
     }
     return self;
 }

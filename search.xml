@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/2018/03/21/hello-world/</url>
+    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>生活感想</category>
+      </categories>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Runtime 知识点（一）OC对象的本质</title>
     <url>/2020/03/02/runtime-zhi-shi-dian-yi/</url>
     <content><![CDATA[<h2 id="Runtime是什么？"><a href="#Runtime是什么？" class="headerlink" title="Runtime是什么？"></a>Runtime是什么？</h2><ul>
@@ -20,7 +50,7 @@
 <li><strong>meta-class对象（元类对象）</strong></li>
 </ul>
 <p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
-<p><img src="/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
+<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
 <h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p>
 <pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {
 #pragma clang diagnostic push
@@ -189,7 +219,7 @@ struct class_ro_t {
 <li>superclass指针</li>
 <li>类的类方法的信息（class method）</li>
 </ol>
-<h5 id="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"><a href="#这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示" class="headerlink" title="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"></a>这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示</h5><p><img src="/2020/03/02/runtime-zhi-shi-dian-yi/1583162471214.jpg" alt="1583162471214"></p>
+<h5 id="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"><a href="#这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示" class="headerlink" title="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"></a>这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示</h5><p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583162471214.jpg" alt="1583162471214"></p>
 <h5 id="isa指针的轨迹"><a href="#isa指针的轨迹" class="headerlink" title="isa指针的轨迹"></a>isa指针的轨迹</h5><ul>
 <li>instance对象的isa指向class</li>
 <li>class对象的isa指向meta-class</li>
@@ -231,40 +261,10 @@ struct class_ro_t {
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2018/03/21/hello-world/</url>
-    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>]]></content>
-      <categories>
-        <category>生活感想</category>
-      </categories>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>iOS组件化-提交组件代码到cocoapods作为框架</title>
     <url>/2018/06/28/ios-zu-jian-hua-ti-jiao-zu-jian-dai-ma-dao-cocoapods-zuo-wei-kuang-jia-shi-yong/</url>
     <content><![CDATA[<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>使用CocoaPods非常高效地将一些第三方类库导入到我们的项目中，给我们的开发带来了极大的便利，作为一个iOS开发者，大家肯定有自己封装的一些小组件，假如能让自己封装的组件支持pod集成，就能提供给其他开发者使用，岂不美哉。接下来将用一个Demo来演示组件化操作流程以及注意事项。</p>
-<h2 id="操作流程"><a href="#操作流程" class="headerlink" title="操作流程"></a>操作流程</h2><h3 id="1-上传项目源码"><a href="#1-上传项目源码" class="headerlink" title="1.上传项目源码"></a>1.上传项目源码</h3><p>在github上创建仓库的流程我就不累述了，首先把项目源码上传到github仓库再clone到本地，如果项目本来就在github的仓库中，直接clone到本地即可，这里以CXDatePickerView为例，<a href="https://github.com/CXTretar/CXDatePickerView" target="_blank" rel="noopener">Demo项目地址</a>。</p>
+<h2 id="操作流程"><a href="#操作流程" class="headerlink" title="操作流程"></a>操作流程</h2><h3 id="1-上传项目源码"><a href="#1-上传项目源码" class="headerlink" title="1.上传项目源码"></a>1.上传项目源码</h3><p>在github上创建仓库的流程我就不累述了，首先把项目源码上传到github仓库再clone到本地，如果项目本来就在github的仓库中，直接clone到本地即可，这里以CXDatePickerView为例，<a href="https://github.com/CXTretar/CXDatePickerView">Demo项目地址</a>。</p>
 <h3 id="2-创建项目的podspec文件"><a href="#2-创建项目的podspec文件" class="headerlink" title="2.创建项目的podspec文件"></a>2.创建项目的podspec文件</h3><p>用终端命令cd打开本地项目文件夹并执行如下命令:<br><code>$ pod spec create CXDatePickerView</code><br>这时候文件夹中就生成一个CXDatePickerView.podspec文件，可以直接用xcode打开。<br>终端命令:<br><code>open -a Xcode CXDatePickerView.podspec</code><br>刚生成的文件有很多不必要的注释，可以删除，需要保留的配置字段，可以查看<a href="http://guides.cocoapods.org/syntax/podspec.html" target="_blank" rel="noopener">http://guides.cocoapods.org/syntax/podspec.html</a>。<br>Demo中保留了以下字段：</p>
 <pre><code>Pod::Spec.new do |s|
 
@@ -580,7 +580,7 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
   <entry>
     <title>使用 PaintCode 绘制自定义的省份地图控件</title>
     <url>/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/</url>
-    <content><![CDATA[<p><a href="https://github.com/CXTretar/CXProvincesMapView" target="_blank" rel="noopener">Demo链接</a></p>
+    <content><![CDATA[<p><a href="https://github.com/CXTretar/CXProvincesMapView">Demo链接</a></p>
 <h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><h5 id="需要用到的软件-解压密码-xclient-info"><a href="#需要用到的软件-解压密码-xclient-info" class="headerlink" title="需要用到的软件 (解压密码 xclient.info)"></a>需要用到的软件 (解压密码 <strong>xclient.info</strong>)</h5><ul>
 <li><p><a href="https://pan.baidu.com/s/1qSAeNTmj3e8Jfu2klvHnTg" target="_blank" rel="noopener">Sketch</a> </p>
 <p>Sketch 是一款Mac上小巧但功能强大的矢量绘图软件，这是专为设计师而打造的矢量绘图软件，拥有简约的设计，调色板，面板，菜单，窗口，控件和功能强大的矢量绘图和文字工具；包含针对UI设计的操作和交互模式，让你设计图标、移动手机UI、网站UI等更加简单高效。</p>
@@ -590,24 +590,24 @@ NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
 </li>
 </ul>
 <h5 id="地图-svg-文件的获取"><a href="#地图-svg-文件的获取" class="headerlink" title="地图 svg 文件的获取"></a>地图 svg 文件的获取</h5><p>推荐使用 <a href="https://www.highcharts.com.cn/mapdata" target="_blank" rel="noopener">HighChart 地图数据</a>，在这里你可以自由的选择国内的某个省份地图下载相应的 svg 文件，这里选择福建省作为一个例子。</p>
-<p><img src="/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027233307531.png" alt="image-20191027233307531"></p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027233307531.png" alt="image-20191027233307531"></p>
 <h4 id="使用-Sketch-对下载的-svg-文件进行再加工"><a href="#使用-Sketch-对下载的-svg-文件进行再加工" class="headerlink" title="使用 Sketch 对下载的 svg 文件进行再加工"></a>使用 Sketch 对下载的 svg 文件进行再加工</h4><p>由于通过 HighChart 地图数据下载的 svg 文件有一些 logo 文字信息的部分图层是我们开发时不需要的，而且会干扰地图的显示，所以使用 Sketch 去除这些部分。</p>
 <p>使用 Sketch 打开下载的 svg 文件，屏蔽这些无用的信息图层</p>
-<p><img src="/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027234921580.png" alt="image-20191027234921580"></p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027234921580.png" alt="image-20191027234921580"></p>
 <p>重新导出得新 svg 文件才是我们接下来要用到地图文件</p>
-<p><img src="/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027235144789.png" alt="image-20191027235144789"></p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027235144789.png" alt="image-20191027235144789"></p>
 <h4 id="使用-PaintCode-根据-svg-文件生成-Objective-C-代码"><a href="#使用-PaintCode-根据-svg-文件生成-Objective-C-代码" class="headerlink" title="使用 PaintCode 根据 svg 文件生成 Objective-C 代码"></a>使用 PaintCode 根据 svg 文件生成 Objective-C 代码</h4><p>通过 PaintCode 打开 svg 文件</p>
-<p><img src="/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028000249045.png" alt="image-20191028000419208"></p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028000249045.png" alt="image-20191028000419208"></p>
 <p>我们可以看到 PaintCode 已经自动为我们生成了 Objective-C 代码，但是这只是图块的 UIBezierPath 路径代码，我们还需要添加文字和图钉的相应位置，接下来我们通过 PaintCode 添加这些内容。</p>
 <ul>
 <li><h5 id="添加市名"><a href="#添加市名" class="headerlink" title="添加市名"></a>添加市名</h5><p>添加 Text，设置文字，调节文字位置以及字体大小为11，PaintCode 也自动生成了相应的代码。</p>
-<p><img src="/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001128976.png" alt="image-20191028001128976"></p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001128976.png" alt="image-20191028001128976"></p>
 </li>
 <li><h5 id="添加图钉位置"><a href="#添加图钉位置" class="headerlink" title="添加图钉位置"></a>添加图钉位置</h5><p>添加图钉 Rect，调节 Rect 的位置，宽高都设置为20。</p>
-<p><img src="/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001948626.png" alt="image-20191028001948626"></p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001948626.png" alt="image-20191028001948626"></p>
 </li>
 <li><h5 id="导出代码"><a href="#导出代码" class="headerlink" title="导出代码"></a>导出代码</h5><p>按照上面的步骤添加其他的市名和图钉位置，并且导出代码文件。</p>
-<p><img src="/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028002543468.png" alt="image-20191028002543468"></p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028002543468.png" alt="image-20191028002543468"></p>
 </li>
 </ul>
 <h4 id="整理代码文件"><a href="#整理代码文件" class="headerlink" title="整理代码文件"></a>整理代码文件</h4><p>PaintCode 生成的文件包含了图块，文字，图钉三项内容的绘制代码，我们需要对这三项内容进行抽取和整理，这里以福建省为例。</p>
@@ -740,7 +740,7 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
 }
 </code></pre>
 <p>效果：</p>
-<p><img src="/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028011542388.png" alt="image-20191028011542388"></p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028011542388.png" alt="image-20191028011542388"></p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上步骤看起来繁琐，实际上操作起来并不是很复杂，主要的代码部分 PaintCode 已经为我们生成好了，可以在有 svg 图片的前提下生成任意的地图区域控件，<code>CXProvincesMapView</code> 中国省份地图区域的控件也是这样子生成的。假如你不需要文字或者图钉部分，你可以不用另外绘制文字或者图钉，相对应的数组传入空值就行了。</p>
 <p>完结散花(<em>^▽^</em>)，希望这篇教程对你有帮助！</p>
 <script>
@@ -822,7 +822,7 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
 <li><strong>@public </strong>公开的，可以被在任何地方访问。</li>
 </ul>
 <p><strong>需要注意的是，在.h 文件中对成员变量使用修饰符是有效的，而在.m 文件类扩展都成员变量无论用何种修饰都是private，只能在自己的类内部访问。例如一个Student类继承于Person，在其内部能够读取Person类头文件中除了private之外的其他成员变量， 却不能读取到Person类扩展中定义的成员变量。</strong></p>
-<p><img src="/2020/03/04/cheng-yuan-bian-liang-he-shu-xing-de-qu-bie/20200304195639862.png" alt="20200304195639862"></p>
+<p><img src="/CXTretar/CXTretar.github.io/2020/03/04/cheng-yuan-bian-liang-he-shu-xing-de-qu-bie/20200304195639862.png" alt="20200304195639862"></p>
 <h3 id="属性的使用"><a href="#属性的使用" class="headerlink" title="属性的使用"></a>属性的使用</h3><p>在iOS 5.0之前，属性声明是oc语言的一个新的机制，在声明时要求必须声明与之对应的成员变量。属性的正常写法需要1.声明成员变量， 2.<strong>@property</strong> ，3. <strong>@synthesize</strong> 成员变量三个步骤，例如<strong>name</strong>属性的声明：</p>
 <pre class=" language-objective-c"><code class="language-objective-c">#import "Person1.h"
 
@@ -933,7 +933,7 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
     <title>自定义NSURLProtocol实现WebView缓存以及科学上网</title>
     <url>/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/</url>
     <content><![CDATA[<h4 id="NSURLProtocol是什么？"><a href="#NSURLProtocol是什么？" class="headerlink" title="NSURLProtocol是什么？"></a>NSURLProtocol是什么？</h4><p>NSURLProtocol是 iOS里面的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html" target="_blank" rel="noopener">URL Loading System</a>的一部分，它是一个抽象类，不能去实例化它，只能子类化NSURLProtocol，然后在使用的时候注册子类。</p>
-<p><img src="/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/NSURLProtocol.png" alt="NSURLProtocol"></p>
+<p><img src="/CXTretar/CXTretar.github.io/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/NSURLProtocol.png" alt="NSURLProtocol"></p>
 <h4 id="NSURLProtocol能做什么？"><a href="#NSURLProtocol能做什么？" class="headerlink" title="NSURLProtocol能做什么？"></a>NSURLProtocol能做什么？</h4><p>在每一个 <code>HTTP</code> 请求开始时，<code>URL Loading System</code> 会创建一个合适的 <code>NSURLProtocol</code> 对象处理对应的 URL 请求，而我们需要做的就是写一个继承自 <code>NSURLProtocol</code> 的类，并通过 <code>- registerClass:</code> 方法注册我们的协议类，然后 <code>URL Loading System</code> 就会在请求发出时使用我们创建的 <code>NSURLProtocol</code> 对象对该请求进行处理。</p>
 <p>这样，我们就可以使用 <code>NSURLProtocol</code> 来处理所有的网络请求，实现以下一些功能：</p>
 <ul>
@@ -945,7 +945,7 @@ UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1]
 </ul>
 <p>苹果官方文档中的 <a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">CustomHTTPProtocol</a> 对自定义 <code>NSURLProtocol</code> 有了一些具体的介绍，你可以点击<a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">这里</a>下载源代码。</p>
 <p>基于官方的 Demo，我们来对 <code>NSURLProtocol</code> 做进一步的处理，使其能够对我们请求的网页内容缓存，甚至可以通过连接代理服务器来科学上网，需要提醒的是，这里的科学上网只能够在注册该 <code>NSURLProtocol</code> 的条件下实现，也就是说是 App 内部的网页可以通过代理服务器请求打开。</p>
-<p><a href="https://github.com/CXTretar/CXProxyURLProtocol" target="_blank" rel="noopener">项目地址</a> </p>
+<p><a href="https://github.com/CXTretar/CXProxyURLProtocol">项目地址</a> </p>
 <h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><ul>
 <li>在需要开启代理的时候注册 <code>CXProxyURLProtocol</code> 。</li>
 </ul>

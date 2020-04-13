@@ -1,190 +1,1009 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-  
-    
-    <entry>
-      <title>成员变量和属性的区别</title>
-      <link href="/2020/03/04/cheng-yuan-bian-liang-he-shu-xing-de-qu-bie/"/>
-      <url>/2020/03/04/cheng-yuan-bian-liang-he-shu-xing-de-qu-bie/</url>
-      
-        <content type="html"><![CDATA[<h3 id="成员变量的使用"><a href="#成员变量的使用" class="headerlink" title="成员变量的使用"></a>成员变量的使用</h3><p>成员变量是声明在类{}中的，在类的.h 头文件和类的的.m 文件类扩展都可以对成员变量进行声明。</p><h5 id="h-文件中声明"><a href="#h-文件中声明" class="headerlink" title=".h 文件中声明"></a>.h 文件中声明</h5><pre class=" language-objectivec"><code class="language-objectivec"><span class="token keyword">@interface</span> Person <span class="token punctuation">:</span> NSObject <span class="token punctuation">{</span>    <span class="token keyword">int</span> _phone<span class="token punctuation">;</span>    NSString <span class="token operator">*</span>_nickname<span class="token punctuation">;</span><span class="token keyword">@public</span>    NSString <span class="token operator">*</span>_publicString<span class="token punctuation">;</span><span class="token keyword">@protected</span>    NSString <span class="token operator">*</span>_protectedString<span class="token punctuation">;</span><span class="token keyword">@private</span>    NSString <span class="token operator">*</span>_privateString<span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token keyword">@end</span></code></pre><h5 id="m-文件类扩展中声明"><a href="#m-文件类扩展中声明" class="headerlink" title=".m 文件类扩展中声明"></a>.m 文件类扩展中声明</h5><pre class=" language-objectivec"><code class="language-objectivec"><span class="token macro property">#<span class="token directive keyword">import</span> "Person.h"</span><span class="token keyword">@interface</span> <span class="token function">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token keyword">int</span> _phoneNum<span class="token punctuation">;</span>    NSString <span class="token operator">*</span>_address<span class="token punctuation">;</span><span class="token keyword">@public</span>    <span class="token keyword">int</span> _age<span class="token punctuation">;</span>    NSString <span class="token operator">*</span>_extensionString<span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token keyword">@end</span><span class="token keyword">@implementation</span> Person<span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>init <span class="token punctuation">{</span>    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">self</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">super</span> init<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>        <span class="token keyword">self</span><span class="token operator">-></span>_extensionString <span class="token operator">=</span> <span class="token string">@"extensionString"</span><span class="token punctuation">;</span>    <span class="token punctuation">}</span>    <span class="token keyword">return</span> <span class="token keyword">self</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token keyword">@end</span></code></pre><p>在这里对成员变量有<code>@private、@protected、@public</code>三种修饰符：</p><ul><li><strong>@private</strong> 私有的，只能在本类访问</li><li><strong>@protected</strong> 受保护的，只能在本类及其子类内部中访问，在{}声明的变量默认是<strong>@protected</strong></li><li><strong>@public </strong>公开的，可以被在任何地方访问。</li></ul><p><strong>需要注意的是，在.h 文件中对成员变量使用修饰符是有效的，而在.m 文件类扩展都成员变量无论用何种修饰都是private，只能在自己的类内部访问。例如一个Student类继承于Person，在其内部能够读取Person类头文件中除了private之外的其他成员变量， 却不能读取到Person类扩展中定义的成员变量。</strong></p><p><img src="/CXTretar/CXTretar.github.io/2020/03/04/cheng-yuan-bian-liang-he-shu-xing-de-qu-bie/20200304195639862.png" alt="20200304195639862"></p><h3 id="属性的使用"><a href="#属性的使用" class="headerlink" title="属性的使用"></a>属性的使用</h3><p>在iOS 5.0之前，属性声明是oc语言的一个新的机制，在声明时要求必须声明与之对应的成员变量。属性的正常写法需要1.声明成员变量， 2.<strong>@property</strong> ，3. <strong>@synthesize</strong> 成员变量三个步骤，例如<strong>name</strong>属性的声明：</p><pre class=" language-objectivec"><code class="language-objectivec"><span class="token macro property">#<span class="token directive keyword">import</span> "Person1.h"</span><span class="token keyword">@interface</span> <span class="token function">Person1</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">// 1.声明成员变量</span>     NSString <span class="token operator">*</span>name<span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">// 2.声明属性</span><span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">)</span> NSString <span class="token operator">*</span>name<span class="token punctuation">;</span><span class="token keyword">@end</span><span class="token keyword">@implementation</span> Person1<span class="token comment" spellcheck="true">// 3.最后在@implementation中用synthesize生成setter方法</span><span class="token keyword">@synthesize</span> name<span class="token punctuation">;</span><span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>init <span class="token punctuation">{</span>    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">self</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">super</span> init<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>        <span class="token keyword">self</span><span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">@"Jack"</span><span class="token punctuation">;</span>    <span class="token punctuation">}</span>    <span class="token keyword">return</span> <span class="token keyword">self</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token keyword">@end</span></code></pre><p>在iOS 5.0之后，苹果推出一个新机制，<strong>@property</strong>声明的属性默认会生成一个  <strong>_</strong>   类型的成员变量，同时也会生成<strong>setter/getter</strong>方法，这就是我们现行的属性声明方式，而且我们可以使用点语法来代替<strong>setter/getter</strong>方法访问属性。</p><p>我们可以看到上面代码中出现了<strong>@synthesize</strong>这样一个关键字，与之对应的是<strong>@dynamic</strong>。</p><ul><li><strong>synthesize</strong> 为编译器指令，它的作用是在编译时自动生成访问属性的<strong>setter/getter</strong>方法。假如我们在iOS 5.0之后依然在<strong>@implementation</strong> 文件中写了 <strong>@synthesize name</strong> ，那么生成对应的成员变量名便是<strong>name</strong>，而不是<strong>_name</strong>。</li><li><strong>dynamic</strong> 为编译器指令，在编译时则会告诉编译器，属性的<strong>setter</strong>与<strong>getter</strong>方法由用户自己实现，不自动生成（当然对于<strong>readonly</strong>的属性只需提供<strong>getter</strong>即可）。</li></ul><pre class=" language-objectivec"><code class="language-objectivec"><span class="token macro property">#<span class="token directive keyword">import</span> "Person2.h"</span><span class="token keyword">@interface</span> <span class="token function">Person2</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">)</span> NSString <span class="token operator">*</span>name<span class="token punctuation">;</span><span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">)</span> NSString <span class="token operator">*</span>address<span class="token punctuation">;</span><span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">,</span> readonly<span class="token punctuation">)</span> NSString <span class="token operator">*</span>nickName<span class="token punctuation">;</span><span class="token keyword">@end</span><span class="token keyword">@implementation</span> Person2<span class="token keyword">@synthesize</span> name<span class="token punctuation">;</span><span class="token keyword">@dynamic</span> address<span class="token punctuation">;</span><span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>init <span class="token punctuation">{</span>    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">self</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">super</span> init<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>        <span class="token keyword">self</span><span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">@"Jack"</span><span class="token punctuation">;</span>        <span class="token punctuation">[</span><span class="token keyword">self</span> setValue<span class="token punctuation">:</span><span class="token string">@"nickName"</span> forKey<span class="token punctuation">:</span><span class="token string">@"nickName"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>        <span class="token keyword">self</span><span class="token punctuation">.</span>address <span class="token operator">=</span> <span class="token string">@"Xiamen"</span><span class="token punctuation">;</span>        <span class="token function">NSLog</span><span class="token punctuation">(</span><span class="token string">@"name: %@"</span><span class="token punctuation">,</span> <span class="token keyword">self</span><span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token function">NSLog</span><span class="token punctuation">(</span><span class="token string">@"nickName: %@"</span><span class="token punctuation">,</span> <span class="token keyword">self</span><span class="token punctuation">.</span>nickName<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token function">NSLog</span><span class="token punctuation">(</span><span class="token string">@"address: %@"</span><span class="token punctuation">,</span> <span class="token keyword">self</span><span class="token punctuation">.</span>address<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token punctuation">}</span>    <span class="token keyword">return</span> <span class="token keyword">self</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token keyword">@end</span></code></pre><p>例如运行上述代码时，编译器就会提示这样的错误，说明找不到<strong>address</strong>属性的<strong>setter</strong>方法，当然<strong>getter</strong>方法也是找不到的。</p><blockquote><p><strong>Terminating app due to uncaught exception ‘NSInvalidArgumentException’, reason: ‘-[Person2 setAddress:]: unrecognized selector sent to instance 0x600001a2b140’</strong></p></blockquote><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul><li><strong>根据成员变量的私有性，我们可以把一些无需与外界接触的变量用成员变量的形式声明，而那些提供给外界访问的变量，我们可直接用属性的形式来声明。</strong></li><li><strong>成员变量的声明不会生成setter/getter方法，在使用时则需通过-&gt;的方式访问。</strong></li><li><strong>成员变量还可以通过@private、@protected、@public来提供不同的访问权限。</strong></li><li><strong>属性对成员变量扩充了setter/getter方法，属性默认会生成带下划线的成员变量，并且可以通过点语法来很方便的对成员变量的访问。</strong></li><li><strong>属性可以通过@synthesize或者@dynamic来决定是否自动生成setter/getter方法，@synthesize为自动生成， @dynamic为不自动生成。</strong></li></ul><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
-      
-      
+<search>
+  <entry>
+    <title>Runtime 知识点（一）OC对象的本质</title>
+    <url>/2020/03/02/runtime-zhi-shi-dian-yi/</url>
+    <content><![CDATA[<h2 id="Runtime是什么？"><a href="#Runtime是什么？" class="headerlink" title="Runtime是什么？"></a>Runtime是什么？</h2><ul>
+<li>OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行，OC的动态性就是由Runtime来支撑和实现的。</li>
+<li>Runtime是一套比较底层的纯C语言API，属于1个C语言库，包含了很多底层的C语言API。</li>
+<li>平时编写的OC代码，在程序运行过程中，其实最终会转换成Runtime的C语言代码，Runtime是OC的幕后工作者。</li>
+<li>OC需要Runtime来创建类和对象，进行消息发送和转发。</li>
+</ul>
+<blockquote>
+<p><strong>小结：</strong> <strong>OC代码具有运行时、动态特性，开发时只管写你的OC代码就行，runtime机制自动在幕后辛勤劳作着。</strong></p>
+</blockquote>
+<p><strong><em>要了解Runtime机制的原理和运用，首先我们必须先来探寻OC对象的本质，了解OC对象的相关知识</em></strong></p>
+<h2 id="OC对象的分类"><a href="#OC对象的分类" class="headerlink" title="OC对象的分类"></a>OC对象的分类</h2><p>OC对象主要可以分为三种</p>
+<ul>
+<li><strong>instance对象（实例对象）</strong></li>
+<li><strong>class对象（类对象）</strong></li>
+<li><strong>meta-class对象（元类对象）</strong></li>
+</ul>
+<p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
+<h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p>
+<pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-interface-ivars"
+    Class isa  OBJC_ISA_AVAILABILITY;
+#pragma clang diagnostic pop
+}
+</code></pre>
+<p>众所周知，OC底层是C/C++代码来实现的，我们可以通过Clang将OC文件转化为C++文件来探寻OC对象的本质。</p>
+<h4 id="Clang-是什么？"><a href="#Clang-是什么？" class="headerlink" title="Clang 是什么？"></a>Clang 是什么？</h4><p>Clang是一个C语言、C++、Objective-C、Objective-C++语言的轻量级编译器。官方介绍：<a href="http://clang.llvm.org/docs/CommandGuide/clang.html" target="_blank" rel="noopener">官方文档</a></p>
+<h4 id="使用-Xcode-Clang指令将OC代码转换为C-代码"><a href="#使用-Xcode-Clang指令将OC代码转换为C-代码" class="headerlink" title="使用 Xcode Clang指令将OC代码转换为C++代码"></a><strong>使用 Xcode Clang指令将OC代码转换为C++代码</strong></h4><p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  xxxx.m  -o  xxxx.cpp</code></p>
+<p>如果需要链接其他框架，使用-framework参数。比如-framework UIKit</p>
+<p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  -framework UIKit  xxxx.m  -o  xxxx.cpp</code></p>
+<p>如果需要支持ARC、指定运行时系统版本。比如</p>
+<p><code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc -fobjc-arc -fobjc-runtime=ios-8.0.0 main.m</code></p>
+<p>现在我们将这样一个main.m文件转换成main.cpp文件</p>
+<pre class=" language-objective-c"><code class="language-objective-c">#import <Foundation/Foundation.h>
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        NSObject *objc = [[NSObject alloc] init];
+    }
+    return 0;
+}
+</code></pre>
+<p>在main.cpp文件中可以看到这样一个结构</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct NSObject_IMPL {
+    Class isa;
+};
+</code></pre>
+<p>这就是 NSObject 对象在底层中的实现，他被转换成一个只含有一个成员变量 isa 的结构体 NSObject_IMPL。</p>
+<p>接下来对继承于NSObject的对象进行OC代码转换</p>
+<pre class=" language-objective-c"><code class="language-objective-c">@interface Animal : NSObject {
+    @public
+    int _age;
+}
+
+@end
+
+@implementation Animal
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Animal *animal = [[Animal alloc] init];
+        animal->_age = 2;
+    }
+    return 0;
+}
+
+</code></pre>
+<p>在生成的main.cpp文件中可以看到这样一个结构</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct Animal_IMPL {
+    Class isa;
+    int _age;
+};
+</code></pre>
+<blockquote>
+<p><strong>小结：</strong> <strong>可以看出instance对象在底层中实际上被转化成了存储着isa指针和其他成员变量的一个结构体</strong></p>
+</blockquote>
+<h2 id="class-的结构"><a href="#class-的结构" class="headerlink" title="class 的结构"></a>class 的结构</h2><p>在 instance 对象的结构中，我们可以看到<code>Class isa</code>这个指针，所谓的<code>Class</code>类型指代的是<code>typedef struct objc_class *Class</code>，也就是我们的class 对象，在<code>runtime.h</code>文件中我们可以查找到<code>objc_class</code>的具体结构</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct objc_class {
+    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
+
+#if !__OBJC2__
+    Class _Nullable super_class                              OBJC2_UNAVAILABLE;
+    const char * _Nonnull name                               OBJC2_UNAVAILABLE;
+    long version                                             OBJC2_UNAVAILABLE;
+    long info                                                OBJC2_UNAVAILABLE;
+    long instance_size                                       OBJC2_UNAVAILABLE;
+    struct objc_ivar_list * _Nullable ivars                  OBJC2_UNAVAILABLE;
+    struct objc_method_list * _Nullable * _Nullable methodLists                    OBJC2_UNAVAILABLE;
+    struct objc_cache * _Nonnull cache                       OBJC2_UNAVAILABLE;
+    struct objc_protocol_list * _Nullable protocols          OBJC2_UNAVAILABLE;
+#endif
+
+} OBJC2_UNAVAILABLE;
+</code></pre>
+<p>我们还可以下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码来查看<code>objc_class</code>，更为准确，在<code>objc-runtime-new.h</code>文件中，我们可以看到</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct objc_object {
+private:
+    isa_t isa;
+  ...
+}
+
+struct objc_class : objc_object {
+    // Class ISA;
+    Class superclass;
+    cache_t cache;             // formerly cache pointer and vtable
+    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags
+
+    class_rw_t *data() const {
+        return bits.data();
+    }
+    ...
+}
+
+struct class_rw_t {
+    // Be warned that Symbolication knows the layout of this structure.
+    uint32_t flags;
+    uint16_t version;
+    uint16_t witness;
+
+    const class_ro_t *ro;
+
+    method_array_t methods;
+    property_array_t properties;
+    protocol_array_t protocols;
+    ...
+}
+
+struct class_ro_t {
+    uint32_t flags;
+    uint32_t instanceStart;
+    uint32_t instanceSize;
+#ifdef __LP64__
+    uint32_t reserved;
+#endif
+
+    const uint8_t * ivarLayout;
+
+    const char * name;
+    method_list_t * baseMethodList;
+    protocol_list_t * baseProtocols;
+    const ivar_list_t * ivars;
+
+    const uint8_t * weakIvarLayout;
+    property_list_t *baseProperties;
+        ...
+}
+</code></pre>
+<p>由这些结构我们可以看出class对象底层实际上是objc_class这个结构体，继承于objc_object（根类），class对象内部主要包含了以下信息：</p>
+<ul>
+<li><strong>isa </strong> 在arm64架构之前，isa就是一个普通的指针，存储着Class、Meta-Class对象的内存地址。从arm64架构开始，对isa进行了优化，变成了一个共用体（union）结构，还使用位域来存储更多的信息。</li>
+<li><strong>superclass</strong> 指向该类的父类。</li>
+<li><strong>name</strong> 该类类名。</li>
+<li><strong>version</strong> 该类的版本信息。</li>
+<li><strong>instance_size</strong>  该类的实例对象的内存占用大小。</li>
+<li><strong>properties</strong> 该类的属性信息列表。</li>
+<li><strong>ivars </strong>该类中所有成员变量的列表，使用场景：我们在字典转换成模型的时候需要用到这个列表找到属性的名称，去取字典中的值，KVC赋值，或者直接Runtime赋值。</li>
+<li><strong>methodLists / methods</strong> 存储该类中的对象方法信息列表，类中所有对象方法的列表，使用场景：如在程序中写好方法，通过外部获取到方法名称字符串，然后通过这个字符串得到方法，从而达到外部控制App已知方法。</li>
+<li><strong>cache</strong> 主要用于缓存常用方法列表，每个类中有很多方法，即使是平时不用的方法也会在里面，假如每次运行一个方法，都要去<code>methodLists</code>遍历得到方法，这样势必会影响程序的运行效率，所以<code>cache</code>在这时候就会被用上，当我们使用这个类的方法时先判断<code>cache</code>是否为空，为空时从<code>methodLists</code>找到方法调用，并保存到<code>cache</code>中，不为空时先从<code>cache</code>中找方法，如果找不到再去<code>methodLists</code>中查找，这样提高了程序方法的运行效率。</li>
+<li><strong>protocols</strong> 该类遵从的所有协议的列表，使用场景：判断类是否遵守了某个协议。</li>
+<li><strong>class_rw_t</strong> 里面的methods、properties、protocols是二维数组，是可读可写的，包含了<strong>类</strong>的初始内容、<strong>分类</strong>的内容。</li>
+<li><strong>class_ro_t</strong> 里面的baseMethodList、baseProtocols、ivars、baseProperties是一维数组，是只读的，包含了<strong>类</strong>的初始内容。</li>
+</ul>
+<h2 id="meta-class-的结构"><a href="#meta-class-的结构" class="headerlink" title="meta-class 的结构"></a>meta-class 的结构</h2><p>meta-class是class对象的类，每个class对象都有自己的meta-class，每个类在内存中有且只有一个meta-class对象。我们可以通过将某个类传入<code>object_getClass()</code>来获取该类的meta-class，获取到的返回类型依然是Class类型，说明meta-class也是一个objc_class结构类型，meta-class对象和class对象的内存结构是一样的，meta-class是一种特殊的class，在内存中存储的信息主要包括：</p>
+<ul>
+<li><strong>isa</strong> 指向基类的meta-class。</li>
+<li><strong>superclass</strong> 指向meta-class父类。</li>
+<li><strong>methodLists / methods</strong> 存储该类中的类方法信息列表，类中所有类方法的列表。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h5 id="instance对象在内存中存储的信息包括"><a href="#instance对象在内存中存储的信息包括" class="headerlink" title="instance对象在内存中存储的信息包括"></a>instance对象在内存中存储的信息包括</h5><ol>
+<li>isa指针</li>
+<li>其他成员变量的具体值</li>
+</ol>
+<h5 id="class对象在内存中存储的信息包括"><a href="#class对象在内存中存储的信息包括" class="headerlink" title="class对象在内存中存储的信息包括"></a>class对象在内存中存储的信息包括</h5><ol>
+<li>isa指针</li>
+<li>superclass指针</li>
+<li>类的属性信息（@property），类的成员变量信息（ivar）</li>
+<li>类的对象方法信息（instance method），类的协议信息（protocol）</li>
+</ol>
+<h5 id="meta-class对象在内存中存储的信息包括"><a href="#meta-class对象在内存中存储的信息包括" class="headerlink" title="meta-class对象在内存中存储的信息包括"></a>meta-class对象在内存中存储的信息包括</h5><ol>
+<li>isa指针</li>
+<li>superclass指针</li>
+<li>类的类方法的信息（class method）</li>
+</ol>
+<h5 id="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"><a href="#这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示" class="headerlink" title="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"></a>这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示</h5><p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583162471214.jpg" alt="1583162471214"></p>
+<h5 id="isa指针的轨迹"><a href="#isa指针的轨迹" class="headerlink" title="isa指针的轨迹"></a>isa指针的轨迹</h5><ul>
+<li>instance对象的isa指向class</li>
+<li>class对象的isa指向meta-class</li>
+<li>meta-class的isa直接指向基类的meta-class (划重点)</li>
+</ul>
+<h5 id="superClass指针的轨迹"><a href="#superClass指针的轨迹" class="headerlink" title="superClass指针的轨迹"></a>superClass指针的轨迹</h5><ul>
+<li>class对象的superclass指向其父类的class对象，如果是基类的class对象，则其superclass指向nil</li>
+<li>meta-class对象的superclass指向父类的meta-class对象，如果是基类的meta-class对象，则其superclass指向基类的class对象 (划重点)</li>
+</ul>
+<h5 id="对象方法和类方法的调用"><a href="#对象方法和类方法的调用" class="headerlink" title="对象方法和类方法的调用"></a>对象方法和类方法的调用</h5><ul>
+<li>instance调用对象方法时，先通过isa找到该instance的class中查找对象方法信息，当前class中对象方法不存在时，通过superClass找到父类class再进行对象方法查找，直到superClass指向nil。</li>
+<li>class调用类方法时，先通过isa找到该class的meta-class中查找类方法信息，当前meta-class中类方法不存在时，通过superClass找到父类meta-class再进行对象方法查找，直到superClass指向nil。</li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
       <categories>
-          
-          <category> iOS开发 </category>
-          
+        <category>iOS开发</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 技术 - iOS </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Runtime的运用（一）为Category增加关联对象</title>
-      <link href="/2020/03/04/runtime-de-yun-yong-yi/"/>
-      <url>/2020/03/04/runtime-de-yun-yong-yi/</url>
-      
-        <content type="html"><![CDATA[<h2 id="Category-的内部结构"><a href="#Category-的内部结构" class="headerlink" title="Category 的内部结构"></a>Category 的内部结构</h2><p>下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码，在<code>objc-runtime-new.h</code>文件中，我们可以看到Category的内部结构：</p><pre class=" language-objective-c"><code class="language-objective-c">struct category_t {    const char *name;    classref_t cls;    struct method_list_t *instanceMethods;    struct method_list_t *classMethods;    struct protocol_list_t *protocols;    struct property_list_t *instanceProperties;    // Fields below this point are not always present on disk.    struct property_list_t *_classProperties;    method_list_t *methodsForMeta(bool isMeta) {        if (isMeta) return classMethods;        else return instanceMethods;    }    property_list_t *propertiesForMeta(bool isMeta, struct header_info *hi);    protocol_list_t *protocolsForMeta(bool isMeta) {        if (isMeta) return nullptr;        else return protocols;    }};</code></pre><p>可以看到，Category内部含有<strong>method_list_t</strong>，<strong>protocol_list_t</strong>，<strong>property_list_t</strong> 这样的结构体，与原类相比唯独缺少了<strong>ivars</strong>，所以通过Category可以给类添加方法，协议，属性，但是由于分类底层结构的限制，不能添加成员变量到分类中。</p><p>说到这里，有些同学可能就会问了，在我们日常使用中，添加属性不就可以直接使用变量了吗？</p><p>在这里需要特别注意的是，而给Category添加属性，只是对该属性的setter/getter方法做了声明，既没有添加成员变量，也没有对setter/getter方法做实现。例如在 <strong>Person+Jump.h</strong> 中声明了一个属性 <strong>name</strong></p><pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"@interface Person (Jump)@property (nonatomic, copy) NSString *name;@end@implementation Person (Jump)@end</code></pre><p>实际上等价于给类添加了两个方法声明：</p><pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"@interface Person (Jump)@property (nonatomic, copy) NSString *name;- (void)setName:(NSString *)name;- (NSString *)name;@end@implementation Person (Jump)@end</code></pre><p>由于并没有对 <strong>name </strong>的 <strong>setter/getter </strong>方法进行实现，正常使用 <strong>person.name</strong>，会产生错误。</p><blockquote><p>Terminating app due to uncaught exception ‘NSInvalidArgumentException’, reason: ‘-[Person setName:]: unrecognized selector sent to instance 0x10063f5b0’</p></blockquote><h4 id="那么假如我们在-implementation中实现了-setter-getter-方法是不是就能实现类似于给分类添加成员变量呢？"><a href="#那么假如我们在-implementation中实现了-setter-getter-方法是不是就能实现类似于给分类添加成员变量呢？" class="headerlink" title="那么假如我们在@implementation中实现了 setter/getter 方法是不是就能实现类似于给分类添加成员变量呢？"></a>那么假如我们在@implementation中实现了 setter/getter 方法是不是就能实现类似于给分类添加成员变量呢？</h4><p><strong>答案是肯定的，但是需要注意的是在这里要明确的是我们是无法通过Category给类添加成员变量的，我们只是模拟了成员变量的调用，实际上类中的ivars并没有改变，以下介绍两种实现方式。</strong></p><h2 id="通过全局变量实现"><a href="#通过全局变量实现" class="headerlink" title="通过全局变量实现"></a>通过全局变量实现</h2><p>主要实现原理是通过设置一个全局的可变字典，将该分类的地址值当做key值，来存储我们添加的变量的具体值，而分类中属性的<strong>setter/getter</strong>方法则通过该字典来赋值和取值。假如添加了多个变量，就需要设置多个可变字典，下面举个例子。</p><pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"@interface Person (Test2)@property(nonatomic, copy) NSString *nickName;@property(nonatomic, assign) float weight;@end@implementation Person (Test2)NSMutableDictionary *weights;NSMutableDictionary *nickNames;+ (void)load {    weights = [NSMutableDictionary dictionary];    nickNames = [NSMutableDictionary dictionary];}- (void)setWeight:(float)weight {    NSString *key = [NSString stringWithFormat:@"%p", self];    weights[key] = @(weight);}- (float)weight {    NSString *key = [NSString stringWithFormat:@"%p", self];    return [weights[key] floatValue];}- (void)setNickName:(NSString *)nickName {    NSString *key = [NSString stringWithFormat:@"%p", self];    nickNames[key] = nickName;}- (NSString *)nickName {    NSString *key = [NSString stringWithFormat:@"%p", self];    return nickNames[key];}@end</code></pre><p>在调用时，也能实现正常的赋值和取值，如下：</p><pre class=" language-objective-c"><code class="language-objective-c">Person *person = [[Person alloc] init];person.nickName = @"NickJack";person.weight = 70.5;NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);</code></pre><p><strong>但是这样的方式存在一些弊端：</strong></p><ul><li><strong>线程安全风险</strong>  由于是全局字典对象，存在在多线程中对同一个字典对象进行同时读写的风险。</li><li><strong>内存泄露风险</strong>  全局字典对象需要一直存放在内存中，无论是否使用该分类都会占用内存。</li><li><strong>书写麻烦</strong>          每添加一个变量，就必须设置一个新的可变字典来存放，增加代码量。</li></ul><blockquote><p><strong>小结：使用全局变量方式添加，不仅代码书写麻烦，而且存在一些使用风险，下面来看下通过关联对象如何实现。</strong></p></blockquote><h2 id="通过关联对象实现"><a href="#通过关联对象实现" class="headerlink" title="通过关联对象实现"></a>通过关联对象实现</h2><p>我们在开发中最常用的还是这种方式，<strong>Runtime </strong>为我们提供了动态添加属性和获得属性的方法。</p><h4 id="添加关联对象"><a href="#添加关联对象" class="headerlink" title="添加关联对象"></a>添加关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">objc_setAssociatedObject(id  _Nonnull object, const void * _Nonnull key, id  _Nullable value, objc_AssociationPolicy policy)</code></pre><p><strong>id object</strong> :  给哪个类添加关联对象，在分类一般传入 <strong>self</strong>。</p><p><strong>const void * _Nonnull key</strong> :  关联对象的 <strong>key</strong> ，根据 <strong>key</strong> 设置对应关联对象的值进行存储，可以传入该关联对象对应的 <strong>getter </strong>方法地址简化代码，例如<code>@selector(name)</code>。</p><p><strong>id  _Nullable value</strong>：关联对象的值，也就是 <strong>setter</strong> 方法传入的值给关联对象去存储，这里存储的必须是对象，不能是基本类型。</p><p><strong>objc_AssociationPolicy policy</strong>：关联策略，关联对象以什么形式保存，具体的关联策略有以下几种，需要注意的并没有我们属性中常见的 <strong>weak</strong> 类型。</p><pre class=" language-objective-c"><code class="language-objective-c">typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {    OBJC_ASSOCIATION_ASSIGN = 0,           /**< Specifies a weak reference to the associated object. */    OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, /**< Specifies a strong reference to the associated object.                                             *   The association is not made atomically. */    OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   /**< Specifies that the associated object is copied.                                             *   The association is not made atomically. */    OBJC_ASSOCIATION_RETAIN = 01401,       /**< Specifies a strong reference to the associated object.                                            *   The association is made atomically. */    OBJC_ASSOCIATION_COPY = 01403          /**< Specifies that the associated object is copied.                                            *   The association is made atomically. */};</code></pre><h4 id="获取关联对象"><a href="#获取关联对象" class="headerlink" title="获取关联对象"></a>获取关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">id objc_getAssociatedObject(id object, const void * key)</code></pre><p><strong>id object</strong> : 获取某个类里面的关联对象。</p><p><strong>const void * _Nonnull key</strong> : 关联对象的 <strong>key</strong> ，与 <strong>objc_setAssociatedObject</strong> 中的 <strong>key</strong> 相对应，即通过 <strong>key</strong> 值取出 <strong>value</strong>。</p><h4 id="移除所有的关联对象"><a href="#移除所有的关联对象" class="headerlink" title="移除所有的关联对象"></a>移除所有的关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">void objc_removeAssociatedObjects(id object)</code></pre><p><strong>id object</strong>：移除某个类里面的所有关联对象。</p><h4 id="添加关联对象的使用示例："><a href="#添加关联对象的使用示例：" class="headerlink" title="添加关联对象的使用示例："></a>添加关联对象的使用示例：</h4><pre class=" language-objective-c"><code class="language-objective-c">#import <objc/runtime.h>#import "Person.h"@interface Person (Test)@property(nonatomic, copy) NSString *name;@property(nonatomic, assign) float height;@end@implementation Person (Test)- (void)setName:(NSString *)name {    objc_setAssociatedObject(self, @selector(name), name, OBJC_ASSOCIATION_COPY_NONATOMIC);}- (NSString *)name {   return objc_getAssociatedObject(self, @selector(name));}- (void)setHeight:(float)height {    objc_setAssociatedObject(self, @selector(height), @(height), OBJC_ASSOCIATION_ASSIGN);}- (float)height {    return [objc_getAssociatedObject(self, @selector(height)) floatValue];}@end</code></pre><blockquote><p><strong>小结：使用关联对象来添加成员变量的操作还是比较简单的，下面我们来探究下关联对象的底层实现原理。</strong></p></blockquote><h2 id="关联对象实现原理"><a href="#关联对象实现原理" class="headerlink" title="关联对象实现原理"></a>关联对象实现原理</h2><p>我们还可以下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a> 源码查看<code>objc-references.mm</code>来探究关联对象的底层结构，考虑到源码解读比较晦涩，我们直接来看结论。</p><p><strong>实现关联对象技术的核心对象有</strong></p><ul><li>AssociationsManager</li><li>AssociationsHashMap</li><li>ObjectAssociationMap</li><li>ObjcAssociation</li></ul><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
-      
-      
+      <tags>
+        <tag>技术</tag>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2018/03/21/hello-world/</url>
+    <content><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
       <categories>
-          
-          <category> iOS开发 </category>
-          
+        <category>生活感想</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 技术 - iOS - runtime </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Runtime 知识点（一）OC对象的本质</title>
-      <link href="/2020/03/02/runtime-zhi-shi-dian-yi/"/>
-      <url>/2020/03/02/runtime-zhi-shi-dian-yi/</url>
-      
-        <content type="html"><![CDATA[<h2 id="Runtime是什么？"><a href="#Runtime是什么？" class="headerlink" title="Runtime是什么？"></a>Runtime是什么？</h2><ul><li>OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行，OC的动态性就是由Runtime来支撑和实现的。</li><li>Runtime是一套比较底层的纯C语言API，属于1个C语言库，包含了很多底层的C语言API。</li><li>平时编写的OC代码，在程序运行过程中，其实最终会转换成Runtime的C语言代码，Runtime是OC的幕后工作者。</li><li>OC需要Runtime来创建类和对象，进行消息发送和转发。</li></ul><blockquote><p><strong>小结：</strong> <strong>OC代码具有运行时、动态特性，开发时只管写你的OC代码就行，runtime机制自动在幕后辛勤劳作着。</strong></p></blockquote><p><strong><em>要了解Runtime机制的原理和运用，首先我们必须先来探寻OC对象的本质，了解OC对象的相关知识</em></strong></p><h2 id="OC对象的分类"><a href="#OC对象的分类" class="headerlink" title="OC对象的分类"></a>OC对象的分类</h2><p>OC对象主要可以分为三种</p><ul><li><strong>instance对象（实例对象）</strong></li><li><strong>class对象（类对象）</strong></li><li><strong>meta-class对象（元类对象）</strong></li></ul><p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p><p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p><h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p><pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {#pragma clang diagnostic push#pragma clang diagnostic ignored "-Wobjc-interface-ivars"    Class isa  OBJC_ISA_AVAILABILITY;#pragma clang diagnostic pop}</code></pre><p>众所周知，OC底层是C/C++代码来实现的，我们可以通过Clang将OC文件转化为C++文件来探寻OC对象的本质。</p><h4 id="Clang-是什么？"><a href="#Clang-是什么？" class="headerlink" title="Clang 是什么？"></a>Clang 是什么？</h4><p>Clang是一个C语言、C++、Objective-C、Objective-C++语言的轻量级编译器。官方介绍：<a href="http://clang.llvm.org/docs/CommandGuide/clang.html" target="_blank" rel="noopener">官方文档</a></p><h4 id="使用-Xcode-Clang指令将OC代码转换为C-代码"><a href="#使用-Xcode-Clang指令将OC代码转换为C-代码" class="headerlink" title="使用 Xcode Clang指令将OC代码转换为C++代码"></a><strong>使用 Xcode Clang指令将OC代码转换为C++代码</strong></h4><p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  xxxx.m  -o  xxxx.cpp</code></p><p>如果需要链接其他框架，使用-framework参数。比如-framework UIKit</p><p><code>xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  -framework UIKit  xxxx.m  -o  xxxx.cpp</code></p><p>如果需要支持ARC、指定运行时系统版本。比如</p><p><code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc -fobjc-arc -fobjc-runtime=ios-8.0.0 main.m</code></p><p>现在我们将这样一个main.m文件转换成main.cpp文件</p><pre class=" language-objective-c"><code class="language-objective-c">#import <Foundation/Foundation.h>int main(int argc, const char * argv[]) {    @autoreleasepool {        NSObject *objc = [[NSObject alloc] init];    }    return 0;}</code></pre><p>在main.cpp文件中可以看到这样一个结构</p><pre class=" language-objective-c"><code class="language-objective-c">struct NSObject_IMPL {    Class isa;};</code></pre><p>这就是 NSObject 对象在底层中的实现，他被转换成一个只含有一个成员变量 isa 的结构体 NSObject_IMPL。</p><p>接下来对继承于NSObject的对象进行OC代码转换</p><pre class=" language-objective-c"><code class="language-objective-c">@interface Animal : NSObject {    @public    int _age;}@end@implementation Animal@endint main(int argc, const char * argv[]) {    @autoreleasepool {        Animal *animal = [[Animal alloc] init];        animal->_age = 2;    }    return 0;}</code></pre><p>在生成的main.cpp文件中可以看到这样一个结构</p><pre class=" language-objective-c"><code class="language-objective-c">struct Animal_IMPL {    Class isa;    int _age;};</code></pre><blockquote><p><strong>小结：</strong> <strong>可以看出instance对象在底层中实际上被转化成了存储着isa指针和其他成员变量的一个结构体</strong></p></blockquote><h2 id="class-的结构"><a href="#class-的结构" class="headerlink" title="class 的结构"></a>class 的结构</h2><p>在 instance 对象的结构中，我们可以看到<code>Class isa</code>这个指针，所谓的<code>Class</code>类型指代的是<code>typedef struct objc_class *Class</code>，也就是我们的class 对象，在<code>runtime.h</code>文件中我们可以查找到<code>objc_class</code>的具体结构</p><pre class=" language-objective-c"><code class="language-objective-c">struct objc_class {    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;#if !__OBJC2__    Class _Nullable super_class                              OBJC2_UNAVAILABLE;    const char * _Nonnull name                               OBJC2_UNAVAILABLE;    long version                                             OBJC2_UNAVAILABLE;    long info                                                OBJC2_UNAVAILABLE;    long instance_size                                       OBJC2_UNAVAILABLE;    struct objc_ivar_list * _Nullable ivars                  OBJC2_UNAVAILABLE;    struct objc_method_list * _Nullable * _Nullable methodLists                    OBJC2_UNAVAILABLE;    struct objc_cache * _Nonnull cache                       OBJC2_UNAVAILABLE;    struct objc_protocol_list * _Nullable protocols          OBJC2_UNAVAILABLE;#endif} OBJC2_UNAVAILABLE;</code></pre><p>我们还可以下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码来查看<code>objc_class</code>，更为准确，在<code>objc-runtime-new.h</code>文件中，我们可以看到</p><pre class=" language-objective-c"><code class="language-objective-c">struct objc_object {private:    isa_t isa;  ...}struct objc_class : objc_object {    // Class ISA;    Class superclass;    cache_t cache;             // formerly cache pointer and vtable    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags    class_rw_t *data() const {        return bits.data();    }    ...}struct class_rw_t {    // Be warned that Symbolication knows the layout of this structure.    uint32_t flags;    uint16_t version;    uint16_t witness;    const class_ro_t *ro;    method_array_t methods;    property_array_t properties;    protocol_array_t protocols;    ...}struct class_ro_t {    uint32_t flags;    uint32_t instanceStart;    uint32_t instanceSize;#ifdef __LP64__    uint32_t reserved;#endif    const uint8_t * ivarLayout;    const char * name;    method_list_t * baseMethodList;    protocol_list_t * baseProtocols;    const ivar_list_t * ivars;    const uint8_t * weakIvarLayout;    property_list_t *baseProperties;        ...}</code></pre><p>由这些结构我们可以看出class对象底层实际上是objc_class这个结构体，继承于objc_object（根类），class对象内部主要包含了以下信息：</p><ul><li><strong>isa </strong> 在arm64架构之前，isa就是一个普通的指针，存储着Class、Meta-Class对象的内存地址。从arm64架构开始，对isa进行了优化，变成了一个共用体（union）结构，还使用位域来存储更多的信息。</li><li><strong>superclass</strong> 指向该类的父类。</li><li><strong>name</strong> 该类类名。</li><li><strong>version</strong> 该类的版本信息。</li><li><strong>instance_size</strong>  该类的实例对象的内存占用大小。</li><li><strong>properties</strong> 该类的属性信息列表。</li><li><strong>ivars </strong>该类中所有成员变量的列表，使用场景：我们在字典转换成模型的时候需要用到这个列表找到属性的名称，去取字典中的值，KVC赋值，或者直接Runtime赋值。</li><li><strong>methodLists / methods</strong> 存储该类中的对象方法信息列表，类中所有对象方法的列表，使用场景：如在程序中写好方法，通过外部获取到方法名称字符串，然后通过这个字符串得到方法，从而达到外部控制App已知方法。</li><li><strong>cache</strong> 主要用于缓存常用方法列表，每个类中有很多方法，即使是平时不用的方法也会在里面，假如每次运行一个方法，都要去<code>methodLists</code>遍历得到方法，这样势必会影响程序的运行效率，所以<code>cache</code>在这时候就会被用上，当我们使用这个类的方法时先判断<code>cache</code>是否为空，为空时从<code>methodLists</code>找到方法调用，并保存到<code>cache</code>中，不为空时先从<code>cache</code>中找方法，如果找不到再去<code>methodLists</code>中查找，这样提高了程序方法的运行效率。</li><li><strong>protocols</strong> 该类遵从的所有协议的列表，使用场景：判断类是否遵守了某个协议。</li><li><strong>class_rw_t</strong> 里面的methods、properties、protocols是二维数组，是可读可写的，包含了<strong>类</strong>的初始内容、<strong>分类</strong>的内容。</li><li><strong>class_ro_t</strong> 里面的baseMethodList、baseProtocols、ivars、baseProperties是一维数组，是只读的，包含了<strong>类</strong>的初始内容。</li></ul><h2 id="meta-class-的结构"><a href="#meta-class-的结构" class="headerlink" title="meta-class 的结构"></a>meta-class 的结构</h2><p>meta-class是class对象的类，每个class对象都有自己的meta-class，每个类在内存中有且只有一个meta-class对象。我们可以通过将某个类传入<code>object_getClass()</code>来获取该类的meta-class，获取到的返回类型依然是Class类型，说明meta-class也是一个objc_class结构类型，meta-class对象和class对象的内存结构是一样的，meta-class是一种特殊的class，在内存中存储的信息主要包括：</p><ul><li><strong>isa</strong> 指向基类的meta-class。</li><li><strong>superclass</strong> 指向meta-class父类。</li><li><strong>methodLists / methods</strong> 存储该类中的类方法信息列表，类中所有类方法的列表。</li></ul><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h5 id="instance对象在内存中存储的信息包括"><a href="#instance对象在内存中存储的信息包括" class="headerlink" title="instance对象在内存中存储的信息包括"></a>instance对象在内存中存储的信息包括</h5><ol><li>isa指针</li><li>其他成员变量的具体值</li></ol><h5 id="class对象在内存中存储的信息包括"><a href="#class对象在内存中存储的信息包括" class="headerlink" title="class对象在内存中存储的信息包括"></a>class对象在内存中存储的信息包括</h5><ol><li>isa指针</li><li>superclass指针</li><li>类的属性信息（@property），类的成员变量信息（ivar）</li><li>类的对象方法信息（instance method），类的协议信息（protocol）</li></ol><h5 id="meta-class对象在内存中存储的信息包括"><a href="#meta-class对象在内存中存储的信息包括" class="headerlink" title="meta-class对象在内存中存储的信息包括"></a>meta-class对象在内存中存储的信息包括</h5><ol><li>isa指针</li><li>superclass指针</li><li>类的类方法的信息（class method）</li></ol><h5 id="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"><a href="#这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示" class="headerlink" title="这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示"></a>这些信息中的isa指针和superclass指针是比较重要的，三种对象通过这两种指针来互相查找访问，具体的关系可以用这张图表示</h5><p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583162471214.jpg" alt="1583162471214"></p><h5 id="isa指针的轨迹"><a href="#isa指针的轨迹" class="headerlink" title="isa指针的轨迹"></a>isa指针的轨迹</h5><ul><li>instance对象的isa指向class</li><li>class对象的isa指向meta-class</li><li>meta-class的isa直接指向基类的meta-class (划重点)</li></ul><h5 id="superClass指针的轨迹"><a href="#superClass指针的轨迹" class="headerlink" title="superClass指针的轨迹"></a>superClass指针的轨迹</h5><ul><li>class对象的superclass指向其父类的class对象，如果是基类的class对象，则其superclass指向nil</li><li>meta-class对象的superclass指向父类的meta-class对象，如果是基类的meta-class对象，则其superclass指向基类的class对象 (划重点)</li></ul><h5 id="对象方法和类方法的调用"><a href="#对象方法和类方法的调用" class="headerlink" title="对象方法和类方法的调用"></a>对象方法和类方法的调用</h5><ul><li>instance调用对象方法时，先通过isa找到该instance的class中查找对象方法信息，当前class中对象方法不存在时，通过superClass找到父类class再进行对象方法查找，直到superClass指向nil。</li><li>class调用类方法时，先通过isa找到该class的meta-class中查找类方法信息，当前meta-class中类方法不存在时，通过superClass找到父类meta-class再进行对象方法查找，直到superClass指向nil。</li></ul><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
-      
-      
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Runtime的运用（一）为Category增加关联对象</title>
+    <url>/2020/03/04/runtime-de-yun-yong-yi/</url>
+    <content><![CDATA[<h2 id="Category-的内部结构"><a href="#Category-的内部结构" class="headerlink" title="Category 的内部结构"></a>Category 的内部结构</h2><p>下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a>源码，在<code>objc-runtime-new.h</code>文件中，我们可以看到Category的内部结构：</p>
+<pre class=" language-objective-c"><code class="language-objective-c">struct category_t {
+    const char *name;
+    classref_t cls;
+    struct method_list_t *instanceMethods;
+    struct method_list_t *classMethods;
+    struct protocol_list_t *protocols;
+    struct property_list_t *instanceProperties;
+    // Fields below this point are not always present on disk.
+    struct property_list_t *_classProperties;
+
+    method_list_t *methodsForMeta(bool isMeta) {
+        if (isMeta) return classMethods;
+        else return instanceMethods;
+    }
+
+    property_list_t *propertiesForMeta(bool isMeta, struct header_info *hi);
+
+    protocol_list_t *protocolsForMeta(bool isMeta) {
+        if (isMeta) return nullptr;
+        else return protocols;
+    }
+};
+</code></pre>
+<p>可以看到，Category内部含有<strong>method_list_t</strong>，<strong>protocol_list_t</strong>，<strong>property_list_t</strong> 这样的结构体，与原类相比唯独缺少了<strong>ivars</strong>，所以通过Category可以给类添加方法，协议，属性，但是由于分类底层结构的限制，不能添加成员变量到分类中。</p>
+<p>说到这里，有些同学可能就会问了，在我们日常使用中，添加属性不就可以直接使用变量了吗？</p>
+<p>在这里需要特别注意的是，而给Category添加属性，只是对该属性的setter/getter方法做了声明，既没有添加成员变量，也没有对setter/getter方法做实现。例如在 <strong>Person+Jump.h</strong> 中声明了一个属性 <strong>name</strong></p>
+<pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"
+
+@interface Person (Jump)
+
+@property (nonatomic, copy) NSString *name;
+
+@end
+
+@implementation Person (Jump)
+
+@end
+
+</code></pre>
+<p>实际上等价于给类添加了两个方法声明：</p>
+<pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"
+
+@interface Person (Jump)
+
+@property (nonatomic, copy) NSString *name;
+
+- (void)setName:(NSString *)name;
+- (NSString *)name;
+
+@end
+
+@implementation Person (Jump)
+
+@end
+</code></pre>
+<p>由于并没有对 <strong>name </strong>的 <strong>setter/getter </strong>方法进行实现，正常使用 <strong>person.name</strong>，会产生错误。</p>
+<blockquote>
+<p>Terminating app due to uncaught exception ‘NSInvalidArgumentException’, reason: ‘-[Person setName:]: unrecognized selector sent to instance 0x10063f5b0’</p>
+</blockquote>
+<h4 id="那么假如我们在-implementation中实现了-setter-getter-方法是不是就能实现类似于给分类添加成员变量呢？"><a href="#那么假如我们在-implementation中实现了-setter-getter-方法是不是就能实现类似于给分类添加成员变量呢？" class="headerlink" title="那么假如我们在@implementation中实现了 setter/getter 方法是不是就能实现类似于给分类添加成员变量呢？"></a>那么假如我们在@implementation中实现了 setter/getter 方法是不是就能实现类似于给分类添加成员变量呢？</h4><p><strong>答案是肯定的，但是需要注意的是在这里要明确的是我们是无法通过Category给类添加成员变量的，我们只是模拟了成员变量的调用，实际上类中的ivars并没有改变，以下介绍两种实现方式。</strong></p>
+<h2 id="通过全局变量实现"><a href="#通过全局变量实现" class="headerlink" title="通过全局变量实现"></a>通过全局变量实现</h2><p>主要实现原理是通过设置一个全局的可变字典，将该分类的地址值当做key值，来存储我们添加的变量的具体值，而分类中属性的<strong>setter/getter</strong>方法则通过该字典来赋值和取值。假如添加了多个变量，就需要设置多个可变字典，下面举个例子。</p>
+<pre class=" language-objective-c"><code class="language-objective-c">#import "Person.h"
+
+@interface Person (Test2)
+
+@property(nonatomic, copy) NSString *nickName;
+
+@property(nonatomic, assign) float weight;
+
+@end
+
+@implementation Person (Test2)
+
+NSMutableDictionary *weights;
+NSMutableDictionary *nickNames;
+
++ (void)load {
+    weights = [NSMutableDictionary dictionary];
+    nickNames = [NSMutableDictionary dictionary];
+}
+
+- (void)setWeight:(float)weight {
+
+    NSString *key = [NSString stringWithFormat:@"%p", self];
+    weights[key] = @(weight);
+}
+
+- (float)weight {
+    NSString *key = [NSString stringWithFormat:@"%p", self];
+    return [weights[key] floatValue];
+}
+
+- (void)setNickName:(NSString *)nickName {
+    NSString *key = [NSString stringWithFormat:@"%p", self];
+    nickNames[key] = nickName;
+}
+
+- (NSString *)nickName {
+    NSString *key = [NSString stringWithFormat:@"%p", self];
+    return nickNames[key];
+}
+
+@end
+</code></pre>
+<p>在调用时，也能实现正常的赋值和取值，如下：</p>
+<pre class=" language-objective-c"><code class="language-objective-c">Person *person = [[Person alloc] init];
+person.nickName = @"NickJack";
+person.weight = 70.5;
+NSLog(@"nickName - %@ weight - %f", person.nickName, person.weight);
+</code></pre>
+<p><strong>但是这样的方式存在一些弊端：</strong></p>
+<ul>
+<li><strong>线程安全风险</strong>  由于是全局字典对象，存在在多线程中对同一个字典对象进行同时读写的风险。</li>
+<li><strong>内存泄露风险</strong>  全局字典对象需要一直存放在内存中，无论是否使用该分类都会占用内存。</li>
+<li><strong>书写麻烦</strong>          每添加一个变量，就必须设置一个新的可变字典来存放，增加代码量。</li>
+</ul>
+<blockquote>
+<p><strong>小结：使用全局变量方式添加，不仅代码书写麻烦，而且存在一些使用风险，下面来看下通过关联对象如何实现。</strong></p>
+</blockquote>
+<h2 id="通过关联对象实现"><a href="#通过关联对象实现" class="headerlink" title="通过关联对象实现"></a>通过关联对象实现</h2><p>我们在开发中最常用的还是这种方式，<strong>Runtime </strong>为我们提供了动态添加属性和获得属性的方法。</p>
+<h4 id="添加关联对象"><a href="#添加关联对象" class="headerlink" title="添加关联对象"></a>添加关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">objc_setAssociatedObject(id  _Nonnull object, const void * _Nonnull key, id  _Nullable value, objc_AssociationPolicy policy)
+</code></pre>
+<p><strong>id object</strong> :  给哪个类添加关联对象，在分类一般传入 <strong>self</strong>。</p>
+<p><strong>const void * _Nonnull key</strong> :  关联对象的 <strong>key</strong> ，根据 <strong>key</strong> 设置对应关联对象的值进行存储，可以传入该关联对象对应的 <strong>getter </strong>方法地址简化代码，例如<code>@selector(name)</code>。</p>
+<p><strong>id  _Nullable value</strong>：关联对象的值，也就是 <strong>setter</strong> 方法传入的值给关联对象去存储，这里存储的必须是对象，不能是基本类型。</p>
+<p><strong>objc_AssociationPolicy policy</strong>：关联策略，关联对象以什么形式保存，具体的关联策略有以下几种，需要注意的并没有我们属性中常见的 <strong>weak</strong> 类型。</p>
+<pre class=" language-objective-c"><code class="language-objective-c">typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {
+    OBJC_ASSOCIATION_ASSIGN = 0,           /**< Specifies a weak reference to the associated object. */
+    OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, /**< Specifies a strong reference to the associated object. 
+                                            *   The association is not made atomically. */
+    OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   /**< Specifies that the associated object is copied. 
+                                            *   The association is not made atomically. */
+    OBJC_ASSOCIATION_RETAIN = 01401,       /**< Specifies a strong reference to the associated object.
+                                            *   The association is made atomically. */
+    OBJC_ASSOCIATION_COPY = 01403          /**< Specifies that the associated object is copied.
+                                            *   The association is made atomically. */
+};
+</code></pre>
+<h4 id="获取关联对象"><a href="#获取关联对象" class="headerlink" title="获取关联对象"></a>获取关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">id objc_getAssociatedObject(id object, const void * key)
+</code></pre>
+<p><strong>id object</strong> : 获取某个类里面的关联对象。</p>
+<p><strong>const void * _Nonnull key</strong> : 关联对象的 <strong>key</strong> ，与 <strong>objc_setAssociatedObject</strong> 中的 <strong>key</strong> 相对应，即通过 <strong>key</strong> 值取出 <strong>value</strong>。</p>
+<h4 id="移除所有的关联对象"><a href="#移除所有的关联对象" class="headerlink" title="移除所有的关联对象"></a>移除所有的关联对象</h4><pre class=" language-objective-c"><code class="language-objective-c">void objc_removeAssociatedObjects(id object)
+</code></pre>
+<p><strong>id object</strong>：移除某个类里面的所有关联对象。</p>
+<h4 id="添加关联对象的使用示例："><a href="#添加关联对象的使用示例：" class="headerlink" title="添加关联对象的使用示例："></a>添加关联对象的使用示例：</h4><pre class=" language-objective-c"><code class="language-objective-c">#import <objc/runtime.h>
+#import "Person.h"
+
+@interface Person (Test)
+
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, assign) float height;
+
+@end
+
+@implementation Person (Test)
+
+- (void)setName:(NSString *)name {
+    objc_setAssociatedObject(self, @selector(name), name, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString *)name {
+   return objc_getAssociatedObject(self, @selector(name));
+}
+
+- (void)setHeight:(float)height {
+    objc_setAssociatedObject(self, @selector(height), @(height), OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (float)height {
+    return [objc_getAssociatedObject(self, @selector(height)) floatValue];
+}
+
+@end
+</code></pre>
+<blockquote>
+<p><strong>小结：使用关联对象来添加成员变量的操作还是比较简单的，下面我们来探究下关联对象的底层实现原理。</strong></p>
+</blockquote>
+<h2 id="关联对象实现原理"><a href="#关联对象实现原理" class="headerlink" title="关联对象实现原理"></a>关联对象实现原理</h2><p>我们还可以下载 <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">objc4</a> 源码查看<code>objc-references.mm</code>来探究关联对象的底层结构，考虑到源码解读比较晦涩，我们直接来看结论。</p>
+<p><strong>实现关联对象技术的核心对象有</strong></p>
+<ul>
+<li>AssociationsManager</li>
+<li>AssociationsHashMap</li>
+<li>ObjectAssociationMap</li>
+<li>ObjcAssociation</li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
       <categories>
-          
-          <category> iOS开发 </category>
-          
+        <category>iOS开发</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 技术 </tag>
-            
-            <tag> iOS </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>使用 PaintCode 绘制自定义的省份地图控件</title>
-      <link href="/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/"/>
-      <url>/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/</url>
-      
-        <content type="html"><![CDATA[<p><a href="https://github.com/CXTretar/CXProvincesMapView">Demo链接</a></p><h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><h5 id="需要用到的软件-解压密码-xclient-info"><a href="#需要用到的软件-解压密码-xclient-info" class="headerlink" title="需要用到的软件 (解压密码 xclient.info)"></a>需要用到的软件 (解压密码 <strong>xclient.info</strong>)</h5><ul><li><p><a href="https://pan.baidu.com/s/1qSAeNTmj3e8Jfu2klvHnTg" target="_blank" rel="noopener">Sketch</a> </p><p>Sketch 是一款Mac上小巧但功能强大的矢量绘图软件，这是专为设计师而打造的矢量绘图软件，拥有简约的设计，调色板，面板，菜单，窗口，控件和功能强大的矢量绘图和文字工具；包含针对UI设计的操作和交互模式，让你设计图标、移动手机UI、网站UI等更加简单高效。</p></li><li><p><a href="https://pan.baidu.com/s/1FAjdUCrYVniNLksW3aY_8A" target="_blank" rel="noopener">PaintCode</a></p><p>PaintCode 是一款 Mac 上的 iOS 矢量绘图编程软件，无论是程序员还是设计师，PaintCode 能够让你像在PS中画图一样绘制各种UI图形，PaintCode 会自动帮你生成针对 Mac OS X 或 iOS 平台 Objective-C 或 C# 代码，能够节约大量的编程时间，支持将代码直接导入到 Xcode 中或导出为 PSD 文件，支持最新的 iOS  和 iWatch SDK，非常的实用！</p></li></ul><h5 id="地图-svg-文件的获取"><a href="#地图-svg-文件的获取" class="headerlink" title="地图 svg 文件的获取"></a>地图 svg 文件的获取</h5><p>推荐使用 <a href="https://www.highcharts.com.cn/mapdata" target="_blank" rel="noopener">HighChart 地图数据</a>，在这里你可以自由的选择国内的某个省份地图下载相应的 svg 文件，这里选择福建省作为一个例子。</p><p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027233307531.png" alt="image-20191027233307531"></p><h4 id="使用-Sketch-对下载的-svg-文件进行再加工"><a href="#使用-Sketch-对下载的-svg-文件进行再加工" class="headerlink" title="使用 Sketch 对下载的 svg 文件进行再加工"></a>使用 Sketch 对下载的 svg 文件进行再加工</h4><p>由于通过 HighChart 地图数据下载的 svg 文件有一些 logo 文字信息的部分图层是我们开发时不需要的，而且会干扰地图的显示，所以使用 Sketch 去除这些部分。</p><p>使用 Sketch 打开下载的 svg 文件，屏蔽这些无用的信息图层</p><p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027234921580.png" alt="image-20191027234921580"></p><p>重新导出得新 svg 文件才是我们接下来要用到地图文件</p><p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027235144789.png" alt="image-20191027235144789"></p><h4 id="使用-PaintCode-根据-svg-文件生成-Objective-C-代码"><a href="#使用-PaintCode-根据-svg-文件生成-Objective-C-代码" class="headerlink" title="使用 PaintCode 根据 svg 文件生成 Objective-C 代码"></a>使用 PaintCode 根据 svg 文件生成 Objective-C 代码</h4><p>通过 PaintCode 打开 svg 文件</p><p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028000249045.png" alt="image-20191028000419208"></p><p>我们可以看到 PaintCode 已经自动为我们生成了 Objective-C 代码，但是这只是图块的 UIBezierPath 路径代码，我们还需要添加文字和图钉的相应位置，接下来我们通过 PaintCode 添加这些内容。</p><ul><li><h5 id="添加市名"><a href="#添加市名" class="headerlink" title="添加市名"></a>添加市名</h5><p>添加 Text，设置文字，调节文字位置以及字体大小为11，PaintCode 也自动生成了相应的代码。</p><p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001128976.png" alt="image-20191028001128976"></p></li><li><h5 id="添加图钉位置"><a href="#添加图钉位置" class="headerlink" title="添加图钉位置"></a>添加图钉位置</h5><p>添加图钉 Rect，调节 Rect 的位置，宽高都设置为20。</p><p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001948626.png" alt="image-20191028001948626"></p></li><li><h5 id="导出代码"><a href="#导出代码" class="headerlink" title="导出代码"></a>导出代码</h5><p>按照上面的步骤添加其他的市名和图钉位置，并且导出代码文件。</p><p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028002543468.png" alt="image-20191028002543468"></p></li></ul><h4 id="整理代码文件"><a href="#整理代码文件" class="headerlink" title="整理代码文件"></a>整理代码文件</h4><p>PaintCode 生成的文件包含了图块，文字，图钉三项内容的绘制代码，我们需要对这三项内容进行抽取和整理，这里以福建省为例。</p><pre class=" language-objective-c"><code class="language-objective-c">+ (void)drawCanvas2WithFrame: (CGRect)targetFrame resizing: (FujianResizingBehavior)resizing{    //// General Declarations    CGContextRef context = UIGraphicsGetCurrentContext();    //// Resize to Target Frame    CGContextSaveGState(context);    CGRect resizedFrame = FujianResizingBehaviorApply(resizing, CGRectMake(0, 0, 308, 340), targetFrame);    CGContextTranslateCTM(context, resizedFrame.origin.x, resizedFrame.origin.y);    CGContextScaleCTM(context, resizedFrame.size.width / 308, resizedFrame.size.height / 340);UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1];    UIColor* fillColor = [UIColor colorWithRed: 0.486 green: 0.71 blue: 0.925 alpha: 1];    //// 页面1    {        //// chart-(1)        {            //// Clipped            {                //// Group 编组 5                {                    //// Group 6                    {                        //// Bezier 形状 2 Drawing                        UIBezierPath* bezier2Path = [UIBezierPath bezierPath];                        [bezier2Path moveToPoint: CGPointMake(215.48, 200.9)];                        [bezier2Path addLineToPoint: CGPointMake(214.85, 200.27)];                        [bezier2Path addLineToPoint: CGPointMake(215.17, 199.01)];                        [bezier2Path addLineToPoint: CGPointMake(215.8, 199.32)];                        [bezier2Path addLineToPoint: CGPointMake(216.43, 198.06)];                      ......                        [bezier2Path closePath];                        [bezier2Path moveToPoint:                         [bezier2Path closePath];                        [fillColor setFill];                        [bezier2Path fill];                        [strokeColor setStroke];                        bezier2Path.lineWidth = 1;                        bezier2Path.miterLimit = 4;                        [bezier2Path stroke];                                             }                         ......                }            }        }    }                          //// Text Drawing    CGRect textRect = CGRectMake(128, 71, 39, 26);    {        NSString* textContent = @"南平市";        NSMutableParagraphStyle* textStyle = [[NSMutableParagraphStyle alloc] init];        textStyle.alignment = NSTextAlignmentLeft;        NSDictionary* textFontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 11], NSForegroundColorAttributeName: UIColor.blackColor, NSParagraphStyleAttributeName: textStyle};        CGFloat textTextHeight = [textContent boundingRectWithSize: CGSizeMake(textRect.size.width, INFINITY) options: NSStringDrawingUsesLineFragmentOrigin attributes: textFontAttributes context: nil].size.height;        CGContextSaveGState(context);        CGContextClipToRect(context, textRect);        [textContent drawInRect: CGRectMake(CGRectGetMinX(textRect), CGRectGetMinY(textRect) + (textRect.size.height - textTextHeight) / 2, textRect.size.width, textTextHeight) withAttributes: textFontAttributes];        CGContextRestoreGState(context);    }                         ......                         //// Rectangle Drawing    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(135, 56, 20, 20)];    [UIColor.grayColor setFill];    [rectanglePath fill];                                               ......        CGContextRestoreGState(context);}</code></pre><ol><li><h5 id="新建一个-FujianMapPath-文件继承于-ChinaMapPath-类，这个文件用来存放整理分类后的代码"><a href="#新建一个-FujianMapPath-文件继承于-ChinaMapPath-类，这个文件用来存放整理分类后的代码" class="headerlink" title="新建一个 FujianMapPath 文件继承于 ChinaMapPath 类，这个文件用来存放整理分类后的代码"></a>新建一个 FujianMapPath 文件继承于 ChinaMapPath 类，这个文件用来存放整理分类后的代码</h5></li><li><h5 id="图块部分"><a href="#图块部分" class="headerlink" title="图块部分"></a>图块部分</h5><p>我们只需要摘取 <code>UIBezierPath</code> 的路径部分代码即可，也就是每一个 <code>bezierPath</code> 在以下代码之前的路径代码(换个说法就是删除每个<code>bezierPath</code> 的以下代码)</p><pre class=" language-objective-c"><code class="language-objective-c">                        [fillColor setFill];                        [bezier2Path fill];                        [strokeColor setStroke];                        bezier2Path.lineWidth = 1;                        bezier2Path.miterLimit = 4;                        [bezier2Path stroke];</code></pre><p>整理后的 <code>bezierPath</code> 放在 <code>FujianMapPath</code> 的 <code>pathArray</code> 中。</p></li><li><h5 id="文字部分"><a href="#文字部分" class="headerlink" title="文字部分"></a>文字部分</h5><p>我们只需要摘取每段 <code>textRect</code> 的 frame 即可，</p><pre class=" language-objective-c"><code class="language-objective-c">CGRect textRect = CGRectMake(128, 71, 39, 26);</code></pre><p>整理后的 <code>textRect</code> 放在 <code>FujianMapPath</code> 的 <code>textRectArray</code> 中，使用 <code>NSValue</code>存储。文字内容需要另外存储在在 <code>FujianMapPath</code> 的 <code>textArray</code> 中。</p></li><li><h5 id="图钉部分"><a href="#图钉部分" class="headerlink" title="图钉部分"></a>图钉部分</h5><p>我们只需要摘取每段 <code>rectanglePath</code> 的起始点即可，</p><pre class=" language-objective-c"><code class="language-objective-c">UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(135, 56, 20, 20)];=>  CGPointMake(135, 56)</code></pre><p>整理后的 <code>point</code> 放在 <code>FujianMapPath</code> 的 <code>pinPointArray</code> 中。</p></li></ol><p><strong><em>需要注意的是，我们自行绘制的文字部分和图块部分的市区顺序一般是不一致的，所以我们要根据图块顺序调换 textArray、textRectArray 和  pinPointArray 中市区的顺序</em></strong></p><h4 id="使用-CXProvincesMapView-展示我们获取的代码数据"><a href="#使用-CXProvincesMapView-展示我们获取的代码数据" class="headerlink" title="使用 CXProvincesMapView 展示我们获取的代码数据"></a>使用 CXProvincesMapView 展示我们获取的代码数据</h4><pre class=" language-objective-c"><code class="language-objective-c">/// 自定义的地图快捷创建方法/// @param mapPath svg 绘图数据/// @param mapSize svg 绘图尺寸，即 svg 文件中图层的宽高/// @param frame   视图控件的frame- (instancetype)initWithMapPath:(ChinaMapPath *)mapPath andMapSize:(CGSize)mapSize andFrame:(CGRect)frame;</code></pre><p>示例：</p><pre class=" language-objective-c"><code class="language-objective-c">- (void)viewDidLoad {    [super viewDidLoad];    self.view.backgroundColor = [UIColor whiteColor];    // 福建省市数据    FujianMapPath *mapPath = [[FujianMapPath alloc] init];    self.chinaMapView = [[CXProvincesMapView alloc]initWithMapPath:mapPath andMapSize:CGSizeMake(308, 340) andFrame:CGRectMake(0, 0, self.view.bounds.size.width, 400)];    _chinaMapView.backgroundColor = [UIColor colorWithRed:230/255.0 green:1.0 blue:1.0 alpha:1.0];    _chinaMapView.maximumZoomScale = 5.0;    _chinaMapView.center = self.view.center;    _chinaMapView.delegate = self;    //    _chinaMapView.pinAnimation = NO;    // 直接设置图片    //    _chinaMapView.pinImage = [UIImage imageNamed:@"pin"];    // 添加按钮点击    UIButton *pinButton = [[UIButton alloc]initWithFrame:_chinaMapView.pinView.bounds];    [pinButton setImage:[UIImage imageNamed:@"pin"] forState:UIControlStateNormal];    [pinButton addTarget:self action:@selector(pinTest) forControlEvents:UIControlEventTouchUpInside];    [_chinaMapView.pinView addSubview:pinButton];    [self.view addSubview:_chinaMapView];}</code></pre><p>效果：</p><p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028011542388.png" alt="image-20191028011542388"></p><h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上步骤看起来繁琐，实际上操作起来并不是很复杂，主要的代码部分 PaintCode 已经为我们生成好了，可以在有 svg 图片的前提下生成任意的地图区域控件，<code>CXProvincesMapView</code> 中国省份地图区域的控件也是这样子生成的。假如你不需要文字或者图钉部分，你可以不用另外绘制文字或者图钉，相对应的数组传入空值就行了。</p><p>完结散花(<em>^▽^</em>)，希望这篇教程对你有帮助！</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
-      
-      
+      <tags>
+        <tag>技术 - iOS - runtime</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS组件化-提交组件代码到cocoapods作为框架</title>
+    <url>/2018/06/28/ios-zu-jian-hua-ti-jiao-zu-jian-dai-ma-dao-cocoapods-zuo-wei-kuang-jia-shi-yong/</url>
+    <content><![CDATA[<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>使用CocoaPods非常高效地将一些第三方类库导入到我们的项目中，给我们的开发带来了极大的便利，作为一个iOS开发者，大家肯定有自己封装的一些小组件，假如能让自己封装的组件支持pod集成，就能提供给其他开发者使用，岂不美哉。接下来将用一个Demo来演示组件化操作流程以及注意事项。</p>
+<h2 id="操作流程"><a href="#操作流程" class="headerlink" title="操作流程"></a>操作流程</h2><h3 id="1-上传项目源码"><a href="#1-上传项目源码" class="headerlink" title="1.上传项目源码"></a>1.上传项目源码</h3><p>在github上创建仓库的流程我就不累述了，首先把项目源码上传到github仓库再clone到本地，如果项目本来就在github的仓库中，直接clone到本地即可，这里以CXDatePickerView为例，<a href="https://github.com/CXTretar/CXDatePickerView">Demo项目地址</a>。</p>
+<h3 id="2-创建项目的podspec文件"><a href="#2-创建项目的podspec文件" class="headerlink" title="2.创建项目的podspec文件"></a>2.创建项目的podspec文件</h3><p>用终端命令cd打开本地项目文件夹并执行如下命令:<br><code>$ pod spec create CXDatePickerView</code><br>这时候文件夹中就生成一个CXDatePickerView.podspec文件，可以直接用xcode打开。<br>终端命令:<br><code>open -a Xcode CXDatePickerView.podspec</code><br>刚生成的文件有很多不必要的注释，可以删除，需要保留的配置字段，可以查看<a href="http://guides.cocoapods.org/syntax/podspec.html" target="_blank" rel="noopener">http://guides.cocoapods.org/syntax/podspec.html</a>。<br>Demo中保留了以下字段：</p>
+<pre><code>Pod::Spec.new do |s|
+
+  s.name         = "CXDatePickerView"   //  名称
+  s.version      = "0.1.1"              //  版本号
+  s.summary      = "CXDatePickerView"   //  简要说明
+
+  s.description  = &lt;&lt;-DESC
+                   This is a custom date picker view that provides a number of modifiable UI interfaces.
+                   DESC                 //  功能描述
+
+  s.homepage     = "https://github.com/CXTretar/CXDatePickerView" //项目主页
+  s.license      = "MIT"                //  许可证
+
+  s.author       = { "CXTretar" =&gt; "misscxuan@163.com" } //  所有者
+
+  s.platform     = :ios, "8.0"          //  系统版本
+
+  s.source       = { :git =&gt; "https://github.com/CXTretar/CXDatePickerView.git", :tag =&gt; s.version.to_s } //  项目源地址
+
+  s.source_files  = "CXDatePickerView/CXDatePickerView/*.{h,m}" // 关联的源文件
+
+  s.requires_arc = true                 // 是否支持ARC
+
+end
+</code></pre><p>在这些字段中 <code>s.platform</code> 和 <code>s.source_files</code> 需要特别注意。<br><code>s.platform</code> 系统版本不要写的太低，不然上传到cocoapods时会因为不支持MRC而出现一些不必要的警告，在使用时也会出现多余的警告，建议填写”8.0”。<br><code>s.source_files</code> 是你要上传的组件文件夹地址，一定要是正确的路径，不然在上传到cocoapods时会出现<code>[iOS] file patterns: The 'source_files' pattern did not match any file.</code>错误。填写的路径格式为 <code>项目文件夹name/组件文件夹name/*.{h,m}</code>，假如组件文件夹中还有其他文件夹，则为 <code>项目文件夹name/组件文件夹name/**/*.{h,m}</code>。</p>
+<h3 id="3-验证podspec文件"><a href="#3-验证podspec文件" class="headerlink" title="3.验证podspec文件"></a>3.验证podspec文件</h3><p>编辑完podspec文件后需要验证该文件是否可用，podspec文件不允许有任何的Warning或者Error<br>终端命令:<br><code>$ pod lib lint</code><br>如果出现</p>
+<pre><code>-&gt; CXDatePickerView (0.0.1)
+
+CXDatePickerView passed validation.
+</code></pre><p>则说明验证通过，否则，就需要根据提示修改podspec文件再次验证直到验证通过。<br>因为Xcode允许警告存在，所以可以通过命令屏蔽警告<br><code>$ pod lib lint --allow-warnings</code><br>如果出现Error但是提示信息不足，可以添加–verbose 以获取更多错误信息<br><code>$ pod lib lint --verbose</code></p>
+<h3 id="4-上传podspec文件"><a href="#4-上传podspec文件" class="headerlink" title="4.上传podspec文件"></a>4.上传podspec文件</h3><p>podspec文件中需要指定的tag，完成上述操作后给项目打tag</p>
+<pre><code>$ git tag -m"release CXDatePickerView with podspec" "0.0.1"
+$ git push --tags
+</code></pre><p>接下来就需要将podspec文件上传至CocoaPod官方库，这里需要用到 pod trunk 账号，相信很多人都还没有注册过。这里简要说明一下注册流程：</p>
+<h5 id="①-终端注册trunk账号"><a href="#①-终端注册trunk账号" class="headerlink" title="①.终端注册trunk账号"></a>①.终端注册trunk账号</h5><p><code>$ pod trunk register '邮箱' '用户名' --description='电脑描述'</code><br>例如<br><code>$ pod trunk register 'misscxuan@163.com' 'CXTretar' --description='macbook pro'</code><br>注册成功的话会回复<br><code>[!] Please verify the session by clicking the link in the verification email that has been sent to misscxuan@163.com</code></p>
+<h5 id="②-查收邮件"><a href="#②-查收邮件" class="headerlink" title="②.查收邮件"></a>②.查收邮件</h5><p>如果是QQ邮箱，可能会被放到“垃圾箱”中，并不一定是“收件箱”。<br>点击邮件中的链接：<br><code>https://trunk.cocoapods.org/sessions/verify/xxxx</code></p>
+<h5 id="③-接下来查看个人信息"><a href="#③-接下来查看个人信息" class="headerlink" title="③.接下来查看个人信息"></a>③.接下来查看个人信息</h5><p><code>$ pod trunk me</code><br>结果信息：</p>
+<pre><code>  - Name:     CXTretar
+  - Email:    misscxuan@163.com
+  - Since:    June 27th, 01:08
+  - Pods:
+    - CXDatePickerView
+  - Sessions:
+    - June 27th, 01:08 - November 3rd, 01:09. IP: xxx.xxx.xxx.xxx
+    Description: macbook pro
+</code></pre><p>到这一步就注册成功了，假如遇到 <code>NoMethodError - undefined method 'last' for #&lt;Netrc::Entry:0x007fc59c246378&gt;</code> 这样的问题需要尝试更新gem源或者pod：</p>
+<pre><code>$ sudo gem update --system
+$ sudo gem install cocoapods
+$ sudo gem install cocospods-trunk
+</code></pre><p>如果遇到 <code>[!] Authentication token is invalid or unverified. Either verify it with the email that was sent or register a new session.</code> 请重新再注册一次。<br>pod trunk 设置完毕后执行终端命令:<br><code>$ pod trunk push CXDatePickerView.podspec</code><br>发布时可以允许警告：<br><code>$ pod trunk push --allow-warnings CXDatePickerView.podspec</code><br>这个过程可能会比较耗时，需要耐心等待，假如有VPN工具的话，建议开启VPN后再进行这一步。<br>成功时会显示</p>
+<pre><code>Updating spec repo `master`
+Validating podspec
+ -&gt; CXDatePickerView (0.0.1)
+
+--------------------------------------------------------------------------------
+ 🎉  Congrats
+
+ 🚀  CXDatePickerView (0.0.1) successfully published
+ 📅  June 28th, 01:22
+ 🌎  https://cocoapods.org/pods/CXDatePickerView
+ 👍  Tell your friends!
+--------------------------------------------------------------------------------
+</code></pre><h3 id="5-搜索组件框架"><a href="#5-搜索组件框架" class="headerlink" title="5.搜索组件框架"></a>5.搜索组件框架</h3><p>此时你的组件库已经上传至cocoapods官方库中，可以这样子搜索</p>
+<pre><code>$ pod setup 
+$ pod repo update
+$ pod search CXDatePickerView
+</code></pre><p>假如搜索结果为 <code>[!] Unable to find a pod with name, author, summary, or description matching 'xxxx'</code>，说明你的pod搜索库还没有更新，解决方法是通过Finder前往资源库去删除缓存中的search_index.json，路径为<code>~/Library/Caches/CocoaPods</code>，删除search_index.json，再重新调用 <code>pod search CXDatePickerView</code> 代码就能够搜索到你刚上传的组件库。</p>
+<p>完结散花(<em>^▽^</em>)，希望这篇教程对你有帮助！</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
       <categories>
-          
-          <category> iOS开发 </category>
-          
+        <category>iOS开发</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 技术 </tag>
-            
-            <tag> iOS </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>自定义NSURLProtocol实现WebView缓存以及科学上网</title>
-      <link href="/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/"/>
-      <url>/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/</url>
-      
-        <content type="html"><![CDATA[<h4 id="NSURLProtocol是什么？"><a href="#NSURLProtocol是什么？" class="headerlink" title="NSURLProtocol是什么？"></a>NSURLProtocol是什么？</h4><p>NSURLProtocol是 iOS里面的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html" target="_blank" rel="noopener">URL Loading System</a>的一部分，它是一个抽象类，不能去实例化它，只能子类化NSURLProtocol，然后在使用的时候注册子类。</p><p><img src="/CXTretar/CXTretar.github.io/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/NSURLProtocol.png" alt="NSURLProtocol"></p><h4 id="NSURLProtocol能做什么？"><a href="#NSURLProtocol能做什么？" class="headerlink" title="NSURLProtocol能做什么？"></a>NSURLProtocol能做什么？</h4><p>在每一个 <code>HTTP</code> 请求开始时，<code>URL Loading System</code> 会创建一个合适的 <code>NSURLProtocol</code> 对象处理对应的 URL 请求，而我们需要做的就是写一个继承自 <code>NSURLProtocol</code> 的类，并通过 <code>- registerClass:</code> 方法注册我们的协议类，然后 <code>URL Loading System</code> 就会在请求发出时使用我们创建的 <code>NSURLProtocol</code> 对象对该请求进行处理。</p><p>这样，我们就可以使用 <code>NSURLProtocol</code> 来处理所有的网络请求，实现以下一些功能：</p><ul><li>可以拦截 UIWebView 的网络请求。</li><li>重定向网络请求（可以解决 DNS 域名劫持问题）</li><li>缓存网页内容</li><li>自定义 Response （过滤敏感信息）</li><li>全局网络请求设置</li></ul><p>苹果官方文档中的 <a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">CustomHTTPProtocol</a> 对自定义 <code>NSURLProtocol</code> 有了一些具体的介绍，你可以点击<a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">这里</a>下载源代码。</p><p>基于官方的 Demo，我们来对 <code>NSURLProtocol</code> 做进一步的处理，使其能够对我们请求的网页内容缓存，甚至可以通过连接代理服务器来科学上网，需要提醒的是，这里的科学上网只能够在注册该 <code>NSURLProtocol</code> 的条件下实现，也就是说是 App 内部的网页可以通过代理服务器请求打开。</p><p><a href="https://github.com/CXTretar/CXProxyURLProtocol">项目地址</a> </p><h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><ul><li>在需要开启代理的时候注册 <code>CXProxyURLProtocol</code> 。</li></ul><pre class=" language-objective-c"><code class="language-objective-c">[CXProxyProtocolManager registerProxyURLProtocol];</code></pre><ul><li>在需要关闭代理的时候注销 <code>CXProxyURLProtocol</code> 。</li></ul><pre><code>[CXProxyProtocolManager unregisterProxyURLProtocol];</code></pre><ul><li>设置拦截的请求服务类型或者代理服务器 ip 地址和端口号。</li></ul><pre><code>/** CXProxyURLProtocol 可支持的URLSchemes @return URLSchemes */+ (NSSet *)supportedSchemes;/** 设置 CXProxyURLProtocol 可支持的URLSchemes, 默认为 [http,https] @param supportedSchemes URLSchemes like: http https */+ (void)setSupportedSchemes:(NSSet *)supportedSchemes;/** 设置代理服务器ip地址以及端口号 http/https 连接方式 @param HTTPProxyHost ip地址 @param HTTPProxyPort 端口号 */+ (void)setHTTPProxyHost:(NSString *)HTTPProxyHost andHTTPProxyPort:(NSNumber *)HTTPProxyPort;</code></pre><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
-      
-      
+      <tags>
+        <tag>技术</tag>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 PaintCode 绘制自定义的省份地图控件</title>
+    <url>/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/</url>
+    <content><![CDATA[<p><a href="https://github.com/CXTretar/CXProvincesMapView">Demo链接</a></p>
+<h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><h5 id="需要用到的软件-解压密码-xclient-info"><a href="#需要用到的软件-解压密码-xclient-info" class="headerlink" title="需要用到的软件 (解压密码 xclient.info)"></a>需要用到的软件 (解压密码 <strong>xclient.info</strong>)</h5><ul>
+<li><p><a href="https://pan.baidu.com/s/1qSAeNTmj3e8Jfu2klvHnTg" target="_blank" rel="noopener">Sketch</a> </p>
+<p>Sketch 是一款Mac上小巧但功能强大的矢量绘图软件，这是专为设计师而打造的矢量绘图软件，拥有简约的设计，调色板，面板，菜单，窗口，控件和功能强大的矢量绘图和文字工具；包含针对UI设计的操作和交互模式，让你设计图标、移动手机UI、网站UI等更加简单高效。</p>
+</li>
+<li><p><a href="https://pan.baidu.com/s/1FAjdUCrYVniNLksW3aY_8A" target="_blank" rel="noopener">PaintCode</a></p>
+<p>PaintCode 是一款 Mac 上的 iOS 矢量绘图编程软件，无论是程序员还是设计师，PaintCode 能够让你像在PS中画图一样绘制各种UI图形，PaintCode 会自动帮你生成针对 Mac OS X 或 iOS 平台 Objective-C 或 C# 代码，能够节约大量的编程时间，支持将代码直接导入到 Xcode 中或导出为 PSD 文件，支持最新的 iOS  和 iWatch SDK，非常的实用！</p>
+</li>
+</ul>
+<h5 id="地图-svg-文件的获取"><a href="#地图-svg-文件的获取" class="headerlink" title="地图 svg 文件的获取"></a>地图 svg 文件的获取</h5><p>推荐使用 <a href="https://www.highcharts.com.cn/mapdata" target="_blank" rel="noopener">HighChart 地图数据</a>，在这里你可以自由的选择国内的某个省份地图下载相应的 svg 文件，这里选择福建省作为一个例子。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027233307531.png" alt="image-20191027233307531"></p>
+<h4 id="使用-Sketch-对下载的-svg-文件进行再加工"><a href="#使用-Sketch-对下载的-svg-文件进行再加工" class="headerlink" title="使用 Sketch 对下载的 svg 文件进行再加工"></a>使用 Sketch 对下载的 svg 文件进行再加工</h4><p>由于通过 HighChart 地图数据下载的 svg 文件有一些 logo 文字信息的部分图层是我们开发时不需要的，而且会干扰地图的显示，所以使用 Sketch 去除这些部分。</p>
+<p>使用 Sketch 打开下载的 svg 文件，屏蔽这些无用的信息图层</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027234921580.png" alt="image-20191027234921580"></p>
+<p>重新导出得新 svg 文件才是我们接下来要用到地图文件</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191027235144789.png" alt="image-20191027235144789"></p>
+<h4 id="使用-PaintCode-根据-svg-文件生成-Objective-C-代码"><a href="#使用-PaintCode-根据-svg-文件生成-Objective-C-代码" class="headerlink" title="使用 PaintCode 根据 svg 文件生成 Objective-C 代码"></a>使用 PaintCode 根据 svg 文件生成 Objective-C 代码</h4><p>通过 PaintCode 打开 svg 文件</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028000249045.png" alt="image-20191028000419208"></p>
+<p>我们可以看到 PaintCode 已经自动为我们生成了 Objective-C 代码，但是这只是图块的 UIBezierPath 路径代码，我们还需要添加文字和图钉的相应位置，接下来我们通过 PaintCode 添加这些内容。</p>
+<ul>
+<li><h5 id="添加市名"><a href="#添加市名" class="headerlink" title="添加市名"></a>添加市名</h5><p>添加 Text，设置文字，调节文字位置以及字体大小为11，PaintCode 也自动生成了相应的代码。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001128976.png" alt="image-20191028001128976"></p>
+</li>
+<li><h5 id="添加图钉位置"><a href="#添加图钉位置" class="headerlink" title="添加图钉位置"></a>添加图钉位置</h5><p>添加图钉 Rect，调节 Rect 的位置，宽高都设置为20。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028001948626.png" alt="image-20191028001948626"></p>
+</li>
+<li><h5 id="导出代码"><a href="#导出代码" class="headerlink" title="导出代码"></a>导出代码</h5><p>按照上面的步骤添加其他的市名和图钉位置，并且导出代码文件。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028002543468.png" alt="image-20191028002543468"></p>
+</li>
+</ul>
+<h4 id="整理代码文件"><a href="#整理代码文件" class="headerlink" title="整理代码文件"></a>整理代码文件</h4><p>PaintCode 生成的文件包含了图块，文字，图钉三项内容的绘制代码，我们需要对这三项内容进行抽取和整理，这里以福建省为例。</p>
+<pre class=" language-objective-c"><code class="language-objective-c">+ (void)drawCanvas2WithFrame: (CGRect)targetFrame resizing: (FujianResizingBehavior)resizing
+{
+    //// General Declarations
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+    //// Resize to Target Frame
+    CGContextSaveGState(context);
+    CGRect resizedFrame = FujianResizingBehaviorApply(resizing, CGRectMake(0, 0, 308, 340), targetFrame);
+    CGContextTranslateCTM(context, resizedFrame.origin.x, resizedFrame.origin.y);
+    CGContextScaleCTM(context, resizedFrame.size.width / 308, resizedFrame.size.height / 340);
+
+UIColor* strokeColor = [UIColor colorWithRed: 0.8 green: 0.8 blue: 0.8 alpha: 1];
+    UIColor* fillColor = [UIColor colorWithRed: 0.486 green: 0.71 blue: 0.925 alpha: 1];
+
+    //// 页面1
+    {
+        //// chart-(1)
+        {
+            //// Clipped
+            {
+                //// Group 编组 5
+                {
+                    //// Group 6
+                    {
+                        //// Bezier 形状 2 Drawing
+                        UIBezierPath* bezier2Path = [UIBezierPath bezierPath];
+                        [bezier2Path moveToPoint: CGPointMake(215.48, 200.9)];
+                        [bezier2Path addLineToPoint: CGPointMake(214.85, 200.27)];
+                        [bezier2Path addLineToPoint: CGPointMake(215.17, 199.01)];
+                        [bezier2Path addLineToPoint: CGPointMake(215.8, 199.32)];
+                        [bezier2Path addLineToPoint: CGPointMake(216.43, 198.06)];
+
+                      ......
+                        [bezier2Path closePath];
+                        [bezier2Path moveToPoint: 
+                        [bezier2Path closePath];
+                        [fillColor setFill];
+                        [bezier2Path fill];
+                        [strokeColor setStroke];
+                        bezier2Path.lineWidth = 1;
+                        bezier2Path.miterLimit = 4;
+                        [bezier2Path stroke];
+                                             }
+                         ......
+                }
+            }
+        }
+    }
+
+                          //// Text Drawing
+    CGRect textRect = CGRectMake(128, 71, 39, 26);
+    {
+        NSString* textContent = @"南平市";
+        NSMutableParagraphStyle* textStyle = [[NSMutableParagraphStyle alloc] init];
+        textStyle.alignment = NSTextAlignmentLeft;
+        NSDictionary* textFontAttributes = @{NSFontAttributeName: [UIFont systemFontOfSize: 11], NSForegroundColorAttributeName: UIColor.blackColor, NSParagraphStyleAttributeName: textStyle};
+
+        CGFloat textTextHeight = [textContent boundingRectWithSize: CGSizeMake(textRect.size.width, INFINITY) options: NSStringDrawingUsesLineFragmentOrigin attributes: textFontAttributes context: nil].size.height;
+        CGContextSaveGState(context);
+        CGContextClipToRect(context, textRect);
+        [textContent drawInRect: CGRectMake(CGRectGetMinX(textRect), CGRectGetMinY(textRect) + (textRect.size.height - textTextHeight) / 2, textRect.size.width, textTextHeight) withAttributes: textFontAttributes];
+        CGContextRestoreGState(context);
+    }
+
+                         ......
+                         //// Rectangle Drawing
+    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(135, 56, 20, 20)];
+    [UIColor.grayColor setFill];
+    [rectanglePath fill];
+                                               ......
+        CGContextRestoreGState(context);
+
+}
+
+</code></pre>
+<ol>
+<li><h5 id="新建一个-FujianMapPath-文件继承于-ChinaMapPath-类，这个文件用来存放整理分类后的代码"><a href="#新建一个-FujianMapPath-文件继承于-ChinaMapPath-类，这个文件用来存放整理分类后的代码" class="headerlink" title="新建一个 FujianMapPath 文件继承于 ChinaMapPath 类，这个文件用来存放整理分类后的代码"></a>新建一个 FujianMapPath 文件继承于 ChinaMapPath 类，这个文件用来存放整理分类后的代码</h5></li>
+<li><h5 id="图块部分"><a href="#图块部分" class="headerlink" title="图块部分"></a>图块部分</h5><p>我们只需要摘取 <code>UIBezierPath</code> 的路径部分代码即可，也就是每一个 <code>bezierPath</code> 在以下代码之前的路径代码(换个说法就是删除每个<code>bezierPath</code> 的以下代码)</p>
+<pre class=" language-objective-c"><code class="language-objective-c">                        [fillColor setFill];
+                        [bezier2Path fill];
+                        [strokeColor setStroke];
+                        bezier2Path.lineWidth = 1;
+                        bezier2Path.miterLimit = 4;
+                        [bezier2Path stroke];
+</code></pre>
+<p>整理后的 <code>bezierPath</code> 放在 <code>FujianMapPath</code> 的 <code>pathArray</code> 中。</p>
+</li>
+<li><h5 id="文字部分"><a href="#文字部分" class="headerlink" title="文字部分"></a>文字部分</h5><p>我们只需要摘取每段 <code>textRect</code> 的 frame 即可，</p>
+<pre class=" language-objective-c"><code class="language-objective-c">CGRect textRect = CGRectMake(128, 71, 39, 26);
+</code></pre>
+<p>整理后的 <code>textRect</code> 放在 <code>FujianMapPath</code> 的 <code>textRectArray</code> 中，使用 <code>NSValue</code>存储。文字内容需要另外存储在在 <code>FujianMapPath</code> 的 <code>textArray</code> 中。</p>
+</li>
+<li><h5 id="图钉部分"><a href="#图钉部分" class="headerlink" title="图钉部分"></a>图钉部分</h5><p>我们只需要摘取每段 <code>rectanglePath</code> 的起始点即可，</p>
+<pre class=" language-objective-c"><code class="language-objective-c">UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(135, 56, 20, 20)];
+=>  CGPointMake(135, 56)
+</code></pre>
+<p>整理后的 <code>point</code> 放在 <code>FujianMapPath</code> 的 <code>pinPointArray</code> 中。</p>
+</li>
+</ol>
+<p><strong><em>需要注意的是，我们自行绘制的文字部分和图块部分的市区顺序一般是不一致的，所以我们要根据图块顺序调换 textArray、textRectArray 和  pinPointArray 中市区的顺序</em></strong></p>
+<h4 id="使用-CXProvincesMapView-展示我们获取的代码数据"><a href="#使用-CXProvincesMapView-展示我们获取的代码数据" class="headerlink" title="使用 CXProvincesMapView 展示我们获取的代码数据"></a>使用 CXProvincesMapView 展示我们获取的代码数据</h4><pre class=" language-objective-c"><code class="language-objective-c">/// 自定义的地图快捷创建方法
+/// @param mapPath svg 绘图数据
+/// @param mapSize svg 绘图尺寸，即 svg 文件中图层的宽高
+/// @param frame   视图控件的frame
+- (instancetype)initWithMapPath:(ChinaMapPath *)mapPath andMapSize:(CGSize)mapSize andFrame:(CGRect)frame;
+</code></pre>
+<p>示例：</p>
+<pre class=" language-objective-c"><code class="language-objective-c">- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
+    // 福建省市数据
+    FujianMapPath *mapPath = [[FujianMapPath alloc] init];
+    self.chinaMapView = [[CXProvincesMapView alloc]initWithMapPath:mapPath andMapSize:CGSizeMake(308, 340) andFrame:CGRectMake(0, 0, self.view.bounds.size.width, 400)];
+    _chinaMapView.backgroundColor = [UIColor colorWithRed:230/255.0 green:1.0 blue:1.0 alpha:1.0];
+    _chinaMapView.maximumZoomScale = 5.0;
+    _chinaMapView.center = self.view.center;
+    _chinaMapView.delegate = self;
+    //    _chinaMapView.pinAnimation = NO;
+    // 直接设置图片
+    //    _chinaMapView.pinImage = [UIImage imageNamed:@"pin"];
+    // 添加按钮点击
+    UIButton *pinButton = [[UIButton alloc]initWithFrame:_chinaMapView.pinView.bounds];
+    [pinButton setImage:[UIImage imageNamed:@"pin"] forState:UIControlStateNormal];
+    [pinButton addTarget:self action:@selector(pinTest) forControlEvents:UIControlEventTouchUpInside];
+    [_chinaMapView.pinView addSubview:pinButton];
+    [self.view addSubview:_chinaMapView];
+}
+</code></pre>
+<p>效果：</p>
+<p><img src="/CXTretar/CXTretar.github.io/2019/10/27/shi-yong-paintcode-hui-zhi-zi-ding-yi-de-sheng-fen-di-tu-kong-jian/image-20191028011542388.png" alt="image-20191028011542388"></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上步骤看起来繁琐，实际上操作起来并不是很复杂，主要的代码部分 PaintCode 已经为我们生成好了，可以在有 svg 图片的前提下生成任意的地图区域控件，<code>CXProvincesMapView</code> 中国省份地图区域的控件也是这样子生成的。假如你不需要文字或者图钉部分，你可以不用另外绘制文字或者图钉，相对应的数组传入空值就行了。</p>
+<p>完结散花(<em>^▽^</em>)，希望这篇教程对你有帮助！</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
       <categories>
-          
-          <category> iOS开发 </category>
-          
+        <category>iOS开发</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 技术 </tag>
-            
-            <tag> iOS </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>iOS组件化-提交组件代码到cocoapods作为框架</title>
-      <link href="/2018/06/28/ios-zu-jian-hua-ti-jiao-zu-jian-dai-ma-dao-cocoapods-zuo-wei-kuang-jia-shi-yong/"/>
-      <url>/2018/06/28/ios-zu-jian-hua-ti-jiao-zu-jian-dai-ma-dao-cocoapods-zuo-wei-kuang-jia-shi-yong/</url>
-      
-        <content type="html"><![CDATA[<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>使用CocoaPods非常高效地将一些第三方类库导入到我们的项目中，给我们的开发带来了极大的便利，作为一个iOS开发者，大家肯定有自己封装的一些小组件，假如能让自己封装的组件支持pod集成，就能提供给其他开发者使用，岂不美哉。接下来将用一个Demo来演示组件化操作流程以及注意事项。</p><h2 id="操作流程"><a href="#操作流程" class="headerlink" title="操作流程"></a>操作流程</h2><h3 id="1-上传项目源码"><a href="#1-上传项目源码" class="headerlink" title="1.上传项目源码"></a>1.上传项目源码</h3><p>在github上创建仓库的流程我就不累述了，首先把项目源码上传到github仓库再clone到本地，如果项目本来就在github的仓库中，直接clone到本地即可，这里以CXDatePickerView为例，<a href="https://github.com/CXTretar/CXDatePickerView">Demo项目地址</a>。</p><h3 id="2-创建项目的podspec文件"><a href="#2-创建项目的podspec文件" class="headerlink" title="2.创建项目的podspec文件"></a>2.创建项目的podspec文件</h3><p>用终端命令cd打开本地项目文件夹并执行如下命令:<br><code>$ pod spec create CXDatePickerView</code><br>这时候文件夹中就生成一个CXDatePickerView.podspec文件，可以直接用xcode打开。<br>终端命令:<br><code>open -a Xcode CXDatePickerView.podspec</code><br>刚生成的文件有很多不必要的注释，可以删除，需要保留的配置字段，可以查看<a href="http://guides.cocoapods.org/syntax/podspec.html" target="_blank" rel="noopener">http://guides.cocoapods.org/syntax/podspec.html</a>。<br>Demo中保留了以下字段：</p><pre><code>Pod::Spec.new do |s|  s.name         = "CXDatePickerView"   //  名称  s.version      = "0.1.1"              //  版本号  s.summary      = "CXDatePickerView"   //  简要说明  s.description  = &lt;&lt;-DESC                   This is a custom date picker view that provides a number of modifiable UI interfaces.                   DESC                 //  功能描述  s.homepage     = "https://github.com/CXTretar/CXDatePickerView" //项目主页  s.license      = "MIT"                //  许可证  s.author       = { "CXTretar" =&gt; "misscxuan@163.com" } //  所有者  s.platform     = :ios, "8.0"          //  系统版本  s.source       = { :git =&gt; "https://github.com/CXTretar/CXDatePickerView.git", :tag =&gt; s.version.to_s } //  项目源地址  s.source_files  = "CXDatePickerView/CXDatePickerView/*.{h,m}" // 关联的源文件  s.requires_arc = true                 // 是否支持ARCend</code></pre><p>在这些字段中 <code>s.platform</code> 和 <code>s.source_files</code> 需要特别注意。<br><code>s.platform</code> 系统版本不要写的太低，不然上传到cocoapods时会因为不支持MRC而出现一些不必要的警告，在使用时也会出现多余的警告，建议填写”8.0”。<br><code>s.source_files</code> 是你要上传的组件文件夹地址，一定要是正确的路径，不然在上传到cocoapods时会出现<code>[iOS] file patterns: The 'source_files' pattern did not match any file.</code>错误。填写的路径格式为 <code>项目文件夹name/组件文件夹name/*.{h,m}</code>，假如组件文件夹中还有其他文件夹，则为 <code>项目文件夹name/组件文件夹name/**/*.{h,m}</code>。</p><h3 id="3-验证podspec文件"><a href="#3-验证podspec文件" class="headerlink" title="3.验证podspec文件"></a>3.验证podspec文件</h3><p>编辑完podspec文件后需要验证该文件是否可用，podspec文件不允许有任何的Warning或者Error<br>终端命令:<br><code>$ pod lib lint</code><br>如果出现</p><pre><code>-&gt; CXDatePickerView (0.0.1)CXDatePickerView passed validation.</code></pre><p>则说明验证通过，否则，就需要根据提示修改podspec文件再次验证直到验证通过。<br>因为Xcode允许警告存在，所以可以通过命令屏蔽警告<br><code>$ pod lib lint --allow-warnings</code><br>如果出现Error但是提示信息不足，可以添加–verbose 以获取更多错误信息<br><code>$ pod lib lint --verbose</code></p><h3 id="4-上传podspec文件"><a href="#4-上传podspec文件" class="headerlink" title="4.上传podspec文件"></a>4.上传podspec文件</h3><p>podspec文件中需要指定的tag，完成上述操作后给项目打tag</p><pre><code>$ git tag -m"release CXDatePickerView with podspec" "0.0.1"$ git push --tags</code></pre><p>接下来就需要将podspec文件上传至CocoaPod官方库，这里需要用到 pod trunk 账号，相信很多人都还没有注册过。这里简要说明一下注册流程：</p><h5 id="①-终端注册trunk账号"><a href="#①-终端注册trunk账号" class="headerlink" title="①.终端注册trunk账号"></a>①.终端注册trunk账号</h5><p><code>$ pod trunk register '邮箱' '用户名' --description='电脑描述'</code><br>例如<br><code>$ pod trunk register 'misscxuan@163.com' 'CXTretar' --description='macbook pro'</code><br>注册成功的话会回复<br><code>[!] Please verify the session by clicking the link in the verification email that has been sent to misscxuan@163.com</code></p><h5 id="②-查收邮件"><a href="#②-查收邮件" class="headerlink" title="②.查收邮件"></a>②.查收邮件</h5><p>如果是QQ邮箱，可能会被放到“垃圾箱”中，并不一定是“收件箱”。<br>点击邮件中的链接：<br><code>https://trunk.cocoapods.org/sessions/verify/xxxx</code></p><h5 id="③-接下来查看个人信息"><a href="#③-接下来查看个人信息" class="headerlink" title="③.接下来查看个人信息"></a>③.接下来查看个人信息</h5><p><code>$ pod trunk me</code><br>结果信息：</p><pre><code>  - Name:     CXTretar  - Email:    misscxuan@163.com  - Since:    June 27th, 01:08  - Pods:    - CXDatePickerView  - Sessions:    - June 27th, 01:08 - November 3rd, 01:09. IP: xxx.xxx.xxx.xxx    Description: macbook pro</code></pre><p>到这一步就注册成功了，假如遇到 <code>NoMethodError - undefined method 'last' for #&lt;Netrc::Entry:0x007fc59c246378&gt;</code> 这样的问题需要尝试更新gem源或者pod：</p><pre><code>$ sudo gem update --system$ sudo gem install cocoapods$ sudo gem install cocospods-trunk</code></pre><p>如果遇到 <code>[!] Authentication token is invalid or unverified. Either verify it with the email that was sent or register a new session.</code> 请重新再注册一次。<br>pod trunk 设置完毕后执行终端命令:<br><code>$ pod trunk push CXDatePickerView.podspec</code><br>发布时可以允许警告：<br><code>$ pod trunk push --allow-warnings CXDatePickerView.podspec</code><br>这个过程可能会比较耗时，需要耐心等待，假如有VPN工具的话，建议开启VPN后再进行这一步。<br>成功时会显示</p><pre><code>Updating spec repo `master`Validating podspec -&gt; CXDatePickerView (0.0.1)-------------------------------------------------------------------------------- 🎉  Congrats 🚀  CXDatePickerView (0.0.1) successfully published 📅  June 28th, 01:22 🌎  https://cocoapods.org/pods/CXDatePickerView 👍  Tell your friends!--------------------------------------------------------------------------------</code></pre><h3 id="5-搜索组件框架"><a href="#5-搜索组件框架" class="headerlink" title="5.搜索组件框架"></a>5.搜索组件框架</h3><p>此时你的组件库已经上传至cocoapods官方库中，可以这样子搜索</p><pre><code>$ pod setup $ pod repo update$ pod search CXDatePickerView</code></pre><p>假如搜索结果为 <code>[!] Unable to find a pod with name, author, summary, or description matching 'xxxx'</code>，说明你的pod搜索库还没有更新，解决方法是通过Finder前往资源库去删除缓存中的search_index.json，路径为<code>~/Library/Caches/CocoaPods</code>，删除search_index.json，再重新调用 <code>pod search CXDatePickerView</code> 代码就能够搜索到你刚上传的组件库。</p><p>完结散花(<em>^▽^</em>)，希望这篇教程对你有帮助！</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
-      
-      
+      <tags>
+        <tag>技术</tag>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>成员变量和属性的区别</title>
+    <url>/2020/03/04/cheng-yuan-bian-liang-he-shu-xing-de-qu-bie/</url>
+    <content><![CDATA[<h3 id="成员变量的使用"><a href="#成员变量的使用" class="headerlink" title="成员变量的使用"></a>成员变量的使用</h3><p>成员变量是声明在类{}中的，在类的.h 头文件和类的的.m 文件类扩展都可以对成员变量进行声明。</p>
+<h5 id="h-文件中声明"><a href="#h-文件中声明" class="headerlink" title=".h 文件中声明"></a>.h 文件中声明</h5><pre class=" language-objectivec"><code class="language-objectivec"><span class="token keyword">@interface</span> Person <span class="token punctuation">:</span> NSObject <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> _phone<span class="token punctuation">;</span>
+    NSString <span class="token operator">*</span>_nickname<span class="token punctuation">;</span>
+
+<span class="token keyword">@public</span>
+    NSString <span class="token operator">*</span>_publicString<span class="token punctuation">;</span>
+
+<span class="token keyword">@protected</span>
+    NSString <span class="token operator">*</span>_protectedString<span class="token punctuation">;</span>
+
+<span class="token keyword">@private</span>
+    NSString <span class="token operator">*</span>_privateString<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">@end</span>
+</code></pre>
+<h5 id="m-文件类扩展中声明"><a href="#m-文件类扩展中声明" class="headerlink" title=".m 文件类扩展中声明"></a>.m 文件类扩展中声明</h5><pre class=" language-objectivec"><code class="language-objectivec"><span class="token macro property">#<span class="token directive keyword">import</span> "Person.h"</span>
+
+<span class="token keyword">@interface</span> <span class="token function">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> _phoneNum<span class="token punctuation">;</span>
+    NSString <span class="token operator">*</span>_address<span class="token punctuation">;</span>
+
+<span class="token keyword">@public</span>
+    <span class="token keyword">int</span> _age<span class="token punctuation">;</span>
+    NSString <span class="token operator">*</span>_extensionString<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">@end</span>
+
+<span class="token keyword">@implementation</span> Person
+
+<span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>init <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">self</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">super</span> init<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">self</span><span class="token operator">-></span>_extensionString <span class="token operator">=</span> <span class="token string">@"extensionString"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token keyword">self</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">@end</span>
+
+</code></pre>
+<p>在这里对成员变量有<code>@private、@protected、@public</code>三种修饰符：</p>
+<ul>
+<li><strong>@private</strong> 私有的，只能在本类访问</li>
+<li><strong>@protected</strong> 受保护的，只能在本类及其子类内部中访问，在{}声明的变量默认是<strong>@protected</strong></li>
+<li><strong>@public </strong>公开的，可以被在任何地方访问。</li>
+</ul>
+<p><strong>需要注意的是，在.h 文件中对成员变量使用修饰符是有效的，而在.m 文件类扩展都成员变量无论用何种修饰都是private，只能在自己的类内部访问。例如一个Student类继承于Person，在其内部能够读取Person类头文件中除了private之外的其他成员变量， 却不能读取到Person类扩展中定义的成员变量。</strong></p>
+<p><img src="/CXTretar/CXTretar.github.io/2020/03/04/cheng-yuan-bian-liang-he-shu-xing-de-qu-bie/20200304195639862.png" alt="20200304195639862"></p>
+<h3 id="属性的使用"><a href="#属性的使用" class="headerlink" title="属性的使用"></a>属性的使用</h3><p>在iOS 5.0之前，属性声明是oc语言的一个新的机制，在声明时要求必须声明与之对应的成员变量。属性的正常写法需要1.声明成员变量， 2.<strong>@property</strong> ，3. <strong>@synthesize</strong> 成员变量三个步骤，例如<strong>name</strong>属性的声明：</p>
+<pre class=" language-objectivec"><code class="language-objectivec"><span class="token macro property">#<span class="token directive keyword">import</span> "Person1.h"</span>
+
+<span class="token keyword">@interface</span> <span class="token function">Person1</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 1.声明成员变量</span>
+     NSString <span class="token operator">*</span>name<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">// 2.声明属性</span>
+<span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">)</span> NSString <span class="token operator">*</span>name<span class="token punctuation">;</span>
+
+<span class="token keyword">@end</span>
+
+<span class="token keyword">@implementation</span> Person1
+
+<span class="token comment" spellcheck="true">// 3.最后在@implementation中用synthesize生成setter方法</span>
+<span class="token keyword">@synthesize</span> name<span class="token punctuation">;</span>
+
+<span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>init <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">self</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">super</span> init<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">self</span><span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">@"Jack"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> <span class="token keyword">self</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">@end</span>
+
+</code></pre>
+<p>在iOS 5.0之后，苹果推出一个新机制，<strong>@property</strong>声明的属性默认会生成一个  <strong>_</strong>   类型的成员变量，同时也会生成<strong>setter/getter</strong>方法，这就是我们现行的属性声明方式，而且我们可以使用点语法来代替<strong>setter/getter</strong>方法访问属性。</p>
+<p>我们可以看到上面代码中出现了<strong>@synthesize</strong>这样一个关键字，与之对应的是<strong>@dynamic</strong>。</p>
+<ul>
+<li><strong>synthesize</strong> 为编译器指令，它的作用是在编译时自动生成访问属性的<strong>setter/getter</strong>方法。假如我们在iOS 5.0之后依然在<strong>@implementation</strong> 文件中写了 <strong>@synthesize name</strong> ，那么生成对应的成员变量名便是<strong>name</strong>，而不是<strong>_name</strong>。</li>
+<li><strong>dynamic</strong> 为编译器指令，在编译时则会告诉编译器，属性的<strong>setter</strong>与<strong>getter</strong>方法由用户自己实现，不自动生成（当然对于<strong>readonly</strong>的属性只需提供<strong>getter</strong>即可）。</li>
+</ul>
+<pre class=" language-objectivec"><code class="language-objectivec"><span class="token macro property">#<span class="token directive keyword">import</span> "Person2.h"</span>
+
+<span class="token keyword">@interface</span> <span class="token function">Person2</span> <span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">)</span> NSString <span class="token operator">*</span>name<span class="token punctuation">;</span>
+<span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">)</span> NSString <span class="token operator">*</span>address<span class="token punctuation">;</span>
+<span class="token keyword">@property</span> <span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span> copy<span class="token punctuation">,</span> readonly<span class="token punctuation">)</span> NSString <span class="token operator">*</span>nickName<span class="token punctuation">;</span>
+
+<span class="token keyword">@end</span>
+
+
+<span class="token keyword">@implementation</span> Person2
+
+<span class="token keyword">@synthesize</span> name<span class="token punctuation">;</span>
+<span class="token keyword">@dynamic</span> address<span class="token punctuation">;</span>
+
+<span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>init <span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">self</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token keyword">super</span> init<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">self</span><span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">@"Jack"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">[</span><span class="token keyword">self</span> setValue<span class="token punctuation">:</span><span class="token string">@"nickName"</span> forKey<span class="token punctuation">:</span><span class="token string">@"nickName"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">self</span><span class="token punctuation">.</span>address <span class="token operator">=</span> <span class="token string">@"Xiamen"</span><span class="token punctuation">;</span>
+
+        <span class="token function">NSLog</span><span class="token punctuation">(</span><span class="token string">@"name: %@"</span><span class="token punctuation">,</span> <span class="token keyword">self</span><span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span><span class="token string">@"nickName: %@"</span><span class="token punctuation">,</span> <span class="token keyword">self</span><span class="token punctuation">.</span>nickName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span><span class="token string">@"address: %@"</span><span class="token punctuation">,</span> <span class="token keyword">self</span><span class="token punctuation">.</span>address<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token keyword">self</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">@end</span>
+</code></pre>
+<p>例如运行上述代码时，编译器就会提示这样的错误，说明找不到<strong>address</strong>属性的<strong>setter</strong>方法，当然<strong>getter</strong>方法也是找不到的。</p>
+<blockquote>
+<p><strong>Terminating app due to uncaught exception ‘NSInvalidArgumentException’, reason: ‘-[Person2 setAddress:]: unrecognized selector sent to instance 0x600001a2b140’</strong></p>
+</blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><strong>根据成员变量的私有性，我们可以把一些无需与外界接触的变量用成员变量的形式声明，而那些提供给外界访问的变量，我们可直接用属性的形式来声明。</strong></li>
+<li><strong>成员变量的声明不会生成setter/getter方法，在使用时则需通过-&gt;的方式访问。</strong></li>
+<li><strong>成员变量还可以通过@private、@protected、@public来提供不同的访问权限。</strong></li>
+<li><strong>属性对成员变量扩充了setter/getter方法，属性默认会生成带下划线的成员变量，并且可以通过点语法来很方便的对成员变量的访问。</strong></li>
+<li><strong>属性可以通过@synthesize或者@dynamic来决定是否自动生成setter/getter方法，@synthesize为自动生成， @dynamic为不自动生成。</strong></li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
       <categories>
-          
-          <category> iOS开发 </category>
-          
+        <category>iOS开发</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 技术 </tag>
-            
-            <tag> iOS </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2018/03/21/hello-world/"/>
-      <url>/2018/03/21/hello-world/</url>
-      
-        <content type="html"><![CDATA[<p>花了点时间搞了自己的博客，感觉么么哒😘，希望能多上传点文章  ヾ(◍°∇°◍)ﾉﾞ。</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
-      
-      
+      <tags>
+        <tag>技术 - iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>自定义NSURLProtocol实现WebView缓存以及科学上网</title>
+    <url>/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/</url>
+    <content><![CDATA[<h4 id="NSURLProtocol是什么？"><a href="#NSURLProtocol是什么？" class="headerlink" title="NSURLProtocol是什么？"></a>NSURLProtocol是什么？</h4><p>NSURLProtocol是 iOS里面的<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html" target="_blank" rel="noopener">URL Loading System</a>的一部分，它是一个抽象类，不能去实例化它，只能子类化NSURLProtocol，然后在使用的时候注册子类。</p>
+<p><img src="/CXTretar/CXTretar.github.io/2018/07/20/zi-ding-yi-nsurlprotocol-shi-xian-wang-ye-huan-cun-yi-ji-ke-xue-shang-wang/NSURLProtocol.png" alt="NSURLProtocol"></p>
+<h4 id="NSURLProtocol能做什么？"><a href="#NSURLProtocol能做什么？" class="headerlink" title="NSURLProtocol能做什么？"></a>NSURLProtocol能做什么？</h4><p>在每一个 <code>HTTP</code> 请求开始时，<code>URL Loading System</code> 会创建一个合适的 <code>NSURLProtocol</code> 对象处理对应的 URL 请求，而我们需要做的就是写一个继承自 <code>NSURLProtocol</code> 的类，并通过 <code>- registerClass:</code> 方法注册我们的协议类，然后 <code>URL Loading System</code> 就会在请求发出时使用我们创建的 <code>NSURLProtocol</code> 对象对该请求进行处理。</p>
+<p>这样，我们就可以使用 <code>NSURLProtocol</code> 来处理所有的网络请求，实现以下一些功能：</p>
+<ul>
+<li>可以拦截 UIWebView 的网络请求。</li>
+<li>重定向网络请求（可以解决 DNS 域名劫持问题）</li>
+<li>缓存网页内容</li>
+<li>自定义 Response （过滤敏感信息）</li>
+<li>全局网络请求设置</li>
+</ul>
+<p>苹果官方文档中的 <a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">CustomHTTPProtocol</a> 对自定义 <code>NSURLProtocol</code> 有了一些具体的介绍，你可以点击<a href="https://developer.apple.com/library/ios/samplecode/CustomHTTPProtocol/CustomHTTPProtocol.zip" target="_blank" rel="noopener">这里</a>下载源代码。</p>
+<p>基于官方的 Demo，我们来对 <code>NSURLProtocol</code> 做进一步的处理，使其能够对我们请求的网页内容缓存，甚至可以通过连接代理服务器来科学上网，需要提醒的是，这里的科学上网只能够在注册该 <code>NSURLProtocol</code> 的条件下实现，也就是说是 App 内部的网页可以通过代理服务器请求打开。</p>
+<p><a href="https://github.com/CXTretar/CXProxyURLProtocol">项目地址</a> </p>
+<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><ul>
+<li>在需要开启代理的时候注册 <code>CXProxyURLProtocol</code> 。</li>
+</ul>
+<pre class=" language-objective-c"><code class="language-objective-c">[CXProxyProtocolManager registerProxyURLProtocol];
+</code></pre>
+<ul>
+<li>在需要关闭代理的时候注销 <code>CXProxyURLProtocol</code> 。</li>
+</ul>
+<pre><code>[CXProxyProtocolManager unregisterProxyURLProtocol];
+</code></pre><ul>
+<li>设置拦截的请求服务类型或者代理服务器 ip 地址和端口号。</li>
+</ul>
+<pre><code>/**
+ CXProxyURLProtocol 可支持的URLSchemes
+
+ @return URLSchemes
+ */
++ (NSSet *)supportedSchemes;
+
+/**
+ 设置 CXProxyURLProtocol 可支持的URLSchemes, 默认为 [http,https]
+
+ @param supportedSchemes URLSchemes like: http https
+ */
++ (void)setSupportedSchemes:(NSSet *)supportedSchemes;
+
+/**
+ 设置代理服务器ip地址以及端口号 http/https 连接方式
+
+ @param HTTPProxyHost ip地址
+ @param HTTPProxyPort 端口号
+ */
++ (void)setHTTPProxyHost:(NSString *)HTTPProxyHost andHTTPProxyPort:(NSNumber *)HTTPProxyPort;
+</code></pre><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
       <categories>
-          
-          <category> 生活感想 </category>
-          
+        <category>iOS开发</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 杂谈 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-  
-  
+      <tags>
+        <tag>技术</tag>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
 </search>

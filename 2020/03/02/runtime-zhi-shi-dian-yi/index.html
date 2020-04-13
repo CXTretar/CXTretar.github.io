@@ -478,7 +478,7 @@
 <li><strong>meta-class对象（元类对象）</strong></li>
 </ul>
 <p>众所周知，所有的实例对象都是由其对应的类实例化而来，其实类本身也是一种对象，类对象是由编译器创建的，即在编译时所谓的类，就是指类对象。而类对象是元类的一个实例，元类描述了一个类对象，就像类对象描述了实例对象一样。元类本身也是对象，所以也应该是其他类的实例，实际上元类对象是根元类(Root class’s meta-class)的实例，而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
-<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt=""></p>
+<p><img src="/CXTretar/CXTretar.github.io/2020/03/02/runtime-zhi-shi-dian-yi/1583287598973.jpg" alt></p>
 <h2 id="instance-的结构"><a href="#instance-的结构" class="headerlink" title="instance 的结构"></a>instance 的结构</h2><p>在 Objective-C 中的 Foundation 框架对 NSObject对象的描述如下</p>
 <pre class=" language-objective-c"><code class="language-objective-c">@interface NSObject <NSObject> {
 #pragma clang diagnostic push
